@@ -1,0 +1,492 @@
+%\VignetteIndexEntry{Introduction to customProDB}
+%\VignetteKeywords{custommize protein sequence database, RNA-Seq ,variation annotation, junction annotation, personalized proteomics}
+%\VignettePackage{customProDB}
+\documentclass[11pt]{article}
+\usepackage{times}
+\usepackage[utf8x]{inputenc} 
+\usepackage{hyperref}
+
+\textwidth=6.5in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=-.1in
+\evensidemargin=-.1in
+\headheight=-.3in
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rfunarg}[1]{{\texttt{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+\newcommand{\Rcode}[1]{{\texttt{#1}}}
+
+\newcommand{\software}[1]{\textsf{#1}}
+\newcommand{\R}{\software{R}}
+\newcommand{\Bioconductor}{\software{Bioconductor}}
+\newcommand{\customProDB}{\Rpackage{customProDB}}
+
+
+
+\title{Introduction to \customProDB}
+\author{Xiaojing Wang}
+\date{\today}
+
+\begin{document} 
+
+\maketitle
+\tableofcontents
+
+
+\section{Introduction}
+
+Mass spectrometry (MS)-based proteomics technology is widely used in biological and biomedical studies. 
+Sequence database searching is the predominant method for peptide and protein identification in this field.
+We recently showed that a sample-specific protein database derived from RNA-Seq 
+data can better approximate the real protein pool in the sample and thus 
+improve protein identification. 
+Because many research groups have started to apply RNA and protein profiling technologies in parallel to the same samples
+to gain a complete understanding of cellular systems, 
+we have developed an R package \Rpackage{customProDB} that is dedicated 
+to the generation of customized database from RNA-Seq data for proteomics use. 
+
+Based on the assumption that lowly expressed transcripts are less likely to 
+produce detectable proteins, the package allows users to filter out proteins 
+with lowly-expressed transcripts. Functions are provided to either calculate 
+the RPKM (Reads Per Kilobase per Million mapped reads) values, 
+or accept user-provided measurements from other sources such as the FPKM 
+(Fragments per kilobase of exon per million fragments mapped) from 
+cufflinks. A FASTA file is generated for proteins that 
+pass the expression level cutoff. 
+
+\Rpackage{customProDB} also allows users to incorporate variations identified 
+from RNA-seq data into the FASTA database. It annotates all SNVs for their 
+genomic locations and functional consequences. Non-synonymous coding variations 
+are introduced to protein sequences to create variant protein entries. Aberrant 
+proteins resulted from short INDELs are also predicted and added to the 
+variation database.
+
+One important application of RNA-Seq is to identify previously unannotated 
+structures, such as novel exons, alternative splice variants and gene fusions. 
+The package provides a function to classify splice junctions identified from 
+RNA-Seq data, and then uses three-frame translation to generate peptides that 
+cross the novel junctions. Similarly, fusion genes can also be incorporated 
+into the FASTA database.
+
+In this document, we will demonstrate a step by step usage of customized database generation.
+
+\section{Prepare annotation files}
+To map RNA-Seq information to protein level, plenty of genome annotation information are needed, 
+such as genome elements region boundary, protein coding sequence, protein sequence and known SNPs et al.
+For this purpose, we provide two functions to automatically prepare those annotation files in a more convenient way.
+and also make sure you use the same version of annotations through your dataset(s) annalysis.
+All the annotations are saved for latter use. 
+
+The dbSNP data is huge and getting more and more larger. 
+This two functions only download the data in coding region. 
+Here the table shows which dbsnp version you should choose for a specified genome.
+
+\begin{table*}[!ht]
+	\centering
+		\begin{tabular}{clll}\hline
+			Genome	&	Ensembl  dataset & Ensembl version & dbSNP version \\ \hline
+			hg19 & hsapiens\_gene\_ensembl	&	v55-now & snp131/snp132/snp135/snp137 \\
+			hg19 & hsapiens\_gene\_ensembl	&	v54 & snp130 \\
+			mm10 & mmusculus\_gene\_ensembl	&	v69-now & snp137 \\
+			mm9 & mmusculus\_gene\_ensembl	&	v54-v68 & snp128 \\ \hline
+		\end{tabular}
+	\caption{Choose dbSNP version}
+	\label{tab:ChoosedbSNPversion}
+\end{table*}
+
+
+
+\subsection{Refseq annotation from UCSC table brower}
+The \Rfunction{PrepareAnnotationRefseq} function download annotations from UCSC table browser 
+through \Rpackage{rtracklayer}, extract and derive the relevant information and then saved as required R data structure.
+However, this function is not totally automatical, it require users download coding sequence and protein sequence FASTA file 
+from UCSC table brower. Since Refseq update from time to time, we suggest generate the FASTA file the same day of you run 
+this function.
+
+Below is the steps to download coding sequence FASTA files.
+\begin{itemize}
+	\item Go to UCSC Table Browser
+	\item Choose genome
+	\item Choose assembly
+	\item Group --- Genes and Gene Prediction Tracks
+	\item Track --- RefSeq Genes
+	\item Table --- refGene
+	\item Region --- genome (If you only need some genes, choose paste list or upload list)
+	\item Output format ---  sequence
+	\item Then choose genomic --- CDS exons --- one FASTA record per gene
+	\item Press 'get sequence' button
+\end{itemize}
+
+Download protein seuqence FASTA file is the same as above, just choose 'protein' instead of 'genomic' after press 'get output' button. 
+
+
+
+<<options, echo=FALSE>>=
+options(width=70)
+@
+
+<<loadpkg>>=
+library(customProDB)
+@
+
+<<PrepareAnnoRef,eval=TRUE>>=
+transcript_ids <- c("NM_001126112", "NM_033360", "NR_073499", "NM_004448", 
+			"NM_000179", "NR_029605", "NM_004333", "NM_001127511")
+pepfasta <- system.file("extdata", "refseq_pro_seq.fasta", 
+				package="customProDB")
+CDSfasta <- system.file("extdata", "refseq_coding_seq.fasta",
+				package="customProDB")
+annotation_path <- tempdir()
+PrepareAnnotationRefseq(genome='hg19', CDSfasta, pepfasta, annotation_path, 
+		dbsnp = 'snp137', transcript_ids=transcript_ids, 
+        splice_matrix=TRUE, COSMIC=TRUE)
+@
+
+
+\subsection{ENSEMBL annotation from BIOMART}
+Alternatively, you can choose the annotation from ENSEMBL.
+The \Rfunction{PrepareAnnotationEnsembl} function download the annotation from ENSEMBL through \Rpackage{biomaRt}. 
+This process may take several hours if you download the whole dataset.
+You can choose the ENSEMBL version number by specify the \Rfunarg{host} in \Rfunction{useMart} function.
+
+<<PrepareAnnoENSEMBL,eval=TRUE>>=
+ensembl <- useMart("ENSEMBL_MART_ENSEMBL", dataset="hsapiens_gene_ensembl",
+    host="feb2012.archive.ensembl.org", path="/biomart/martservice", 
+    archive=FALSE)
+annotation_path <- tempdir()
+transcript_ids <- c("ENST00000234420", "ENST00000269305", "ENST00000445888", 
+			"ENST00000257430", "ENST00000457016", "ENST00000288602",
+			"ENST00000269571", "ENST00000256078", "ENST00000384871")
+PrepareAnnotationEnsembl(mart=ensembl, annotation_path=annotation_path, 
+			splice_matrix=TRUE, dbsnp='snp137', 
+            transcript_ids=transcript_ids, COSMIC=TRUE)
+@
+
+
+\section{Build database from a single sample}
+After prepare all the annotation files, there are usually three steps to build customized database.
+Users could choose either one or two steps or run them all according to their research interests.
+
+\subsection{Filter lowly expressed transcripts}
+Calculate the RPKM from BAM file and the annotation using function \Rfunction{calculateRPKM}.
+Make sure the chromosome name in annotation and your BAM file are the same. 
+You may add or remove 'chr' to make it consistent. 
+
+After you get the RPKM, you may check the distribution of RPKM and choose a cutoff to 
+retain high expressed transcripts which are more likely to detect by shotgun proteomics study.
+
+<<calculate,eval=TRUE>>=
+load(system.file("extdata/refseq", "exon_anno.RData", package="customProDB"))
+bamFile <- system.file("extdata/bams", "test1_sort.bam", package="customProDB")
+load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
+RPKM <- calculateRPKM(bamFile, exon, proteincodingonly=TRUE, ids)
+@
+
+
+Alternatively, you could also input the calculated RPKM/FPKM from other software output rather than to calculated from Bam file, such as cufflinks output.
+Then use \Rfunction{Outputproseq} output a fasta format file contain the protein sequence with RPKM above the cutoff.
+
+<<ouputpro,eval=TRUE>>=
+load(system.file("extdata/refseq", "proseq.RData", package="customProDB"))
+outf1 <- paste(tempdir(), '/test_rpkm.fasta', sep='')
+Outputproseq(RPKM, 1, proteinseq, outf1, ids)
+@
+
+
+
+\subsection{Variation annotation}
+First, input variations from a single VCF file using \Rfunction{InputVcf}. We got a list of \Robject{GRanges} object as output.
+It works for VCF file containing either one or multiple samples.
+
+
+<<inpvcf>>=
+# single sample
+vcffile <- system.file("extdata/vcfs", "test1.vcf", package="customProDB")
+vcf <- InputVcf(vcffile)
+length(vcf)
+vcf[[1]][1:3]
+@
+
+<<inpvcfm,eval=TRUE>>=
+# multiple samples in one VCF file
+vcffile <- system.file("extdata", "test_mul.vcf", package="customProDB")
+vcfs <- InputVcf(vcffile)
+@
+
+After inputting the VCF file, We could also check the variation types, SNVs or INDELs.
+Although our package focuses on the protein coding transcripts, 
+we could also take an overlook of the whole data, to see where the SNVs are located, 
+and how many of them located in the protein coding transcripts regions.
+There are eight labels to describe the variation locations, see Table \ref{tab:DefinitionOfGenomicLocationOfSNVs}
+\Rfunction{Varlocation} is build for this purpose.
+
+
+\begin{table*}[!ht]
+	\centering
+		\begin{tabular}{cl}\hline
+			Label	&	Description\\ \hline
+			Intergenic	&	Out of transcripts boundary \\
+			Intron\_nonprocoding	&	Located in introns of non-coding transcripts \\
+			Exon\_nonprocoding	&	Located in exons of non-coding transcripts \\
+			Intron	&	Located in introns of protein coding transcripts \\
+			5'UTR	&	Located in 5utr region of protein coding transcripts \\
+			3'UTR	&	Located in 3utr region of protein coding transcripts \\
+			Coding	&	Located in coding region of protein coding transcripts\\
+			Unknown	&	No annotation for this chromosome \\ \hline
+		\end{tabular}
+	\caption{Definition of genomic location of SNVs}
+	\label{tab:DefinitionOfGenomicLocationOfSNVs}
+\end{table*}
+
+
+
+<<location>>=
+table(values(vcf[[1]])[['INDEL']])
+index <- which(values(vcf[[1]])[['INDEL']]==TRUE)
+indelvcf <- vcf[[1]][index]
+
+index <- which(values(vcf[[1]])[['INDEL']]==FALSE)
+SNVvcf <- vcf[[1]][index]
+
+load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
+txdb <- loadDb(system.file("extdata/refseq", "txdb.sqlite", package="customProDB"))
+SNVloc <- Varlocation(SNVvcf,txdb,ids)
+indelloc <- Varlocation(indelvcf,txdb,ids)
+table(SNVloc[,'location'])
+@
+
+
+For those variations labeled with 'Coding', \Rfunction{Positionincoding} function 
+computes the position of variation in the coding sequence of each transcript.
+dbSNP rsid and COSMIC\_id can also provided if they are available.
+
+<<poscoding>>=
+load(system.file("extdata/refseq", "exon_anno.RData", package="customProDB"))
+load(system.file("extdata/refseq", "dbsnpinCoding.RData", package="customProDB"))
+load(system.file("extdata/refseq", "cosmic.RData", package="customProDB"))
+postable_snv <- Positionincoding(SNVvcf, exon, dbsnpinCoding, COSMIC=cosmic)
+postable_snv
+postable_indel <- Positionincoding(indelvcf, exon)
+postable_indel
+@
+
+\subsubsection{SNVs}
+
+There are different consequence for SNVs. By taking outputs of function \Rfunction{Positionincoding},function 
+\Rfunction{aaVariation} is used to predict which change could alter amino acids in a protein sequence.
+
+<<aavar>>=
+load(system.file("extdata/refseq", "procodingseq.RData", package="customProDB"))
+txlist <- unique(postable_snv[, 'txid'])
+codingseq <- procodingseq[procodingseq[, 'tx_id'] %in% txlist,]
+mtab <- aaVariation (postable_snv, codingseq)
+mtab
+@
+
+Then replace the reference amino acid with the variation, and output a FASTA file contains those variant proteins.
+
+<<outvarpro, echo=FALSE>>=
+outfile <-  paste(tempdir(), '/test_snv.fasta', sep='')
+load(system.file("extdata/refseq", "proseq.RData", package="customProDB"))
+OutputVarproseq(mtab, proteinseq, outfile, ids)
+@
+
+
+
+\subsubsection{INDELs}
+
+Short insertion/deletion may led to frame shift and produce aberrant proteins. 
+We provide a function \Rfunction{OutputabrrentPro} to generate a FASTA file containing this kind of proteins. 
+
+<<outabber, echo=FALSE>>=
+txlist_indel <- unique(postable_indel[, 'txid'])
+codingseq_indel <- procodingseq[procodingseq[, 'tx_id'] %in% txlist_indel, ]
+outfile <-  paste(tempdir(), '/test_indel.fasta', sep='')
+Outputaberrant(postable_indel, coding=codingseq_indel, proteinseq=proteinseq, 
+			outfile=outfile, ids=ids)
+@
+
+\subsection{Splice junction analysis}
+
+One important application of RNA-Seq is the identification of previously unannotated structures, 
+such as novel exons, alternative splicing and gene fusions. 
+With supply of BED file which contains splice junctions from RNA-Seq data, 
+the function \Rfunction{JunctionType} classifies all the junctions into six categories, Table \ref{table:junc}.
+Category 'connect two known exon' is further divided into known junction, novel alternative splicing and gene fusion.
+Users need to set the parameter splice\_matrix to TRUE when preparing the annotation files if planning to do junction analysis in this section.
+
+
+\begin{table*}[!ht]
+	\centering
+		\begin{tabular}{ll}\hline
+			Label	&	sub-label \\ \hline
+			connect two known exon	&	known junction \\
+			connect two known exon	&	alternative splicing \\
+            connect two known exon	&	gene fusion \\
+			connect one known exon and one region overlap with known exon	&	 \\
+			connect one known exon and one non-exon region	&	 \\
+			connect two regions both overlaped with known exons	&	 \\
+			connect one region overlap with known exon and one non-exon region	&	 \\
+            connect two non-exon region	&	 \\ \hline
+		\end{tabular}
+	\caption{Junction Type}
+	\label{table:junc}
+\end{table*}
+
+
+
+A complete BED file is required for this function. 
+The output of function \Rfunction{JunctionType} provides more detailed information of the junction,
+such as transcript source et al.
+
+<<junctype>>=
+bedfile <- system.file("extdata", "junctions.bed", package="customProDB")
+load(system.file("extdata/refseq", "splicemax.RData", package="customProDB"))
+load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
+junction_type <- JunctionType(bedfile, skip=1, covfilter=5, splicemax, 
+            txdb, ids)
+junction_type[10:19,]
+table(junction_type[, 'jun_type'])
+@
+
+Except 'known junction', all others are treated as putative novel junctions.
+Then all those putative novel junctions are three-frame translated into peptides using function \Rfunction{OutputNovelJun}.
+reference genome sequence is required when using this function.
+
+<<novjunc, eval=TRUE>>=
+outf_junc <- paste(tempdir(), '/test_junc.fasta',sep='')
+library('BSgenome.Hsapiens.UCSC.hg19')
+OutputNovelJun <- OutputNovelJun(junction_type, Hsapiens, outf_junc, 
+        proteinseq)
+@
+
+
+
+\section{Build database from multiple samples}
+
+We provide two functions to help generate a common database from multiple samples, 
+especially for a group of similar samples, such as cancer samples. 
+The deep sequencing reveals large scale of variations, 
+by generating a protein database consisting of the commonly expressed 
+proteins and SNVs from a group of disease cell lines or patients, 
+it will be very helpful for personalized proteomics.
+
+\subsection{Output proteins whith expression level above cutoff in multiple samples}
+The function \Rfunction{OutputsharedPro} outputs proteins with expression level above the cutoff in multiple samples.
+The input of this function is the RPKM matrix, cutoff and the ratio of samples.
+Users could generate RPKM matrix from multiple BAM files as follows,
+or use RPKM matrix generated by other programs.
+
+
+<<sharedPrO,eval=TRUE>>=
+path <- system.file("extdata/bams", package="customProDB")
+bamFile<- paste(path, '/', list.files(path,pattern="*bam$"), sep='')
+rpkms <- sapply(bamFile, function(x) 
+			calculateRPKM(x, exon, proteincodingonly=TRUE, ids))
+#colnames(rpkms) <- c('1', '2', '3')
+#rpkms
+outfile <- paste(tempdir(), '/test_rpkm_share.fasta', sep='')
+pro <- OutputsharedPro(rpkms, cutoff=1, share_sample=2, proteinseq, 
+        outfile, ids)
+@
+
+
+\subsection{Get variations occured in multiple samples}
+
+The function \Rfunction{Multiple\_VCF} loads multiple vcf files and outputs those occured in more than n samples according to parameter setting.
+After those reoccurence variations are ready, the following analysis is the same as shown in 'Variation annotation' section.
+
+<<mulvcf>>=
+path <- system.file("extdata/vcfs", package="customProDB") 
+shared <- Multiple_VCF(path, share_num=2)
+shared
+@
+
+
+\section{Two integrated functions}
+We provide two integrated functions for one-step generation of customized database.
+
+\Rfunction{easyrun} generate a customized database from single sample.
+
+<<easyr,eval=TRUE>>=
+bamFile <- system.file("extdata/bams", "test1_sort.bam", 
+			package="customProDB")
+vcffile <- system.file("extdata/vcfs", "test1.vcf", package="customProDB")
+bedfile <- system.file("extdata", "junctions.bed", package="customProDB")
+annotation_path <- system.file("extdata/refseq", package="customProDB")
+outfile_path <- tempdir()
+outfile_name='test'
+easyRun(bamFile, RPKM=NULL, vcffile, annotation_path, outfile_path, 
+        outfile_name, rpkm_cutoff=1, INDEL=TRUE, lablersid=TRUE, COSMIC=TRUE, 
+        nov_junction=TRUE, bedFile=bedfile, genome=Hsapiens) 
+@
+
+\Rfunction{easyrun\_mul} generate a customized database from multiple samples.
+
+<<easyrmul,eval=TRUE>>=
+bampath <- system.file("extdata/bams", package="customProDB")
+vcfFile_path <- system.file("extdata/vcfs",  package="customProDB")
+annotation_path <- system.file("extdata/refseq", package="customProDB")
+outfile_path <- tempdir()	
+outfile_name <- 'mult'
+easyRun_mul(bampath, RPKM_mtx=NULL, vcfFile_path, annotation_path, 
+        rpkm_cutoff=1, share_num=2, var_shar_num=2, outfile_path, 
+        outfile_name, INDEL=TRUE, lablersid=TRUE, COSMIC=TRUE)
+@
+
+\section{FASTA file format}
+The main outputs of this package are FASTA files. 
+Related information, such as gene symbol, gene description, variation position,
+ change status, and corresponding dbSNP ID (if required and available), 
+ are included in the sequence header for interpretation of the search result. 
+ There are four types of headers in the FASTA file.
+
+\subsection{Normal proteins pass the FPKM filtering}
+The header starts with RefSeq protein id, followed by FPKM value in each sample and
+ the average FPKM (separated by ';'), RefSeq transcript id, gene symbol and description.
+
+<<FASTAnor>>=
+outfile_path <- system.file("extdata/tmp", package="customProDB")
+readLines(file(paste(outfile_path, '/test_rpkm.fasta', sep=''), 'rt'), 1)
+@
+ 
+\subsection{Variant Proteins induced by SNVs}
+The variation information, including variation position, 
+amino acid change status and corresponding dbSNP ID (if available), 
+is added to the RefSeq protein id followed by '\_'. Different variations are separated by ','. 
+
+<<FASTAsnv>>=
+readLines(file(paste(outfile_path, '/test_snv.fasta', sep=''), 'rt'), 1)
+@
+
+ 
+\subsection{Aberrant proteins induced by INDELs}
+The INDEL information is added to protein id followed by '\_'. 
+Here the INDELs position represented where this INDELs occurrs in a coding sequence, 
+not the position in protein sequence, which is different from proteins whith SNVs.
+
+<<FASTAindel>>=
+readLines(file(paste(outfile_path, '/test_indel.fasta', sep=''), 'rt'), 1)
+@
+
+ 
+\subsection{Novel junction peptides}
+The junction id, ORF, the source of left/right part and the junction type 
+are included into the ID line of the FASTA file.
+
+<<FASTAjun>>=
+readLines(file(paste(outfile_path, '/test_junc.fasta', sep=''), 'rt'), 1)
+@
+
+
+\section{Session Information}
+
+<<SessionInfo, echo=FALSE>>=
+sessionInfo()
+@
+
+\end{document}

@@ -1,0 +1,41 @@
+import(RCurl)
+import(Rsamtools)
+import(GenomicRanges)
+import(Biostrings)
+import(GenomicFeatures)
+import(IRanges)
+import(AnnotationDbi)
+import(VariantAnnotation)
+import(RSQLite)
+
+
+importFrom(rtracklayer,browserSession, ucscTableQuery,
+           tableNames, getTable, trackNames, ucscSchema)
+importFrom(biomaRt, getBM, listAttributes, listDatasets, listMarts,
+           useDataset, useMart)
+		   
+#importFrom(IRanges, DataFrame,  unlist,countOverlaps, 
+#    findOverlaps, queryHits, values)		   
+
+importFrom(GenomicFeatures, cdsBy, exons, transcripts,
+    fiveUTRsByTranscript, threeUTRsByTranscript)
+
+importFrom(VariantAnnotation, scanVcf, scanVcfHeader, samples)		   
+
+importFrom(AnnotationDbi, loadDb)
+importFrom(stringr, 'str_sub<-' )
+importFrom(plyr, ddply, '.')
+
+#importFrom(Biostrings,AAStringSet, DNAStringSet, reverseComplement,translate,
+#	readBStringSet,readDNAStringSet)
+
+	
+export(PrepareAnnotationEnsembl,PrepareAnnotationRefseq,
+    easyRun,easyRun_mul,
+	calculateRPKM,Outputproseq,
+	InputVcf,Varlocation, Positionincoding,aaVariation,OutputVarproseq,
+    Outputaberrant, 
+    JunctionType, OutputNovelJun,
+ 	OutputsharedPro, Multiple_VCF
+	)
+
