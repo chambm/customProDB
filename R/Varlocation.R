@@ -11,7 +11,7 @@
 ##' @return a data frame of locations for each variation
 ##' @author Xiaojing Wang
 ##' @examples
-##' 
+##' \dontrun{
 ##' vcffile <- system.file("extdata/vcfs", "test1.vcf", package="customProDB")
 ##' vcf <- InputVcf(vcffile)
 ##'
@@ -27,7 +27,7 @@
 ##' SNVloc <- Varlocation(SNVvcf,txdb,ids)
 ##' indelloc <- Varlocation(indelvcf,txdb,ids)
 ##' table(SNVloc[,'location'])
-##' 
+##' }
 ##'
 
 Varlocation <- function(Vars, txdb, ids, ...)
@@ -90,20 +90,21 @@ Varlocation <- function(Vars, txdb, ids, ...)
         matchintron_noncoding <- queryHits(findOverlaps(Vars, 
                     intronsByTx_noncoding))
 
-        location[matchexon_noncoding] <- "Exon_nonprocoding"
         location[matchintron_noncoding] <- "Intron_nonprocoding"
-
+        location[matchexon_noncoding] <- "Exon_nonprocoding"
+       
 
         matchcoding <- queryHits(findOverlaps(Vars, cdsByTx))
         match3utr <- queryHits(findOverlaps(Vars, threeutrByTx))
         match5utr <- queryHits(findOverlaps(Vars, fiveutrByTx))
         matchintron <- queryHits(findOverlaps(Vars, intronsByTx))
-
+        
+        ## lable priority
         location[matchintron] <- "Intron"
-        location[matchcoding] <- "Coding"
-        location[match3utr] <- "3'UTR"
         location[match5utr] <- "5'UTR"
-
+        location[match3utr] <- "3'UTR"
+        location[matchcoding] <- "Coding"
+        
         #res <- data.frame(chr=character(), pos=integer(), refbase=character(), 
         #           varbase=character(), location=character(), snpQ=integer(), 
         #            depth=integer())

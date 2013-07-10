@@ -11,13 +11,13 @@
 ##' @return RPKM value for all transcripts or protein coding transcripts.
 ##' @author Xiaojing Wang
 ##' @examples
-##' \dontrun{
+##' 
 ##' ##test1.bam file is part of the whole bam file. 
 ##' load(system.file("extdata/refseq", "exon_anno.RData", package="customProDB"))
 ##' bamFile <- system.file("extdata/bams", "test1_sort.bam", package="customProDB")
 ##' load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
 ##' RPKM <- calculateRPKM(bamFile,exon,proteincodingonly=TRUE,ids)
-##' }
+##' 
 ##' 
 
 calculateRPKM <- function(bamFile,exon, proteincodingonly = TRUE,ids=NULL,...)

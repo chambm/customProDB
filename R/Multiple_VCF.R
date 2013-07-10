@@ -2,7 +2,7 @@
 ##'
 ##' This function allows to limit SNVs that are present in at least m out of n VCF files.
 ##' @title Generate shared variation dataset from multiple VCF files
-##' @param path a directory of VCF files. read all VCF files in this directory.
+##' @param vcfs a list of GRanges object which input from multiple VCF files using function InputVcf.
 ##' @param share_num Two options, percentage format or sample number.
 ##' @param ... additional arguments
 ##' @return a GRange object that contains the shared variations
@@ -10,20 +10,22 @@
 ##' @examples
 ##' 
 ##' path <- system.file("extdata/vcfs", package="customProDB")
-##' 
-##' shared <- Multiple_VCF(path, share_num=2)
+##' vcfFiles<- paste(path, '/', list.files(path, pattern="*vcf$"), sep='')
+##' vcfs <- lapply(vcfFiles, function(x) InputVcf(x))
+##' shared <- Multiple_VCF(vcfs, share_num=2)
 ##' 
 ##'
 
-Multiple_VCF <-  function(path, share_num, ...)
+Multiple_VCF <-  function(vcfs, share_num, ...)
     {
-        vcfFile<- paste(path, '/', list.files(path, pattern="*vcf$"), sep='')
 
-        vcfs <- lapply(vcfFile, function(x){ 
-            InputVcf(x)}
-        )
         allsample <-  as.list(unlist(vcfs))
-
+        allsample_basic <- lapply(allsample, function(x){
+                if('INDEL' %in% names(values(x))){
+                    x[, c('REF', 'ALT', 'INDEL')]
+                }else x[, c('REF', 'ALT')]
+                })
+                
         if(grepl('%', share_num)){
             share_num <- round(as.numeric(gsub('%', '', share_num)) * 
                                 length(allsample) / 100) 

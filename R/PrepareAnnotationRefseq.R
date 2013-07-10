@@ -13,7 +13,7 @@
 ##' @return several .RData file containing annotations needed for further analysis.
 ##' @author Xiaojing Wang
 ##' @examples
-##' \dontrun{
+##' 
 ##' transcript_ids <- c("NM_001126112", "NM_033360", "NR_073499", "NM_004448",
 ##'         "NM_000179", "NR_029605", "NM_004333", "NM_001127511")
 ##' pepfasta <- system.file("extdata", "refseq_pro_seq.fasta", 
@@ -22,9 +22,9 @@
 ##'             package="customProDB")
 ##' annotation_path <- tempdir()
 ##' PrepareAnnotationRefseq(genome='hg19', CDSfasta, pepfasta, annotation_path, 
-##'             dbsnp='snp137', transcript_ids=transcript_ids, 
-##'             splice_matrix=TRUE, COSMIC=TRUE)
-##' }
+##'             dbsnp=NULL, transcript_ids=transcript_ids, 
+##'             splice_matrix=FALSE, COSMIC=FALSE)
+##' 
 
 
 
@@ -253,21 +253,33 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     if(splice_matrix){
         message("Prepare exon splice information (splicemax.RData) ... ", 
                 appendLF=FALSE)
+        index <- which(elementLengths(exonByTx)==1)
+        exonByTx_mul <- exonByTx[-index]
+        exons_mul <- IRanges::as.data.frame(exonByTx_mul)
+        exonslist <- split(exons_mul, exons_mul$element)
         #system.time( exonByTx <- exonsBy(txdb,"tx", use.names=F))
-        splicemax_list <- lapply(exonByTx, function(x) .gen_splicmatrix(x))
+        splicemax_list <- lapply(exonslist, .gen_splicmatrix)
         splicemax <- do.call(rbind, splicemax_list)
         save(splicemax, file=paste(annotation_path, '/splicemax.RData', sep=''))
         packageStartupMessage(" done")        
     }
                 
 }
-
+    
 .gen_splicmatrix <- function(x, 
-     ...) {
-         x <- as.data.frame(x)
-         if(x[1, 'strand'] == '+') x <- x[order(x[, 'exon_rank'], decreasing = FALSE),]
-         else x <- x[order(x[, 'exon_rank'], decreasing = TRUE), ]
-         tmax <- cbind(x[1:(dim(x)[1]-1), 'exon_id'], x[2:dim(x)[1], 'exon_id'])
-         tmax
+     ...) {           
+         mystrand=x[1,'strand']
+         a=x[,'exon_rank']
+         b=x[,'exon_id']
+         n=length(a)
+         if (mystrand=='+'){
+            tmp=order(a)
+            
+        }else{
+            tmp=order(a,decreasing=T)
+            
+        }
+        mm=cbind(b[tmp[1:(n-1)]], b[tmp[2:n]])
+        mm
     }
 

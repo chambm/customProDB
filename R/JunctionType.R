@@ -14,7 +14,7 @@
 ##' @return a data frame of type and source for each junction.
 ##' @author Xiaojing Wang
 ##' @examples
-##' \dontrun{
+##' 
 ##' bedfile <- system.file("extdata", "junctions.bed", package="customProDB")
 ##' load(system.file("extdata/refseq", "splicemax.RData", package="customProDB"))
 ##' load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
@@ -23,7 +23,7 @@
 ##' junction_type <- JunctionType(bedfile, skip=1, covfilter=5, splicemax, txdb, 
 ##'                     ids)
 ##' table(junction_type[, 'jun_type'])
-##' }
+##' 
 
 
 JunctionType <- function(bedfile, skip=1, covfilter=5, splicemax, txdb, ids,...)

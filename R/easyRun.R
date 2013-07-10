@@ -20,7 +20,7 @@
 ##' @return A table file contains detailed variation information and several FASTA files. 
 ##' @author Xiaojing Wang
 ##' @examples
-##' \dontrun{
+##' 
 ##' bamFile <- system.file("extdata/bams", "test1_sort.bam", 
 ##'             package="customProDB")
 ##' vcffile <- system.file("extdata/vcfs", "test1.vcf", package="customProDB")
@@ -31,7 +31,7 @@
 ##' easyRun(bamFile, RPKM=NULL, vcffile, annotation_path, outfile_path, 
 ##'         outfile_name, rpkm_cutoff=1, INDEL=TRUE, lablersid=TRUE, 
 ##'         COSMIC=TRUE, nov_junction=FALSE) 
-##'    }
+##' 
 ##'
 easyRun <- function(bamFile, RPKM=NULL, vcfFile, annotation_path, outfile_path, 
             outfile_name, rpkm_cutoff=1, INDEL=FALSE, lablersid=FALSE, 

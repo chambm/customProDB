@@ -59,7 +59,6 @@ codingseq_indel <- procodingseq[procodingseq[, 'tx_id'] \%in\% txlist_indel, ]
 outfile <-  paste(tempdir(), '/test_indel.fasta', sep='')
 Outputaberrant(postable_indel, coding=codingseq_indel,
 proteinseq=proteinseq, outfile=outfile, ids=ids)
-
 }
 \author{
   Xiaojing Wang

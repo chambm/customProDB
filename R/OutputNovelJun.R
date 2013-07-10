@@ -10,7 +10,7 @@
 ##' @return FASTA file that contains novel junction peptides.
 ##' @author Xiaojing Wang
 ##' @examples
-##' \dontrun{
+##' 
 ##' bedfile <- system.file("extdata", "junctions.bed", package="customProDB")
 ##' load(system.file("extdata/refseq", "splicemax.RData", package="customProDB"))
 ##' load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
@@ -23,7 +23,7 @@
 ##' library('BSgenome.Hsapiens.UCSC.hg19')
 ##' OutputNovelJun <- OutputNovelJun(junction_type, Hsapiens, outf_junc, 
 ##'             proteinseq)
-##' }
+##' 
 
 
 OutputNovelJun <- function(junction_type, genome, outfile, proteinseq, ...)

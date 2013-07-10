@@ -13,7 +13,7 @@
 ##' @return FASTA file containing aberrant proteins.
 ##' @author Xiaojing Wang
 ##' @examples
-##' \dontrun{
+##' 
 ##' vcffile <- system.file("extdata/vcfs", "test1.vcf", package="customProDB")
 ##' vcf <- InputVcf(vcffile)
 ##' table(values(vcf[[1]])[['INDEL']])
@@ -34,7 +34,7 @@
 ##' Outputaberrant(postable_indel, coding=codingseq_indel, 
 ##' proteinseq=proteinseq, outfile=outfile, ids=ids)
 ##'                 
-##' }
+##' 
 ##' 
  
 

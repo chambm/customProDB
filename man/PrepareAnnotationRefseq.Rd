@@ -54,8 +54,8 @@ CDSfasta <- system.file("extdata", "refseq_coding_seq.fasta",
             package="customProDB")
 annotation_path <- tempdir()
 PrepareAnnotationRefseq(genome='hg19', CDSfasta, pepfasta, annotation_path,
-            dbsnp='snp137', transcript_ids=transcript_ids,
-            splice_matrix=TRUE, COSMIC=TRUE)
+            dbsnp=NULL, transcript_ids=transcript_ids,
+            splice_matrix=FALSE, COSMIC=FALSE)
 }
 \author{
   Xiaojing Wang

@@ -19,7 +19,7 @@
 ##' @return A table file contains detailed variation information and several FASTA files.
 ##' @author Xiaojing Wang
 ##' @examples
-##' \dontrun{
+##' 
 ##' bampath <- system.file("extdata/bams", package="customProDB")
 ##' vcfFile_path <- system.file("extdata/vcfs", package="customProDB")
 ##' annotation_path <- system.file("extdata/refseq", package="customProDB")
@@ -29,7 +29,7 @@
 ##' easyRun_mul(bampath,RPKM_mtx=NULL,vcfFile_path,annotation_path,rpkm_cutoff=1,
 ##'             share_num=2,var_shar_num=2,outfile_path, outfile_name,INDEL=TRUE,
 ##'             lablersid=TRUE,COSMIC=TRUE)
-##' }
+##' 
 ##' 
 ##'
  
@@ -66,7 +66,10 @@ easyRun_mul <- function(bamFile_path, RPKM_mtx=NULL, vcfFile_path,
     load(paste(annotation_path, '/dbsnpinCoding.RData', sep=''))
     load(paste(annotation_path, '/procodingseq.RData', sep=''))
 
-    vcf <- Multiple_VCF(vcfFile_path, var_shar_num)
+    vcfFiles<- paste(vcfFile_path, '/', list.files(vcfFile_path, pattern="*vcf$"), 
+                sep='')
+    vcfs <- lapply(vcfFiles, function(x) InputVcf(x))
+    vcf <- Multiple_VCF(vcfs, var_shar_num)
     
     if(INDEL){
         

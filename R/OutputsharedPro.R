@@ -12,7 +12,7 @@
 ##' @return a FASTA file containing proteins with RPKM above the cutoff in at least certain number of samples
 ##' @author Xiaojing Wang
 ##' @examples
-##' \dontrun{
+##' 
 ##' path <- system.file("extdata/bams", package="customProDB")
 ##' load(system.file("extdata/refseq", "exon_anno.RData", package="customProDB"))
 ##' load(system.file("extdata/refseq", "proseq.RData", package="customProDB"))
@@ -23,7 +23,7 @@
 ##' outfile <- paste(tempdir(), '/test_rpkm_share.fasta', sep='')
 ##' pro <- OutputsharedPro(rpkms, cutoff=1, share_sample=2, proteinseq, 
 ##'             outfile, ids)
-##'    }
+##' 
 
 OutputsharedPro <- function(RPKMs, cutoff="30%",share_sample='50%', proteinseq, 
             outfile, ids,...)

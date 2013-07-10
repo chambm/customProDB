@@ -13,7 +13,7 @@
 ##' @return FASTA file containing proteins with single nucleotide variation.
 ##' @author Xiaojing Wang
 ##' @examples
-##' \dontrun{
+##' 
 ##' vcffile <- system.file("extdata/vcfs", "test1.vcf", package="customProDB")
 ##' vcf <- InputVcf(vcffile)
 ##' table(values(vcf[[1]])[['INDEL']])
@@ -33,7 +33,7 @@
 ##' mtab <- aaVariation (postable_snv, codingseq)
 ##' outfile <- paste(tempdir(), '/test_snv.fasta',sep='')
 ##' OutputVarproseq(mtab, proteinseq, outfile, ids, lablersid=TRUE)
-##' }
+##' 
 
 
 OutputVarproseq <- function(vartable, proteinseq, outfile, ids, lablersid=FALSE, 

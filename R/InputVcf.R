@@ -31,7 +31,12 @@ InputVcf <- function(vcfFile, ...)
         #samname <- vcf_header[[1]]$Sample
         samname <- samples(vcf_header)
         samnum <- length(samname)
-
+        
+        ### remove position have multiple ALT
+        #index_mul <- grep(',',vcf[[1]]$ALT, fixed=T)
+        #if(length(index_mul)!=0L){
+        #    vcf_new <- lapply(vcf[[1]], function(x) x[-index_mul])
+        #}else vcf_new <- vcf[[1]]
 
         #vcf_unpack <- VariantAnnotation:::.unpackVcf(vcf[[1]], vcf_header)
         #vcf_unpack <- unpackVcf(vcf,vcfFile,info=TRUE, geno=TRUE)
@@ -39,6 +44,7 @@ InputVcf <- function(vcfFile, ...)
 
         #info <- unpackVCF[['INFO']]
         #info <- vcf_unpack[['INFO']]
+        
         info <- vcf[[1]]$INFO
         index_ar <- which(lapply(info, class) == "array")
         if (length(index_ar) != 0)
@@ -57,6 +63,10 @@ InputVcf <- function(vcfFile, ...)
 
         info_fr <- data.frame(info)
         info_df <- DataFrame(info_fr)
+        
+        #if(length(index_mul)!=0L){
+        #    info_df <- info_df[-index_mul,]
+        #}else info_df <- info_df
 
 
         
@@ -71,8 +81,13 @@ InputVcf <- function(vcfFile, ...)
         #geno_fr <- lapply(1:samnum, function(x)  data.frame(lapply(geno, function(y) y[,x]),stringsAsFactors =F))
         #names(geno_fr) <- samname
         #geno_df <- lapply(geno_fr, DataFrame)
+        
+        #if(length(index_mul)!=0L){
+        #    geno <- lapply(geno, function(x) as.matrix(x[-index_mul,]))
+        #}else geno <- geno
 
         
+
         geno_fr <- lapply(1:samnum, function(z){
             tmp <- lapply(geno, function(y)  y[, z])
             index_li <- which(lapply(tmp, mode) == "list")
@@ -101,12 +116,16 @@ InputVcf <- function(vcfFile, ...)
         } )
         names(geno_fr) <- samname
         geno_df <- lapply(geno_fr, DataFrame)
-
+        
+        
         
         ALT_new <- lapply(vcf[[1]]$ALT, function(x) paste(x, collapse=","))
         partA <- DataFrame(REF=as.character(vcf[[1]]$REF), 
                         ALT=as.character(ALT_new), QUAL=vcf[[1]]$QUAL, 
                         FILTER=vcf[[1]]$FILTER)
+        #partA <- DataFrame(REF=as.character(vcf_new$REF), 
+        #                ALT=as.character(vcf_new$ALT), QUAL=vcf_new$QUAL, 
+        #                FILTER=vcf_new$FILTER)
         vcf_granges <- vcf[[1]]$rowData
         partAll <- lapply(geno_df, function(x) 
                     cbind(values(vcf_granges), DataFrame(partA, info_df, x) ))

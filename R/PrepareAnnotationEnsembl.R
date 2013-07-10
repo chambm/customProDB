@@ -12,7 +12,7 @@
 ##' @return several .RData file containing annotations needed for following analysis.
 ##' @author Xiaojing Wang
 ##' @examples
-##' \dontrun{
+##' 
 ##' ensembl <- useMart("ENSEMBL_MART_ENSEMBL", dataset="hsapiens_gene_ensembl",
 ##' host="feb2012.archive.ensembl.org", path="/biomart/martservice", 
 ##' archive=FALSE)
@@ -23,9 +23,9 @@
 ##'     "ENST00000269571", "ENST00000256078", "ENST00000384871")
 ##' 
 ##' PrepareAnnotationEnsembl(mart=ensembl, annotation_path=annotation_path, 
-##'     splice_matrix=TRUE, dbsnp='snp137', transcript_ids=transcript_ids, 
-##'     COSMIC=TRUE)
-##' }
+##'     splice_matrix=FALSE, dbsnp=NULL, transcript_ids=transcript_ids, 
+##'     COSMIC=FALSE)
+##' 
 ##' 
 
 
@@ -70,7 +70,8 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
             appendLF=FALSE)
     
     if(is.null(transcript_ids)){ 
-        transcript_ids <- getBM(attributes=c('ensembl_transcript_id'), mart=mart)
+        transcript_ids <- getBM(attributes=c("ensembl_transcript_id"), mart=mart)[,1]
+        
     }
     attributes.id <- c("ensembl_gene_id", "hgnc_symbol", "description") 
     idstab <- getBM(attributes=attributes.id, mart=mart, 
@@ -286,8 +287,13 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     if(splice_matrix){
         message("Prepare exon splice information (splicemax.RData) ... ", 
                 appendLF=FALSE)
-        exonsByTxlist <- exonsBy(txdb, "tx", use.names=F)
-        splicemax_list <- lapply(exonsByTxlist, function(x) .gen_splicmatrix(x))
+        exonByTx <- exonsBy(txdb, "tx", use.names=F)
+        index <- which(elementLengths(exonByTx)==1)
+        exonByTx_mul <- exonByTx[-index]
+        exons_mul <- IRanges::as.data.frame(exonByTx_mul)
+        exonslist <- split(exons_mul, exons_mul$element)
+       
+        splicemax_list <- lapply(exonslist, .gen_splicmatrix)
         splicemax <- do.call(rbind, splicemax_list)
         save(splicemax, file=paste(annotation_path, '/splicemax.RData', sep=''))
         packageStartupMessage(" done")    
@@ -299,11 +305,20 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
 ###########################################################################################
 #generate splicing matrix
 ###########################################################
-.gen_splicmatrix <- function(x,
-     ...) {
-         x <- as.data.frame(x)
-         if(x[1,'strand'] == '+') x <- x[order(x[,'exon_rank'], decreasing = FALSE), ]
-         else x <- x[order(x[, 'exon_rank'], decreasing = TRUE), ]
-         tmax <- cbind(x[1:(dim(x)[1]-1), 'exon_id'], x[2:dim(x)[1], 'exon_id'])
-         tmax
+.gen_splicmatrix <- function(x, 
+     ...) {           
+         mystrand=x[1,'strand']
+         a=x[,'exon_rank']
+         b=x[,'exon_id']
+         n=length(a)
+         if (mystrand=='+'){
+            tmp=order(a)
+            
+        }else{
+            tmp=order(a,decreasing=T)
+            
+        }
+        mm=cbind(b[tmp[1:(n-1)]], b[tmp[2:n]])
+        mm
     }
+

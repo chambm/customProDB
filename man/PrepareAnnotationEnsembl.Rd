@@ -52,8 +52,8 @@ transcript_ids <- c("ENST00000234420", "ENST00000269305", "ENST00000445888",
     "ENST00000269571", "ENST00000256078", "ENST00000384871")
 
 PrepareAnnotationEnsembl(mart=ensembl, annotation_path=annotation_path,
-    splice_matrix=TRUE, dbsnp='snp137', transcript_ids=transcript_ids,
-    COSMIC=TRUE)
+    splice_matrix=FALSE, dbsnp=NULL, transcript_ids=transcript_ids,
+    COSMIC=FALSE)
 }
 \author{
   Xiaojing Wang
