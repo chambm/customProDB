@@ -21,7 +21,7 @@
 ##' rpkms <- sapply(bamFile,function(x) 
 ##'             calculateRPKM(x, exon, proteincodingonly=TRUE, ids))
 ##' outfile <- paste(tempdir(), '/test_rpkm_share.fasta', sep='')
-##' pro <- OutputsharedPro(rpkms, cutoff=1, share_sample=2, proteinseq, 
+##' OutputsharedPro(rpkms, cutoff=1, share_sample=2, proteinseq, 
 ##'             outfile, ids)
 ##' 
 
@@ -62,7 +62,7 @@ OutputsharedPro <- function(RPKMs, cutoff="30%",share_sample='50%', proteinseq,
         tmp <- paste('>', ftab[, 'pro_name'], " |", ftab[, 'mean_rpkm'], "|", 
                 ftab[, 'tx_name.x'],"|",ftab[, 'gene_name'], "|", 
                 ftab[, 'description'], '\n', 
-                unlist(strsplit(ftab[, 'peptide'], '\\*'))[1], sep='')
+                ftab[, 'peptide'], sep='')
         write(tmp,file=outfile)
 
     }

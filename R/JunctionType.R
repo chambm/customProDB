@@ -1,12 +1,9 @@
-##' For identified splice junctions from RNA-Seq, the JunctionType() function finds the genomic locations for each entry according to the given annotation.
-##' four types of junctions are classified. find more details in the tutorial.
-##' This function requires complete BED file. 
+##' For identified splice junctions from RNA-Seq, this function finds the junction types for each entry according to the given annotation.
+##' Six types of junctions are classified. find more details in the tutorial.
 ##' 
 ##' Go to https://genome.ucsc.edu/FAQ/FAQformat.html#format1 for more information about BED format.
 ##' @title Annotates the junctions in a bed file.
-##' @param bedfile bed file path
-##' @param skip default 1. skip the annotation rows in the bed file.
-##' @param covfilter filter the junctions by reads coverage, default 5.
+##' @param jun a GRange object for junctions, the output of function Bed2Range.
 ##' @param splicemax a known exon splice matrix from the annotation.
 ##' @param txdb a TranscriptDb object.
 ##' @param ids a dataframe containing gene/transcript/protein id mapping information.
@@ -15,48 +12,51 @@
 ##' @author Xiaojing Wang
 ##' @examples
 ##' 
-##' bedfile <- system.file("extdata", "junctions.bed", package="customProDB")
+##' bedfile <- system.file("extdata/beds", "junctions1.bed", package="customProDB")
+##' jun <-  Bed2Range(bedfile,skip=1,covfilter=5)
 ##' load(system.file("extdata/refseq", "splicemax.RData", package="customProDB"))
 ##' load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
 ##' txdb <- loadDb(system.file("extdata/refseq", "txdb.sqlite", 
 ##'             package="customProDB"))
-##' junction_type <- JunctionType(bedfile, skip=1, covfilter=5, splicemax, txdb, 
-##'                     ids)
+##' junction_type <- JunctionType(jun, splicemax, txdb, ids)
 ##' table(junction_type[, 'jun_type'])
 ##' 
 
+             
+             
 
-JunctionType <- function(bedfile, skip=1, covfilter=5, splicemax, txdb, ids,...)
+JunctionType <- function(jun, splicemax, txdb, ids, ...)
     {
         options(stringsAsFactors=FALSE)
-        jun <- read.table(bedfile, sep='\t', header=F, quote = "\"", 
-                    stringsAsFactors = F, skip=skip)
-        jun5 <- subset(jun, V5 > covfilter)
+        #jun <- read.table(bedfile, sep='\t', header=F, quote = "\"", 
+        #            stringsAsFactors = F, skip=skip)
+        #jun5 <- subset(jun, V5 > covfilter)
         
-        part1_len <- as.numeric(as.data.frame(strsplit(jun5[, 'V11'], ','))[1, ])
-        part2_len <- as.numeric(as.data.frame(strsplit(jun5[, 'V11'], ','))[2, ])
-        gap_len <- as.numeric(as.data.frame(strsplit(jun5[, 'V12'], ','))[2, ])
-        part1_sta <- as.numeric(jun5[, 'V2']) + 1
-        part1_end <- part1_sta + part1_len - 1
-        part2_sta <- part1_sta + gap_len
-        part2_end <- as.numeric(jun5[, 'V3'])
-        
-        junction <- data.frame(chr=jun5[, 'V1'], id=jun5[, 'V4'], 
-                    start=jun5[, 'V2'], end=jun5[, 'V3'], cov=jun5[, 'V5'], 
-                    strand=jun5[, 'V6'], part1_len, part2_len, part1_sta, 
-                    part1_end, part2_sta, part2_end)
-        if('chrM' %in% junction$chr){
-            junction <- junction[-which(junction$chr == 'chrM'), ]
-        }
-        if('MT' %in% junction$chr){
-            junction <- junction[-which(junction$chr == 'MT'), ]
-        }
-        junRange1 <- GRanges(seqnames=junction$chr, 
-                ranges=IRanges(start=junction$part1_sta, end=junction$part1_end), 
-                strand=junction$strand, junction_id=junction$id)
-        junRange2 <- GRanges(seqnames=junction$chr, 
-                ranges=IRanges(start=junction$part2_sta, end=junction$part2_end), 
-                strand=junction$strand, junction_id=junction$id)
+        #part1_len <- as.numeric(as.data.frame(strsplit(jun5[, 'V11'], ','))[1, ])
+        #part2_len <- as.numeric(as.data.frame(strsplit(jun5[, 'V11'], ','))[2, ])
+        #gap_len <- as.numeric(as.data.frame(strsplit(jun5[, 'V12'], ','))[2, ])
+        #part1_sta <- as.numeric(jun5[, 'V2']) + 1
+        #part1_end <- part1_sta + part1_len - 1
+        #part2_sta <- part1_sta + gap_len
+        #part2_end <- as.numeric(jun5[, 'V3'])
+        #junction <- as.data.frame(jun)
+        #colnames(junction) <- c('chr', 'start', 'end', 'width', 'strand', 'id', 'cov')
+        #junction <- data.frame(chr=jun5[, 'V1'], id=jun5[, 'V4'], 
+        #            start=jun5[, 'V2'], end=jun5[, 'V3'], cov=jun5[, 'V5'], 
+        #            strand=jun5[, 'V6'], part1_len, part2_len, part1_sta, 
+        #            part1_end, part2_sta, part2_end)
+        #if('chrM' %in% junction$chr){
+        #    junction <- junction[-which(junction$chr == 'chrM'), ]
+        #}
+        #if('MT' %in% junction$chr){
+        #    junction <- junction[-which(junction$chr == 'MT'), ]
+        #}
+        junRange1 <- GRanges(seqnames=seqnames(jun), 
+                ranges=IRanges(start=values(jun)[['part1_sta']], end=values(jun)[['part1_end']]), 
+                strand=strand(jun), junction_id=values(jun)[['id']])
+        junRange2 <- GRanges(seqnames=seqnames(jun), 
+                ranges=IRanges(start=values(jun)[['part2_sta']], end=values(jun)[['part2_end']]), 
+                strand=strand(jun), junction_id=values(jun)[['id']]) 
         
         ## map to exon
         splice <- paste(splicemax[, 1], splicemax[, 2], sep='-')
@@ -88,7 +88,8 @@ JunctionType <- function(bedfile, skip=1, covfilter=5, splicemax, txdb, ids,...)
         part2_exon[queryHits(match2)] <- values(exons)["exon_id"][subjectHits(match2), ]
         
         ########################junction type
-        #@ the order below is matters
+        # the order below is matters
+        ##################################
         jun_type[intersect(unique(queryHits(match1_any)), 
             unique(queryHits(match2_any)))] <- 
                 'connect two regions overlaped with known exons'
@@ -149,9 +150,8 @@ JunctionType <- function(bedfile, skip=1, covfilter=5, splicemax, txdb, ids,...)
         index_fu <- intersect(matchid_new[index_unknown, 'queryHits'],index_diff_ge)
         if(length(index_fu) > 0) jun_type[index_fu] <- 'gene fusion'
         
-        junction_type <- cbind(junction, part1_type, part2_type, part1_exon, 
-                            part2_exon, jun_type, tx_part1, 
-                            tx_part2)
+        junction_type <- cbind(as.data.frame(jun), part1_type, 
+                    part2_type, part1_exon, part2_exon, jun_type, tx_part1, tx_part2)
 
         
     }

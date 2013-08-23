@@ -79,6 +79,10 @@ easyRun <- function(bamFile, RPKM=NULL, vcfFile, annotation_path, outfile_path,
         outf_indel <- paste(outfile_path, '/', outfile_name, '_indel.fasta', 
                         sep='')
         if(!is.null(postable_indel)){
+            chrlist <- paste('chr',c(seq(1:22),'X','Y'),sep='')
+            indexchr <-which(postable_indel[,'chr'] %in% chrlist)
+            postable_indel <- postable_indel[indexchr,]
+
             txlist_indel <- unique(postable_indel[, 'txid'])
             codingseq_indel <- procodingseq[procodingseq[, 'tx_id'] %in% 
                         txlist_indel, ]
@@ -132,8 +136,8 @@ easyRun <- function(bamFile, RPKM=NULL, vcfFile, annotation_path, outfile_path,
         splicemax <- ''
         load(paste(annotation_path, '/splicemax.RData', sep=''))
         txdb <- loadDb(paste(annotation_path, '/txdb.sqlite', sep=''))
-        junction_type <- JunctionType(bedFile, skip=1, covfilter=5, 
-                        splicemax, txdb, ids)
+        jun <-  Bed2Range(bedFile, skip=1, covfilter=5)
+        junction_type <- JunctionType(jun, splicemax, txdb, ids)
         outf_junc <- paste(outfile_path, '/', outfile_name, 
                         '_junc.fasta', sep='')
         OutputNovelJun(junction_type, genome, outf_junc, 

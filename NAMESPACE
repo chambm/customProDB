@@ -33,9 +33,10 @@ importFrom(plyr, ddply, '.')
 export(PrepareAnnotationEnsembl,PrepareAnnotationRefseq,
     easyRun,easyRun_mul,
 	calculateRPKM,Outputproseq,
-	InputVcf,Varlocation, Positionincoding,aaVariation,OutputVarproseq,
+	InputVcf, Varlocation, Positionincoding, aaVariation, 
+    OutputVarproseq, OutputVarproseq_single,
     Outputaberrant, 
-    JunctionType, OutputNovelJun,
- 	OutputsharedPro, Multiple_VCF
+    Bed2Range,JunctionType, OutputNovelJun,
+ 	OutputsharedPro, Multiple_VCF, SharedJunc
 	)
 

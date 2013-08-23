@@ -3,9 +3,11 @@
 \title{An integrated function to generate consensus protein database from multiple samples}
 \usage{
   easyRun_mul(bamFile_path, RPKM_mtx = NULL, vcfFile_path,
-    annotation_path, rpkm_cutoff, share_num, var_shar_num,
-    outfile_path, outfile_name, INDEL = FALSE,
-    lablersid = FALSE, COSMIC = FALSE, ...)
+    annotation_path, rpkm_cutoff, share_num = 2,
+    var_shar_num = 2, outfile_path, outfile_name,
+    INDEL = FALSE, lablersid = FALSE, COSMIC = FALSE,
+    nov_junction = FALSE, bedFile_path = NULL,
+    genome = NULL, junc_shar_num = 2, ...)
 }
 \arguments{
   \item{bamFile_path}{The path of BAM files}
@@ -22,15 +24,15 @@
   \item{rpkm_cutoff}{Cutoffs of RPKM values. see 'cutoff'
   in function OutputsharedPro for more information}
 
-  \item{share_num}{Which snp dataset you want to use for
-  the SNP annotation}
+  \item{share_num}{The minimum share sample numbers for
+  proteins which pass the cutoff.}
 
-  \item{var_shar_num}{Which snp dataset you want to use for
-  the SNP annotation}
+  \item{var_shar_num}{Minimum sample number of recurrent
+  variations.}
 
   \item{outfile_path}{The path of output FASTA file}
 
-  \item{outfile_name}{The name of output FASTA file}
+  \item{outfile_name}{The name prefix of output FASTA file}
 
   \item{INDEL}{If the vcfFile contains the short
   insertion/deletion. Default is FALSE.}
@@ -43,6 +45,19 @@
   \item{COSMIC}{If output the cosmic ids in the variation
   table.Default is FALSE. If choose TRUE, there must have
   cosmic.RData in the annotation folder.}
+
+  \item{nov_junction}{If output the peptides that cover
+  novel junction into the database. if TRUE, there should
+  be splicemax.RData in the annotation folder.}
+
+  \item{bedFile_path}{The path of BED files which contains
+  the splice junctions identified in RNA-Seq.}
+
+  \item{genome}{A BSgenome object(e.g. Hsapiens). Default
+  is NULL. Required if nov_junction==TRUE.}
+
+  \item{junc_shar_num}{Minimum sample number of recurrent
+  splicing junctions.}
 
   \item{...}{Additional arguments}
 }
@@ -66,9 +81,9 @@ annotation_path <- system.file("extdata/refseq", package="customProDB")
 outfile_path <- tempdir()
 outfile_name <- 'mult'
 
-easyRun_mul(bampath,RPKM_mtx=NULL,vcfFile_path,annotation_path,rpkm_cutoff=1,
-            share_num=2,var_shar_num=2,outfile_path, outfile_name,INDEL=TRUE,
-            lablersid=TRUE,COSMIC=TRUE)
+easyRun_mul(bampath, RPKM_mtx=NULL, vcfFile_path, annotation_path, rpkm_cutoff=1,
+            share_num=2, var_shar_num=2, outfile_path, outfile_name, INDEL=TRUE,
+            lablersid=TRUE, COSMIC=TRUE, nov_junction=FALSE)
 }
 \author{
   Xiaojing Wang

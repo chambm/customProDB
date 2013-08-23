@@ -2,17 +2,11 @@
 \alias{JunctionType}
 \title{Annotates the junctions in a bed file.}
 \usage{
-  JunctionType(bedfile, skip = 1, covfilter = 5, splicemax,
-    txdb, ids, ...)
+  JunctionType(jun, splicemax, txdb, ids, ...)
 }
 \arguments{
-  \item{bedfile}{bed file path}
-
-  \item{skip}{default 1. skip the annotation rows in the
-  bed file.}
-
-  \item{covfilter}{filter the junctions by reads coverage,
-  default 5.}
+  \item{jun}{a GRange object for junctions, the output of
+  function Bed2Range.}
 
   \item{splicemax}{a known exon splice matrix from the
   annotation.}
@@ -28,24 +22,23 @@
   a data frame of type and source for each junction.
 }
 \description{
-  For identified splice junctions from RNA-Seq, the
-  JunctionType() function finds the genomic locations for
-  each entry according to the given annotation. four types
-  of junctions are classified. find more details in the
-  tutorial. This function requires complete BED file.
+  For identified splice junctions from RNA-Seq, this
+  function finds the junction types for each entry
+  according to the given annotation. Six types of junctions
+  are classified. find more details in the tutorial.
 }
 \details{
   Go to https://genome.ucsc.edu/FAQ/FAQformat.html#format1
   for more information about BED format.
 }
 \examples{
-bedfile <- system.file("extdata", "junctions.bed", package="customProDB")
+bedfile <- system.file("extdata/beds", "junctions1.bed", package="customProDB")
+jun <-  Bed2Range(bedfile,skip=1,covfilter=5)
 load(system.file("extdata/refseq", "splicemax.RData", package="customProDB"))
 load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
 txdb <- loadDb(system.file("extdata/refseq", "txdb.sqlite",
             package="customProDB"))
-junction_type <- JunctionType(bedfile, skip=1, covfilter=5, splicemax, txdb,
-                    ids)
+junction_type <- JunctionType(jun, splicemax, txdb, ids)
 table(junction_type[, 'jun_type'])
 }
 \author{

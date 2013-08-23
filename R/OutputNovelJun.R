@@ -11,13 +11,16 @@
 ##' @author Xiaojing Wang
 ##' @examples
 ##' 
-##' bedfile <- system.file("extdata", "junctions.bed", package="customProDB")
+##' bedfile <- system.file("extdata/beds", "junctions1.bed", package="customProDB")
+##' jun <-  Bed2Range(bedfile,skip=1,covfilter=5)
 ##' load(system.file("extdata/refseq", "splicemax.RData", package="customProDB"))
 ##' load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
 ##' txdb <- loadDb(system.file("extdata/refseq", "txdb.sqlite", 
-##'     package="customProDB"))
-##' junction_type <- JunctionType(bedfile, skip=1, covfilter=5, splicemax, txdb, ids)
+##'             package="customProDB"))
+##' junction_type <- JunctionType(jun, splicemax, txdb, ids)
 ##' table(junction_type[, 'jun_type'])
+##' chrom <- paste('chr',c(1:22,'X','Y','M'),sep='')
+##' junction_type <- subset(junction_type, seqnames %in% chrom)
 ##' outf_junc <- paste(tempdir(), '/test_junc.fasta', sep='')
 ##' load(system.file("extdata/refseq", "proseq.RData", package="customProDB"))
 ##' library('BSgenome.Hsapiens.UCSC.hg19')
@@ -28,22 +31,25 @@
 
 OutputNovelJun <- function(junction_type, genome, outfile, proteinseq, ...)
     {
+        options(stringsAsFactors=FALSE)
         #ids <- subset(ids,pro_name!='')
         
         #trans <- transcripts(txdb)
         #index <- which(values(trans)[['tx_name']] %in% ids[,'tx_name'])
         #pro_trans <- trans[index]
         novel_junc <- subset(junction_type, jun_type != 'known junction')
-        if(!length(grep('chr', novel_junc[, 'chr'], fixed=T))>0) {
-            novel_junc[, 'chr'] <- paste('chr', novel_junc[, 'chr'], sep='')
-            idx <- which(novel_junc[, 'chr'] %in% seqnames(genome))
+        if(!length(grep('chr', novel_junc[, 'seqnames'], fixed=T))>0) {
+            novel_junc[, 'seqnames'] <- paste('chr', novel_junc[, 'seqnames'], sep='')
+            idx <- which(novel_junc[, 'seqnames'] %in% seqnames(genome))
             novel_junc <- novel_junc[idx, ]
         }
-        junRange1 <- GRanges(seqnames=novel_junc$chr, 
+
+        junRange1 <- GRanges(seqnames=novel_junc$seqnames, 
                 ranges=IRanges(start=novel_junc$part1_sta, 
                 end=novel_junc$part1_end), strand=novel_junc$strand, 
                 junction_id=novel_junc$id)
-        junRange2 <- GRanges(seqnames=novel_junc$chr, 
+        
+        junRange2 <- GRanges(seqnames=novel_junc$seqnames, 
                 ranges=IRanges(start=novel_junc$part2_sta, 
                 end=novel_junc$part2_end), strand=novel_junc$strand, 
                 junction_id=novel_junc$id)
@@ -70,6 +76,13 @@ OutputNovelJun <- function(junction_type, genome, outfile, proteinseq, ...)
         
         novel_junc_new <- rbind(novel_junc[index_plus, ], novel_junc[index_minus, ])
         
+        ##Remove sequences contains NNN
+        Nindx <- grep('N', seqs)
+        if(length(Nindx) > 0){
+            seqs <- seqs[-Nindx]
+            novel_junc_new <- novel_junc_new[-Nindx]
+        }
+        
         peptides_r1 <- translate(seqs)
         peptides_r2 <- translate(subseq(seqs, start=2))
         peptides_r3 <- translate(subseq(seqs, start=3))
@@ -90,17 +103,23 @@ OutputNovelJun <- function(junction_type, genome, outfile, proteinseq, ...)
         junpos_r3_p1 <- ceiling((junpos_rna_p1-2)/3)
         junpos_r3_p2 <- ceiling((junpos_rna_p2-2)/3)
         
-        name_r1 <- paste(novel_junc_new[, 'id'], novel_junc_new[, 'cov'], 'ORF1', 
+        name_r1 <- paste(paste(novel_junc_new[, 'id'], '_', novel_junc_new[, 'seqnames'], 
+                    ':', novel_junc_new[, 'start'], '-', novel_junc_new[, 'end'], 
+                    sep=''), novel_junc_new[, 'cov'], 'ORF1 ', 
                     paste('Junpos:', junpos_r1_p1, '-', junpos_r1_p2, sep=''), 
                     novel_junc_new[, 'strand'], novel_junc_new[, 'tx_name_part1'], 
                     novel_junc_new[, 'tx_name_part2'], 
                     novel_junc_new[, 'jun_type'], sep='|')
-        name_r2 <- paste(novel_junc_new[, 'id'], novel_junc_new[, 'cov'], 'ORF2', 
+        name_r2 <- paste(paste(novel_junc_new[, 'id'],'_', novel_junc_new[, 'seqnames'], 
+                    ':',novel_junc_new[, 'start'], '-', novel_junc_new[, 'end'], 
+                    sep=''), novel_junc_new[, 'cov'], 'ORF2 ', 
                     paste('Junpos:', junpos_r2_p1, '-', junpos_r2_p2, sep=''), 
                     novel_junc_new[, 'strand'], novel_junc_new[, 'tx_name_part1'], 
                     novel_junc_new[, 'tx_name_part2'], 
                     novel_junc_new[, 'jun_type'], sep='|')
-        name_r3 <- paste(novel_junc_new[, 'id'], novel_junc_new[, 'cov'], 'ORF3', 
+        name_r3 <- paste(paste(novel_junc_new[, 'id'],'_', novel_junc_new[, 'seqnames'], 
+                    ':',novel_junc_new[, 'start'], '-', novel_junc_new[, 'end'], 
+                    sep=''), novel_junc_new[, 'cov'], 'ORF3 ', 
                     paste('Junpos:', junpos_r3_p1, '-', junpos_r3_p2, sep=''), 
                     novel_junc_new[, 'strand'], novel_junc_new[, 'tx_name_part1'], 
                     novel_junc_new[, 'tx_name_part2'], 
@@ -112,18 +131,18 @@ OutputNovelJun <- function(junction_type, genome, outfile, proteinseq, ...)
         
         ### remove peptide contain stop codon
         index_stop <- grep('*', all_pep[, 2], fixed=T)
-        if(length(index_stop) > 0) all_pep_rmstop <- all_pep[-index_stop, ]
-    
-        ### check if any peptides can be found in the normal database
-        index_nor <- c()
-        for(i in 1:dim(all_pep_rmstop)[1]){
-            if(length(grep(all_pep_rmstop[i, 2],proteinseq[, 'peptide'], fixed=T)) > 0){
-                index_nor <-c(index_nor, i)
-            }#print(i)
-        }
+        if(length(index_stop) > 0){
+            all_pep_rmstop <- all_pep[-index_stop, ]
+        }else all_pep_rmstop <- all_pep
+        ### check if any peptides can be found in the normal database, remove those
+
+        index_nor <- lapply(all_pep_rmstop[,2], function(x) grep(x, proteinseq[, 'peptide'], fixed=T))
+        index_nor <- which(unlist(lapply(index_nor, length)) > 0)
+        
         if(length(index_nor) > 0){
             all_pep_new <- all_pep_rmstop[-index_nor, ] 
         }else all_pep_new <- all_pep_rmstop
         tmp <- paste('>', all_pep_new[, 1], '\n', all_pep_new[, 2], sep='')
         write(tmp, file=outfile)
+        
     }

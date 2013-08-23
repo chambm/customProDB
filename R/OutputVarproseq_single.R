@@ -1,6 +1,7 @@
-##' Output the non-synonymous SNVs into FASTA file.
+##' Output the non-synonymous SNVs into FASTA file, one SNV per sequence.
 ##'
 ##' This function uses the output of aaVariation() as input, introduces the nonsynonymous variation into the protein database.
+##' If a protein have more than one SNVs, introduce one SNV each time, end up with equal number of sequences.
 ##' @title Output the variant(SNVs) protein sequences into FASTA format
 ##' @param vartable A data frame which is the output of aaVariation().
 ##' @param proteinseq A dataframe containing protein ids and the protein sequence.
@@ -8,7 +9,7 @@
 ##' @param ids A dataframe containing gene/transcript/protein id mapping information.
 ##' @param lablersid If includes the dbSNP rsid in the header of each sequence, default is FALSE. 
 ##'             Must provide dbSNP information in function Positionincoding() if put TRUE here.
-##' @param RPKM If includes the RPKM value in the header of each sequence, default is NULL.
+##' @param RPKM If includes the RPKM value in the header of each sequence. default is NULL.
 ##' @param ... Additional arguments
 ##' @return FASTA file containing proteins with single nucleotide variation.
 ##' @author Xiaojing Wang
@@ -31,13 +32,13 @@
 ##' txlist <- unique(postable_snv[, 'txid'])
 ##' codingseq <- procodingseq[procodingseq[, 'tx_id'] %in% txlist, ]
 ##' mtab <- aaVariation (postable_snv, codingseq)
-##' outfile <- paste(tempdir(), '/test_snv.fasta',sep='')
-##' OutputVarproseq(mtab, proteinseq, outfile, ids, lablersid=TRUE)
+##' outfile <- paste(tempdir(), '/test_snv_single.fasta',sep='')
+##' OutputVarproseq_single(mtab, proteinseq, outfile, ids, lablersid=TRUE)
 ##' 
 
 
-OutputVarproseq <- function(vartable, proteinseq, outfile, ids, lablersid=FALSE, 
-            RPKM=NULL, ...)
+OutputVarproseq_single <- function(vartable, proteinseq, outfile, ids, 
+            lablersid=FALSE, RPKM=NULL, ...)
     {
         options(stringsAsFactors=FALSE)
         nonsy <- vartable[vartable[, 'vartype'] == "non-synonymous", ]
@@ -53,44 +54,36 @@ OutputVarproseq <- function(vartable, proteinseq, outfile, ids, lablersid=FALSE,
         #aavar2pro <- aavar2pro[aavar2pro[, 'aavar']!="*", ]
         aavar2pro <- unique(aavar2pro)
         
-        plist <- unique(aavar2pro[, 'proname'])
-        pep <- proteinseq[proteinseq[, 'pro_name'] %in% plist, ]
-
-        pep_var <- pep
         pep_all<- c()
-        test <- c()
-        for(i in 1:dim(pep_var)[1]){
-            #print(i)
-            pvar <-subset(aavar2pro,aavar2pro[, 'proname'] == pep_var[i, 'pro_name'])
-            pvar <- pvar[order(as.numeric(pvar[, 'aapos'])), ]
-            for(j in 1:dim(pvar)[1]){
-                substr(pep_var[i, 'peptide'], as.integer(pvar[j, 'aapos']), 
-                   as.integer(pvar[j, 'aapos'])) <- substr(pvar[j, 'aavar'], 1, 1)
-            }
-            if(pep_var[i, 'peptide']!=pep[i, 'peptide']){
+        for(i in 1:dim(aavar2pro)[1]){
+            pvar <- aavar2pro[i, ]
+            pep_nor <- proteinseq[proteinseq[, 'pro_name'] == as.character(pvar['proname']), ]
+            pepseq_nor <- as.character(pep_nor['peptide'])
+            pepseq_var <- pepseq_nor
+            
+            substr(pepseq_var, as.integer(pvar['aapos']), 
+                as.integer(pvar['aapos'])) <- substr(pvar['aavar'], 1, 1)
+            if(pepseq_var != pepseq_nor){
                 if(lablersid){
-                    var_name <- apply(pvar, 1, function(x) ifelse(is.na(x['rsid']),
-                            paste(x['aaref'], x['aapos'], x['aavar'], sep=""), 
-                            paste(x['rsid'], ":", x['aaref'], x['aapos'], x['aavar'], 
-                            sep="")))
+                    var_name <- ifelse(is.na(pvar['rsid']), paste(pvar['aaref'], 
+                        pvar['aapos'], pvar['aavar'], sep=""), paste(pvar['rsid'], 
+                        ":", pvar['aaref'], pvar['aapos'], pvar['aavar'], sep=""))
                 }else{
-                    var_name <- apply(pvar, 1, function(x) 
-                            paste(x['aaref'], x['aapos'], x['aavar'], sep=""))
+                    var_name <- paste(pvar['aaref'], pvar['aapos'], pvar['aavar'], 
+                                sep="")
                 }
-                pep_name <- cbind(pep_var[i,], 
-                            var_name=gsub(" ", "", toString(var_name)))
-                pep_all <- rbind(pep_all, pep_name)
+                pepseq_name <- cbind(peptide=pepseq_var, 
+                        pro_name=pep_nor['pro_name'], var_name=toString(var_name))
+                pep_all <- rbind(pep_all, pepseq_name)
 
-            }else{
-                test <- c(test,pep_var[i, 'pro_name'])
             }
         }
-                
+       
         ftab <- merge(pep_all, ids, by.x='pro_name', by.y='pro_name', all=F, 
                     stringsAsFactors = FALSE)
         outformat <- apply(ftab, 1, function(x) 
                     paste('>', x['pro_name'], "_", x['var_name'], " |", 
-                    x['tx_name.x'], "|", x['gene_name'], "|", x['description'], 
+                    x['tx_name'], "|", x['gene_name'], "|", x['description'], 
                     '\n', unlist(strsplit(x['peptide'], '\\*'))[1], sep=''))
         
 
@@ -101,7 +94,7 @@ OutputVarproseq <- function(vartable, proteinseq, outfile, ids, lablersid=FALSE,
             ftab <- cbind(ftab, v)            
             ftab <- ftab[order(as.numeric(ftab[, 'v']), decreasing=T), ]
             outformat <- apply(ftab, 1, function(x) paste('>', x['pro_name'], 
-                        "_", x['var_name'], " |", x['v'], "|", x['tx_name.x'], 
+                        "_", x['var_name'], " |", x['v'], "|", x['tx_name'], 
                         "|", x['gene_name'], "|", x['description'],'\n', 
                         unlist(strsplit(x['peptide'], '\\*'))[1], sep=''))
         

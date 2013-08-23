@@ -27,13 +27,16 @@
   function requires a genome built by BSgenome package.
 }
 \examples{
-bedfile <- system.file("extdata", "junctions.bed", package="customProDB")
+bedfile <- system.file("extdata/beds", "junctions1.bed", package="customProDB")
+jun <-  Bed2Range(bedfile,skip=1,covfilter=5)
 load(system.file("extdata/refseq", "splicemax.RData", package="customProDB"))
 load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
 txdb <- loadDb(system.file("extdata/refseq", "txdb.sqlite",
-    package="customProDB"))
-junction_type <- JunctionType(bedfile, skip=1, covfilter=5, splicemax, txdb, ids)
+            package="customProDB"))
+junction_type <- JunctionType(jun, splicemax, txdb, ids)
 table(junction_type[, 'jun_type'])
+chrom <- paste('chr',c(1:22,'X','Y','M'),sep='')
+junction_type <- subset(junction_type, seqnames \%in\% chrom)
 outf_junc <- paste(tempdir(), '/test_junc.fasta', sep='')
 load(system.file("extdata/refseq", "proseq.RData", package="customProDB"))
 library('BSgenome.Hsapiens.UCSC.hg19')

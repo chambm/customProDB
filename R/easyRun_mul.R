@@ -7,14 +7,18 @@
 ##' @param vcfFile_path The path of VCF files
 ##' @param annotation_path The path of already saved annotation, which will be used in the function
 ##' @param rpkm_cutoff Cutoffs of RPKM values. see 'cutoff' in function OutputsharedPro for more information
-##' @param share_num Which snp dataset you want to use for the SNP annotation
-##' @param var_shar_num Which snp dataset you want to use for the SNP annotation
+##' @param share_num The minimum share sample numbers for proteins which pass the cutoff.
+##' @param var_shar_num Minimum sample number of recurrent variations.
 ##' @param outfile_path The path of output FASTA file
-##' @param outfile_name The name of output FASTA file
+##' @param outfile_name The name prefix of output FASTA file
 ##' @param INDEL If the vcfFile contains the short insertion/deletion. Default is FALSE.
 ##' @param lablersid If includes the dbSNP rsid in the header of each sequence, default is FALSE. 
 ##'             Users should provide dbSNP information when running function Positionincoding() if put TRUE here.
 ##' @param COSMIC If output the cosmic ids in the variation table.Default is FALSE. If choose TRUE, there must have cosmic.RData in the annotation folder. 
+##' @param nov_junction If output the peptides that cover novel junction into the database. if TRUE, there should be splicemax.RData in the annotation folder.
+##' @param bedFile_path The path of BED files which contains the splice junctions identified in RNA-Seq. 
+##' @param genome A BSgenome object(e.g. Hsapiens). Default is NULL. Required if nov_junction==TRUE.
+##' @param junc_shar_num Minimum sample number of recurrent splicing junctions. 
 ##' @param ... Additional arguments
 ##' @return A table file contains detailed variation information and several FASTA files.
 ##' @author Xiaojing Wang
@@ -26,20 +30,25 @@
 ##' outfile_path <- tempdir()    
 ##' outfile_name <- 'mult'
 ##' 
-##' easyRun_mul(bampath,RPKM_mtx=NULL,vcfFile_path,annotation_path,rpkm_cutoff=1,
-##'             share_num=2,var_shar_num=2,outfile_path, outfile_name,INDEL=TRUE,
-##'             lablersid=TRUE,COSMIC=TRUE)
+##' easyRun_mul(bampath, RPKM_mtx=NULL, vcfFile_path, annotation_path, rpkm_cutoff=1,
+##'             share_num=2, var_shar_num=2, outfile_path, outfile_name, INDEL=TRUE,
+##'             lablersid=TRUE, COSMIC=TRUE, nov_junction=FALSE)
 ##' 
 ##' 
 ##'
  
 easyRun_mul <- function(bamFile_path, RPKM_mtx=NULL, vcfFile_path, 
-    annotation_path, rpkm_cutoff, share_num, var_shar_num, outfile_path, 
-    outfile_name, INDEL=FALSE, lablersid=FALSE, COSMIC=FALSE, 
+    annotation_path, rpkm_cutoff, share_num=2, var_shar_num=2, outfile_path, 
+    outfile_name, INDEL=FALSE, lablersid=FALSE, COSMIC=FALSE, nov_junction=FALSE, 
+    bedFile_path=NULL, genome=NULL, junc_shar_num=2,
  ...) {
     if(missing(annotation_path)) {
         stop("must specify the path of annotation files")
     }
+    if(nov_junction == TRUE&(is.null(bedFile_path)|is.null(genome))){
+        stop("must supply BED formatted junction file and genome 
+            (BSgenome format) if you want to include novel junctions")
+    }    
     exon <- ''
     ids <- ''
     proteinseq <- ''
@@ -84,6 +93,10 @@ easyRun_mul <- function(bamFile_path, RPKM_mtx=NULL, vcfFile_path,
         outf_indel <- paste(outfile_path, '/', outfile_name, 
                 '_indel.fasta', sep='')
         if(!is.null(postable_indel)){
+            chrlist <- paste('chr',c(seq(1:22),'X','Y'),sep='')
+            indexchr <-which(postable_indel[,'chr'] %in% chrlist)
+            postable_indel <- postable_indel[indexchr,]
+
             txlist_indel <- unique(postable_indel[, 'txid'])
             codingseq_indel <- procodingseq[procodingseq[,'tx_id'] %in% 
                     txlist_indel, ]
@@ -129,11 +142,26 @@ easyRun_mul <- function(bamFile_path, RPKM_mtx=NULL, vcfFile_path,
     write.table(mtab, file=outf_mtab, sep='\t', quote=F, row.names=F)
     
     outf_snv <- paste(outfile_path,'/', outfile_name, '_snv.fasta', sep='')
-    OutputVarproseq(mtab, proteinseq, outf_snv, ids, RPKM=meanRPKM)
+    OutputVarproseq_single(mtab, proteinseq, outf_snv, ids, RPKM=meanRPKM)
     
     packageStartupMessage(" done")
 
-
+    if(nov_junction == TRUE&!is.null(bedFile_path)&!is.null(genome)){
+        message("Output novel junction peptides... ", appendLF=FALSE)
+        splicemax <- ''
+        load(paste(annotation_path, '/splicemax.RData', sep=''))
+        txdb <- loadDb(paste(annotation_path, '/txdb.sqlite', sep=''))
+        bedFiles<- paste(bedFile_path, '/', list.files(bedFile_path, pattern="*bed$"), 
+                    sep='')
+        juncs <- lapply(bedFiles, function(x) Bed2Range(x, skip=1, covfilter=5))
+        shared <- SharedJunc(juncs, junc_shar_num=2, ext_up=100, ext_down=100)
+        junction_type <- JunctionType(shared, splicemax, txdb, ids)
+        outf_junc <- paste(outfile_path, '/', outfile_name, 
+                        '_junc.fasta', sep='')
+        OutputNovelJun(junction_type, genome, outf_junc, 
+                        proteinseq)
+        packageStartupMessage(" done")
+    }    
 
     #message("Combine database... ", appendLF=FALSE)
     #files<- paste(outfile_path,'/', 

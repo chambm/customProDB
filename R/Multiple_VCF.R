@@ -30,13 +30,13 @@ Multiple_VCF <-  function(vcfs, share_num, ...)
             share_num <- round(as.numeric(gsub('%', '', share_num)) * 
                                 length(allsample) / 100) 
         }else share_num <- as.numeric(share_num)
-        vcfgls <- GRangesList(allsample)
+        vcfgls <- GRangesList(allsample_basic)
         total <- unlist(vcfgls)
         if('INDEL' %in% names(values(total))){
             uniquetotal <- unique(total[, c('REF', 'ALT', 'INDEL')])
         }else uniquetotal <- unique(total[, c('REF', 'ALT')])
 
-        ctab <- do.call('cbind', lapply(allsample, function(x) 
+        ctab <- do.call('cbind', lapply(allsample_basic, function(x) 
                             countOverlaps(uniquetotal, x)))
         sumcount <- apply(ctab, 1, sum)
         index <- which(sumcount >= share_num)

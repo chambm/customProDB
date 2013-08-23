@@ -48,7 +48,7 @@ bamFile<- paste(path, '/', list.files(path, pattern="*bam$"), sep='')
 rpkms <- sapply(bamFile,function(x)
             calculateRPKM(x, exon, proteincodingonly=TRUE, ids))
 outfile <- paste(tempdir(), '/test_rpkm_share.fasta', sep='')
-pro <- OutputsharedPro(rpkms, cutoff=1, share_sample=2, proteinseq,
+OutputsharedPro(rpkms, cutoff=1, share_sample=2, proteinseq,
             outfile, ids)
 }
 \author{
