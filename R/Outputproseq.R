@@ -37,10 +37,10 @@ Outputproseq <- function(rpkm, cutoff="30%", proteinseq, outfile, ids, ...)
                     stringsAsFactors=FALSE)
         ftab <- ftab[order(ftab[, 'v'], decreasing=TRUE), ]
 
-        tmp <- paste('>', ftab[, 'pro_name'], " |", round(ftab[, 'v'], 4), "|", 
-                ftab[, 'tx_name.x'], "|", ftab[, 'gene_name'], "|", 
-                ftab[, 'description'], '\n', 
-                unlist(strsplit(ftab[, 'peptide'], '\\*')), sep='')
+        tmp <- apply(ftab, 1, function(x) 
+                paste('>', x['pro_name'], " |", round(x['v'], 4), "|", 
+                x['tx_name.x'], "|", x['gene_name'], "|", x['description'], '\n', 
+                unlist(strsplit(x['peptide'], '\\*'))[1], sep=''))
         
         write(tmp, file=outfile)
 
