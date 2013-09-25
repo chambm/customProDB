@@ -50,7 +50,7 @@ OutputsharedPro <- function(RPKMs, cutoff="30%",share_sample='50%', proteinseq,
 
         seqs <- proteinseq[proteinseq[, 'pro_name'] %in% proid,]
         mean_rpkm <- unlist(lapply(seqs[, 'pro_name'], function(x) 
-                        round(mean(RPKMs[x,]),4)))
+                        round(mean(as.numeric(rpkms_res[x, ])),4)))
         seqs <- cbind(seqs, mean_rpkm)
 
         

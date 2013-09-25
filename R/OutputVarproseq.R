@@ -46,7 +46,7 @@ OutputVarproseq <- function(vartable, proteinseq, outfile, ids, lablersid=FALSE,
             aavar2pro <- subset(nonsy, select=c(genename, txname, proname, 
                         aaref, aapos, aavar, rsid))
         }else{
-            aavar2pro <- subset(nonsy,select=c(genename, txname, proname, 
+            aavar2pro <- subset(nonsy, select=c(genename, txname, proname, 
                         aaref, aapos, aavar))
         }
         aavar2pro <- aavar2pro[aavar2pro[, 'aaref']!="*", ]
