@@ -1,0 +1,16 @@
+citEntry(entry="article",
+        title = paste("customProDB: an R package to generate customized 
+        protein databases from RNA-Seq data" ),
+        author = personList( as.person("Xiaojing Wang"),
+                              as.person("Bing Zhang")),
+        year = 2013,
+        journal = "Bioinformatics",
+        volume = "29",
+        pages = "3235-3237",
+        doi = "10.1093/bioinformatics/btt543",
+        url = "http://bioinformatics.oxfordjournals.org/content/29/24/3235",         
+        textVersion = 
+        paste("Xiaojing Wang, Bing Zhang", 
+               "\"customProDB: an {R} package to generate customized",
+               "protein databases from RNA-Seq data\".", 
+               "Bioinformatics (2013) 29:3235-3237."))
