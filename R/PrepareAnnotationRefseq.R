@@ -96,7 +96,7 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     
     #txid <- matrix(unlist(strsplit(rownames(exons), '\\.')), ncol = 2, byrow =T)[, 1]
     #txid <- gsub('=','\\.', txid)
-    exon_p <- data.frame(txid=exons[, "element"], chr=exons[, "seqnames"], 
+    exon_p <- data.frame(txid=exons[, "group"], chr=exons[, "seqnames"], 
                 exon_s=exons[, "start"], exon_e=exons[, "end"], 
                 exon_rank=exons[, "exon_rank"])
     exon2tr <-  merge(exon_p, tr,by.y="tx_id", by.x="txid")
@@ -105,7 +105,7 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     #txid <- matrix(unlist(strsplit(rownames(cdss), '\\.')), ncol = 2, 
     #       byrow =T)[, 1]
     #txid <- gsub('=','\\.',txid)
-    cds_p <- data.frame(txid=cdss[, "element"], cds_s=cdss[, "start"], 
+    cds_p <- data.frame(txid=cdss[, "group"], cds_s=cdss[, "start"], 
                 cds_e=cdss[, "end"], exon_rank=cdss[, "exon_rank"], 
                 width=cdss[, "width"])
     ttt <- split(cds_p, cds_p$txid)
@@ -140,14 +140,14 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     #txid <- matrix(unlist(strsplit(rownames(fiveutrs), '\\.')), ncol = 2, 
     #               byrow =T)[, 1]
     #txid <- gsub('=','\\.', txid)
-    fiveutr_p <- data.frame(txid=fiveutrs[, "element"], fiveutr_s=fiveutrs[, "start"], 
+    fiveutr_p <- data.frame(txid=fiveutrs[, "group"], fiveutr_s=fiveutrs[, "start"], 
                 fiveutr_e=fiveutrs[, "end"], exon_rank=fiveutrs[, "exon_rank"])
     fiveutr2exon <- merge(cds2exon, fiveutr_p, by.x=c("txid", "exon_rank"), 
                 by.y =c("txid", "exon_rank"), all.x = TRUE)
              
     #txid <- matrix(unlist(strsplit(rownames(threeutrs),'\\.')), ncol = 2,byrow =T)[, 1]
     #txid <- gsub('=','\\.', txid)
-    threeutr_p <- data.frame(txid=threeutrs[, "element"], threeutr_s=threeutrs[, "start"], 
+    threeutr_p <- data.frame(txid=threeutrs[, "group"], threeutr_s=threeutrs[, "start"], 
             threeutr_e=threeutrs[, "end"], exon_rank=threeutrs[, "exon_rank"])
     threeutr2exon <- merge(fiveutr2exon, threeutr_p, by.x=c("txid", "exon_rank"),
                 by.y=c("txid", "exon_rank"), all.x = TRUE)
@@ -256,7 +256,7 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
         index <- which(elementLengths(exonByTx)==1)
         exonByTx_mul <- exonByTx[-index]
         exons_mul <- IRanges::as.data.frame(exonByTx_mul)
-        exonslist <- split(exons_mul, exons_mul$element)
+        exonslist <- split(exons_mul, exons_mul$group)
         #system.time( exonByTx <- exonsBy(txdb,"tx", use.names=F))
         splicemax_list <- lapply(exonslist, .gen_splicmatrix)
         splicemax <- do.call(rbind, splicemax_list)

@@ -143,7 +143,7 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     
     cdsByTx <- cdsBy(txdb, "tx", use.names=T)
     cdss <-  IRanges::as.data.frame(cdsByTx)
-    cds_chr_p <- data.frame(tx_name=cdss[, "element"], cds_chr_start=cdss[, "start"], 
+    cds_chr_p <- data.frame(tx_name=cdss[, "group"], cds_chr_start=cdss[, "start"], 
                     cds_chr_end=cdss[, "end"], rank=cdss[, "exon_rank"])
     
     cds_chr_p_coding <- subset(cds_chr_p, tx_name %in% tr_coding[, 'tx_name'])
@@ -291,7 +291,7 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
         index <- which(elementLengths(exonByTx)==1)
         exonByTx_mul <- exonByTx[-index]
         exons_mul <- IRanges::as.data.frame(exonByTx_mul)
-        exonslist <- split(exons_mul, exons_mul$element)
+        exonslist <- split(exons_mul, exons_mul$group)
        
         splicemax_list <- lapply(exonslist, .gen_splicmatrix)
         splicemax <- do.call(rbind, splicemax_list)
