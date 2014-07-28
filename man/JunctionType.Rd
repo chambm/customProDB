@@ -11,7 +11,7 @@
   \item{splicemax}{a known exon splice matrix from the
   annotation.}
 
-  \item{txdb}{a TranscriptDb object.}
+  \item{txdb}{a TxDb object.}
 
   \item{ids}{a dataframe containing gene/transcript/protein
   id mapping information.}

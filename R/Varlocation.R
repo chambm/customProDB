@@ -5,7 +5,7 @@
 ##' see 'introduction' for more details
 ##' @title Annotates the variations with genomic location.
 ##' @param Vars a GRange object of variations
-##' @param txdb a TranscriptDb object.
+##' @param txdb a TxDb object.
 ##' @param ids a dataframe containing gene/transcript/protein id mapping information
 ##' @param ... additional arguments
 ##' @return a data frame of locations for each variation

@@ -7,7 +7,7 @@
 \arguments{
   \item{Vars}{a GRange object of variations}
 
-  \item{txdb}{a TranscriptDb object.}
+  \item{txdb}{a TxDb object.}
 
   \item{ids}{a dataframe containing gene/transcript/protein
   id mapping information}

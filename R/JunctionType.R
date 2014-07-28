@@ -5,7 +5,7 @@
 ##' @title Annotates the junctions in a bed file.
 ##' @param jun a GRange object for junctions, the output of function Bed2Range.
 ##' @param splicemax a known exon splice matrix from the annotation.
-##' @param txdb a TranscriptDb object.
+##' @param txdb a TxDb object.
 ##' @param ids a dataframe containing gene/transcript/protein id mapping information.
 ##' @param ... additional arguments
 ##' @return a data frame of type and source for each junction.
