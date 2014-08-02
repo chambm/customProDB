@@ -22,14 +22,16 @@
 ##' chrom <- paste('chr',c(1:22,'X','Y','M'),sep='')
 ##' junction_type <- subset(junction_type, seqnames %in% chrom)
 ##' outf_junc <- paste(tempdir(), '/test_junc.fasta', sep='')
+##' outf_junc_coding <- paste(tempdir(), '/test_junc_coding.fasta', sep='')
 ##' load(system.file("extdata/refseq", "proseq.RData", package="customProDB"))
 ##' library('BSgenome.Hsapiens.UCSC.hg19')
 ##' OutputNovelJun <- OutputNovelJun(junction_type, Hsapiens, outf_junc, 
-##'             proteinseq)
+##'             outf_junc_coding, proteinseq)
 ##' 
 
 
-OutputNovelJun <- function(junction_type, genome, outfile, proteinseq, ...)
+OutputNovelJun <- function(junction_type, genome, outfile, outfile_c, 
+    proteinseq, ...)
     {
         options(stringsAsFactors=FALSE)
         #ids <- subset(ids,pro_name!='')
@@ -43,7 +45,12 @@ OutputNovelJun <- function(junction_type, genome, outfile, proteinseq, ...)
             idx <- which(novel_junc[, 'seqnames'] %in% seqnames(genome))
             novel_junc <- novel_junc[idx, ]
         }
-
+        
+        ###remove abnormal junctions
+        idx_abn <- union(which(novel_junc[, 'start'] < 0),  
+                    which(novel_junc[, 'end'] < 0))
+        if(length(idx_abn > 0)) novel_junc <- novel_junc[-idx_abn, ]
+        
         junRange1 <- GRanges(seqnames=novel_junc$seqnames, 
                 ranges=IRanges(start=novel_junc$part1_sta, 
                 end=novel_junc$part1_end), strand=novel_junc$strand, 
@@ -74,14 +81,24 @@ OutputNovelJun <- function(junction_type, genome, outfile, proteinseq, ...)
         seqs_minus <- reverseComplement(junseq_cat[index_minus])
         seqs <- c(seqs_plus, seqs_minus)
         
-        novel_junc_new <- rbind(novel_junc[index_plus, ], novel_junc[index_minus, ])
+        novel_junc_new <- rbind(novel_junc[index_plus, ], 
+                                        novel_junc[index_minus, ])
         
         ##Remove sequences contains NNN
         Nindx <- grep('N', seqs)
         if(length(Nindx) > 0){
             seqs <- seqs[-Nindx]
-            novel_junc_new <- novel_junc_new[-Nindx]
+            novel_junc_new <- novel_junc_new[-Nindx, ]
         }
+        
+        seqs_name <- paste(paste(novel_junc_new[, 'id'], '_', 
+                    novel_junc_new[, 'seqnames'], ':', 
+                    novel_junc_new[, 'start'], '-', novel_junc_new[, 'end'], 
+                    sep=''), novel_junc_new[, 'cov'],sep='|')
+                    
+        junpepcoding <- data.frame('pro_name'=seqs_name, 
+                                    'coding'=as.data.frame(seqs)[, 1])
+        save(junpepcoding, file=outfile_c)
         
         peptides_r1 <- translate(seqs)
         peptides_r2 <- translate(subseq(seqs, start=2))
@@ -136,7 +153,8 @@ OutputNovelJun <- function(junction_type, genome, outfile, proteinseq, ...)
         }else all_pep_rmstop <- all_pep
         ### check if any peptides can be found in the normal database, remove those
 
-        index_nor <- lapply(all_pep_rmstop[,2], function(x) grep(x, proteinseq[, 'peptide'], fixed=T))
+        index_nor <- lapply(all_pep_rmstop[, 2], function(x) 
+                            grep(x, proteinseq[, 'peptide'], fixed=T))
         index_nor <- which(unlist(lapply(index_nor, length)) > 0)
         
         if(length(index_nor) > 0){
