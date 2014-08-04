@@ -22,15 +22,16 @@
 ##' chrom <- paste('chr',c(1:22,'X','Y','M'),sep='')
 ##' junction_type <- subset(junction_type, seqnames %in% chrom)
 ##' outf_junc <- paste(tempdir(), '/test_junc.fasta', sep='')
-##' outf_junc_coding <- paste(tempdir(), '/test_junc_coding.fasta', sep='')
+##' #outf_junc_coding <- paste(tempdir(), '/test_junc_coding.fasta', sep='')
 ##' load(system.file("extdata/refseq", "proseq.RData", package="customProDB"))
 ##' library('BSgenome.Hsapiens.UCSC.hg19')
 ##' OutputNovelJun <- OutputNovelJun(junction_type, Hsapiens, outf_junc, 
-##'             outf_junc_coding, proteinseq)
+##'              proteinseq)
 ##' 
 
 
-OutputNovelJun <- function(junction_type, genome, outfile, outfile_c, 
+OutputNovelJun <- function(junction_type, genome, outfile, 
+    #outfile_c, 
     proteinseq, ...)
     {
         options(stringsAsFactors=FALSE)
@@ -98,7 +99,7 @@ OutputNovelJun <- function(junction_type, genome, outfile, outfile_c,
                     
         junpepcoding <- data.frame('pro_name'=seqs_name, 
                                     'coding'=as.data.frame(seqs)[, 1])
-        save(junpepcoding, file=outfile_c)
+        #save(junpepcoding, file=outfile_c)
         
         peptides_r1 <- translate(seqs)
         peptides_r2 <- translate(subseq(seqs, start=2))
