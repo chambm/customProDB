@@ -54,12 +54,14 @@ OutputNovelJun <- function(junction_type, genome, outfile,
         
         junRange1 <- GRanges(seqnames=novel_junc$seqnames, 
                 ranges=IRanges(start=novel_junc$part1_sta, 
-                end=novel_junc$part1_end), strand=novel_junc$strand, 
+                end=novel_junc$part1_end), 
+                strand=novel_junc$strand, 
                 junction_id=novel_junc$id)
         
         junRange2 <- GRanges(seqnames=novel_junc$seqnames, 
                 ranges=IRanges(start=novel_junc$part2_sta, 
-                end=novel_junc$part2_end), strand=novel_junc$strand, 
+                end=novel_junc$part2_end), 
+                strand=novel_junc$strand, 
                 junction_id=novel_junc$id)
         
         #match1_protx <- findOverlaps(junRange1,pro_trans)
@@ -69,21 +71,25 @@ OutputNovelJun <- function(junction_type, genome, outfile,
         #juntransRange2 <- junRange2[unique(queryHits(match2_protx))]
         
         #junseq1 <- getSeq(genome,'chr1',start=1000,end=2000,as.character=TRUE)
+        ###already did reverseComplement
         junseq1 <- getSeq(genome, junRange1)
         junseq2 <- getSeq(genome, junRange2)
         
-        junseq_cat <- DNAStringSet(mapply(function(x, y) 
-                paste(x, y, sep=''), as.data.frame(junseq1), 
-                as.data.frame(junseq2))[, 1])
+        junseq_cat <- DNAStringSet(mapply(function(x, y, z) 
+                ifelse(z == '+', paste(x, y, sep=''), paste(y, x, sep='')), 
+                as.data.frame(junseq1), 
+                as.data.frame(junseq2), as.character(strand(junRange1))))
         
-        index_plus <- which(strand(junRange1) == '+')
-        index_minus <- which(strand(junRange1) == '-')
-        seqs_plus <- junseq_cat[index_plus]
-        seqs_minus <- reverseComplement(junseq_cat[index_minus])
-        seqs <- c(seqs_plus, seqs_minus)
+        #index_plus <- which(strand(junRange1) == '+')
+        #index_minus <- which(strand(junRange1) == '-')
+        #seqs_plus <- junseq_cat[index_plus]
+        #seqs_minus <- reverseComplement(junseq_cat[index_minus])
+        #seqs <- c(seqs_plus, seqs_minus)
         
-        novel_junc_new <- rbind(novel_junc[index_plus, ], 
-                                        novel_junc[index_minus, ])
+        #novel_junc_new <- rbind(novel_junc[index_plus, ], 
+        #                                novel_junc[index_minus, ])
+        novel_junc_new <- novel_junc
+        seqs <- junseq_cat
         
         ##Remove sequences contains NNN
         Nindx <- grep('N', seqs)
