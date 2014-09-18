@@ -77,8 +77,8 @@ OutputNovelJun <- function(junction_type, genome, outfile,
         
         junseq_cat <- DNAStringSet(mapply(function(x, y, z) 
                 ifelse(z == '+', paste(x, y, sep=''), paste(y, x, sep='')), 
-                as.data.frame(junseq1), 
-                as.data.frame(junseq2), as.character(strand(junRange1))))
+                as.data.frame(junseq1)[, 1], 
+                as.data.frame(junseq2)[, 1], as.character(strand(junRange1))))
         
         #index_plus <- which(strand(junRange1) == '+')
         #index_minus <- which(strand(junRange1) == '-')
