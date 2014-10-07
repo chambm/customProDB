@@ -162,7 +162,7 @@ This process may take several hours if users choose to download the whole datase
 The ENSEMBL version number can be specified in the \Rfunarg{host} in \Rfunction{useMart} function.
 It took about 1.5 hour to prepare all annotations for ENSEMBL v66 in our tests.
 
-<<PrepareAnnoENSEMBL>>=
+<<PrepareAnnoENSEMBL, eval=FALSE>>=
 ensembl <- useMart("ENSEMBL_MART_ENSEMBL", dataset="hsapiens_gene_ensembl",
     host="feb2012.archive.ensembl.org", path="/biomart/martservice", 
     archive=FALSE)
