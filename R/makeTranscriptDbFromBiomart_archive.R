@@ -20,9 +20,10 @@
 }
 
 
-.getBiomartDbVersion <- function(biomart,host="mar2009.archive.ensembl.org",path="/biomart/martservice",archive=FALSE)
+.getBiomartDbVersion <- function(mart, host="mar2009.archive.ensembl.org", 
+    path="/biomart/martservice", biomart, archive=FALSE)
 {
-    marts <- listMarts(biomart,host=host,path=path,archive=FALSE)
+    marts <- listMarts(mart=mart,host=host,path=path,archive=FALSE)
     mart_rowidx <- which(as.character(marts$biomart) == biomart)
     ## This should never happen.
     if (length(mart_rowidx) != 1L)
@@ -165,14 +166,18 @@
 ### Returns NULL if it fails to fetch the chromosome lengths from the
 ### remote resource.
 .makeBiomartChrominfo <- function(mart, extra_seqnames=NULL,
-                                  circ_seqs=character(0),host="mar2009.archive.ensembl.org",path="/biomart/martservice",archive=FALSE)
+                            circ_seqs=character(0), 
+                            host="mar2009.archive.ensembl.org", 
+                            path="/biomart/martservice", 
+                            archive=FALSE)
 {
     biomart <- biomaRt:::martBM(mart)
     dataset <- biomaRt:::martDataset(mart)
     if (biomart == "ENSEMBL_MART_ENSEMBL") {
         message("Download and preprocess the 'chrominfo' data frame ... ",
                 appendLF=FALSE)
-        db_version <- .getBiomartDbVersion(biomart,host=host,path=path,archive=FALSE)
+        db_version <- .getBiomartDbVersion(mart, host=host, path=path, 
+                    biomart, archive=FALSE)
         ensembl_release <- .extractEnsemblReleaseFromDbVersion(db_version)
         chromlengths <- try(fetchChromLengthsFromEnsembl(dataset,
                                 release=ensembl_release,
@@ -381,13 +386,16 @@ getChromInfoFromBiomart <- function(biomart="ENSEMBL_MART_ENSEMBL",
 ### Prepare the 'metadata' data frame.
 ###
 
-.prepareBiomartMetadata <- function(mart, is_full_dataset,host="mar2009.archive.ensembl.org",path="/biomart/martservice",archive=FALSE)
+.prepareBiomartMetadata <- function(mart, is_full_dataset, 
+                            host="mar2009.archive.ensembl.org", 
+                            path="/biomart/martservice", archive=FALSE)
 {
     message("Prepare the 'metadata' data frame ... ",
             appendLF=FALSE)
     biomart <- biomaRt:::martBM(mart)
     dataset <- biomaRt:::martDataset(mart)
-    db_version <- .getBiomartDbVersion(biomart,host=host,path=path,archive=FALSE)
+    db_version <- .getBiomartDbVersion(mart, host=host, path=path, 
+                    biomart, archive=FALSE)
     datasets <- listDatasets(mart)
     dataset_rowidx <- which(as.character(datasets$dataset) == dataset)
     ## This should never happen (the above call to useMart() would have failed
