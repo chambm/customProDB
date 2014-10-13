@@ -1,14 +1,21 @@
 CHANGES IN VERSION 1.5.3
 -------------------------
 
-Fix a bug, ID mapping, in function OutputNovelJun.R
+BUG FIXES
+
+    o Fix a bug, ID mapping, in function OutputNovelJun.R
+
 
 CHANGES IN VERSION 1.5.4
 -------------------------
 
-Fix a bug, novel junction coding sequence on '-' strand, in function OutputNovelJun.R
+BUG FIXES
+
+    o Fix a bug, novel junction coding sequence on '-' strand, in function OutputNovelJun.R
 
 CHANGES IN VERSION 1.5.5
 -------------------------
 
-Fix a bug in function OutputNovelJun.R
+BUG FIXES
+
+    o Fix a bug in function OutputNovelJun.R
