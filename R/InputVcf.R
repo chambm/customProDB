@@ -126,7 +126,7 @@ InputVcf <- function(vcfFile, ...)
         #partA <- DataFrame(REF=as.character(vcf_new$REF), 
         #                ALT=as.character(vcf_new$ALT), QUAL=vcf_new$QUAL, 
         #                FILTER=vcf_new$FILTER)
-        vcf_granges <- vcf[[1]]$rowData
+        vcf_granges <- vcf[[1]]$rowRanges
         partAll <- lapply(geno_df, function(x) 
                     cbind(values(vcf_granges), DataFrame(partA, info_df, x) ))
         vcfs <- lapply(partAll, function(x) GRanges(seqnames=seqnames(vcf_granges),
