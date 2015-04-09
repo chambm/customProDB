@@ -5,7 +5,7 @@ import(Rsamtools)
 import(GenomicAlignments)
 import(Biostrings)
 import(GenomicFeatures)
-import(AnnotationDbi)
+import(AnnotationDbi::loadDb)
 import(VariantAnnotation)
 import(RSQLite)
 
@@ -23,7 +23,7 @@ importFrom(GenomicFeatures, cdsBy, exons, transcripts,
 
 importFrom(VariantAnnotation, scanVcf, scanVcfHeader, samples)		   
 
-importFrom(AnnotationDbi, loadDb)
+#importFrom(AnnotationDbi, loadDb)
 importFrom(stringr, 'str_sub<-' )
 importFrom(plyr, ddply, '.')
 

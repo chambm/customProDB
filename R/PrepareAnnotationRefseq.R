@@ -38,7 +38,7 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     tablename <- 'refGene'
 
     message("Build TranscriptDB object (txdb.sqlite) ... ", appendLF=TRUE)    
-    txdb <- makeTranscriptDbFromUCSC(genome=genome, tablename=tablename, 
+    txdb <- makeTxDbFromUCSC(genome=genome, tablename=tablename, 
                 transcript_ids=transcript_ids)
     saveDb(txdb, file=paste(annotation_path, '/txdb.sqlite', sep=''))
     packageStartupMessage(" done")
