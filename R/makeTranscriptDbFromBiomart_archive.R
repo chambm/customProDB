@@ -4,7 +4,7 @@
 ###
 ### For people who want to tap BioMart.
 ### Typical use:
-###   txdb <- makeTranscriptDbFromBiomart(biomart="ensembl",
+###   txdb <- makeTxDbFromBiomart(biomart="ensembl",
 ###                                       dataset="hsapiens_gene_ensembl")
 ### Speed:
 ###   - for biomart="ensembl" and dataset="hsapiens_gene_ensembl":
@@ -431,7 +431,7 @@ getChromInfoFromBiomart <- function(biomart="ENSEMBL_MART_ENSEMBL",
 
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-### makeTranscriptDbFromBiomart()
+### makeTxDbFromBiomart()
 ###
 
 .parseBMMartParams <- function(biomart="ENSEMBL_MART_ENSEMBL",
@@ -530,7 +530,7 @@ makeTranscriptDbFromBiomart_archive <- function(biomart="ENSEMBL_MART_ENSEMBL",
     metadata <- .prepareBiomartMetadata(mart, is.null(transcript_ids),host=host,path=path,archive=FALSE)
 
     message("Make the TxDb object ... ", appendLF=FALSE)
-    txdb <- makeTranscriptDb(transcripts, splicings,
+    txdb <- makeTxDb(transcripts, splicings,
                              genes=genes, chrominfo=chrominfo,
                              metadata=metadata)
     message("OK")

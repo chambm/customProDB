@@ -59,12 +59,12 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     
     #tr_coding <- subset(ids,pro_name!="")
     #tr_noncoding <- subset(ids,pro_name == "")
-    #txdb_coding <- makeTranscriptDbFromUCSC(genome=genome, tablename=tablename, 
+    #txdb_coding <- makeTxDbFromUCSC(genome=genome, tablename=tablename, 
     #                transcript_ids=tr_coding[, "tx_name"] )
     #saveDb(txdb_coding, 
     #       file=paste(annotation_path, '/txdb_coding.sqlite', sep=''))
     
-    #txdb_noncoding <- makeTranscriptDbFromUCSC(genome=genome, 
+    #txdb_noncoding <- makeTxDbFromUCSC(genome=genome, 
     #        tablename=tablename, transcript_ids=tr_noncoding[, "tx_name"] )
     #saveDb(txdb_noncoding, 
     #        file=paste(annotation_path, '/txdb_noncoding.sqlite', sep=''))
