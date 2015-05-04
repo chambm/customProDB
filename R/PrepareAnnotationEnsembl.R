@@ -143,13 +143,15 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     
     cdsByTx <- cdsBy(txdb, "tx", use.names=T)
     cdss <-  IRanges::as.data.frame(cdsByTx)
-    cds_chr_p <- data.frame(tx_name=cdss[, "group"], cds_chr_start=cdss[, "start"], 
+    cds_chr_p <- data.frame(tx_id=cdss[, "group"], tx_name=cdss[, "group_name"], 
+                    cds_chr_start=cdss[, "start"], 
                     cds_chr_end=cdss[, "end"], rank=cdss[, "exon_rank"])
     
     cds_chr_p_coding <- subset(cds_chr_p, tx_name %in% tr_coding[, 'tx_name'])
-    
-    exon <- merge(exon, cds_chr_p_coding, by.y=c("tx_name", "rank"), 
-            by.x=c("tx_name", "rank"), all.x=T)
+    cds_chr_p_coding <- cds_chr_p_coding[, 
+                        -which(colnames(cds_chr_p_coding)=='tx_name')]
+    exon <- merge(exon, cds_chr_p_coding, by.y=c("tx_id", "rank"), 
+            by.x=c("tx_id", "rank"), all.x=T)
         
     save(exon,file=paste(annotation_path, '/exon_anno.RData', sep=''))
     packageStartupMessage(" done")
