@@ -85,10 +85,12 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
             })
     
     
-    attributes.tr <- c("ensembl_gene_id", "ensembl_transcript_id", "ensembl_peptide_id")
+    attributes.tr <- c("ensembl_gene_id", "ensembl_transcript_id",
+        "ensembl_peptide_id")
     tr <- getBM(attributes=attributes.tr, mart=mart, 
                 filters='ensembl_transcript_id', values=transcript_ids)
-    colnames(tr) <- c("ensembl_gene_id", "ensembl_transcript_id", "ensembl_peptide_id")
+    colnames(tr) <- c("ensembl_gene_id", "ensembl_transcript_id", 
+        "ensembl_peptide_id")
     ids <- merge(tr, idssum, by='ensembl_gene_id')
     description <- paste(ids[, 'hgnc_symbol'], ids[, 'description'], sep='|')
     ids <- cbind(ids[, 1:3], description)
@@ -141,15 +143,15 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
         "3_utr_end", "cds_start", "cds_end", "rank", "tx_id")
     
     
-    cdsByTx <- cdsBy(txdb, "tx", use.names=T)
+    cdsByTx <- cdsBy(txdb, "tx", use.names=FALSE)
     cdss <-  IRanges::as.data.frame(cdsByTx)
-    cds_chr_p <- data.frame(tx_id=cdss[, "group"], tx_name=cdss[, "group_name"], 
+    cds_chr_p <- data.frame(tx_id=cdss[, "group_name"],
                     cds_chr_start=cdss[, "start"], 
                     cds_chr_end=cdss[, "end"], rank=cdss[, "exon_rank"])
     
-    cds_chr_p_coding <- subset(cds_chr_p, tx_name %in% tr_coding[, 'tx_name'])
-    cds_chr_p_coding <- cds_chr_p_coding[, 
-                        -which(colnames(cds_chr_p_coding)=='tx_name')]
+    
+    cds_chr_p_coding <- subset(cds_chr_p, tx_id %in% exon[which(exon[, 'pro_name'] != ''), 'tx_id'])
+    
     exon <- merge(exon, cds_chr_p_coding, by.y=c("tx_id", "rank"), 
             by.x=c("tx_id", "rank"), all.x=T)
         
@@ -181,8 +183,8 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
         coding <- rbind(coding, tmp)
     }
     colnames(coding) <- attributes.codingseq 
-    tx_id <- transintxdb[match(coding[, 'ensembl_transcript_id'], transintxdb[, 'tx_name']), 
-                'tx_id']
+    tx_id <- transintxdb[match(coding[, 'ensembl_transcript_id'], 
+                transintxdb[, 'tx_name']), 'tx_id']
     procodingseq <- cbind(coding, tx_id)
     colnames(procodingseq) <- c("coding", "pro_name", "tx_name", "tx_id")
     save(procodingseq,file=paste(annotation_path, '/procodingseq.RData', sep=''))
