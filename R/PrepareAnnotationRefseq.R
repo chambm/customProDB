@@ -96,7 +96,7 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     
     #txid <- matrix(unlist(strsplit(rownames(exons), '\\.')), ncol = 2, byrow =T)[, 1]
     #txid <- gsub('=','\\.', txid)
-    exon_p <- data.frame(txid=exons[, "group"], chr=exons[, "seqnames"], 
+    exon_p <- data.frame(txid=exons[, "group_name"], chr=exons[, "seqnames"], 
                 exon_s=exons[, "start"], exon_e=exons[, "end"], 
                 exon_rank=exons[, "exon_rank"])
     exon2tr <-  merge(exon_p, tr,by.y="tx_id", by.x="txid")
@@ -105,7 +105,7 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     #txid <- matrix(unlist(strsplit(rownames(cdss), '\\.')), ncol = 2, 
     #       byrow =T)[, 1]
     #txid <- gsub('=','\\.',txid)
-    cds_p <- data.frame(txid=cdss[, "group"], cds_s=cdss[, "start"], 
+    cds_p <- data.frame(txid=cdss[, "group_name"], cds_s=cdss[, "start"], 
                 cds_e=cdss[, "end"], exon_rank=cdss[, "exon_rank"], 
                 width=cdss[, "width"])
     ttt <- split(cds_p, cds_p$txid)
@@ -140,26 +140,40 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     #txid <- matrix(unlist(strsplit(rownames(fiveutrs), '\\.')), ncol = 2, 
     #               byrow =T)[, 1]
     #txid <- gsub('=','\\.', txid)
-    fiveutr_p <- data.frame(txid=fiveutrs[, "group"], fiveutr_s=fiveutrs[, "start"], 
-                fiveutr_e=fiveutrs[, "end"], exon_rank=fiveutrs[, "exon_rank"])
-    fiveutr2exon <- merge(cds2exon, fiveutr_p, by.x=c("txid", "exon_rank"), 
-                by.y =c("txid", "exon_rank"), all.x = TRUE)
-             
-    #txid <- matrix(unlist(strsplit(rownames(threeutrs),'\\.')), ncol = 2,byrow =T)[, 1]
-    #txid <- gsub('=','\\.', txid)
-    threeutr_p <- data.frame(txid=threeutrs[, "group"], threeutr_s=threeutrs[, "start"], 
-            threeutr_e=threeutrs[, "end"], exon_rank=threeutrs[, "exon_rank"])
-    threeutr2exon <- merge(fiveutr2exon, threeutr_p, by.x=c("txid", "exon_rank"),
-                by.y=c("txid", "exon_rank"), all.x = TRUE)
-    
-    #exon <- merge(threeutr2exon,ids,by.x=c("tx_name"),by.y="tx_name",all.x = TRUE)
-    exon <- threeutr2exon[order(threeutr2exon$txid, threeutr2exon$exon_rank), ]
-    
-    colnames(exon) <- c("tx_id","rank", "chromosome_name", "exon_chrom_start", 
-    "exon_chrom_end", "start_position", "end_position", "strand", "tx_name", 
-    "cds_chr_start", "cds_chr_end", "cds_start", "cds_end", "5_utr_start", 
-    "5_utr_end", "3_utr_start", "3_utr_end")
-
+    if(dim(fiveutrs)[1] > 0){
+        fiveutr_p <- data.frame(txid=fiveutrs[, "group_name"], 
+                                fiveutr_s=fiveutrs[, "start"], 
+                                fiveutr_e=fiveutrs[, "end"], 
+                                exon_rank=fiveutrs[, "exon_rank"])
+        fiveutr2exon <- merge(cds2exon, fiveutr_p, by.x=c("txid", "exon_rank"), 
+                    by.y =c("txid", "exon_rank"), all.x = TRUE)
+                 
+        #txid <- matrix(unlist(strsplit(rownames(threeutrs),'\\.')), 
+        #s    ncol = 2,byrow =T)[, 1]
+        #txid <- gsub('=','\\.', txid)
+        threeutr_p <- data.frame(txid=threeutrs[, "group_name"], 
+                                threeutr_s=threeutrs[, "start"], 
+                                threeutr_e=threeutrs[, "end"], 
+                                exon_rank=threeutrs[, "exon_rank"])
+        threeutr2exon <- merge(fiveutr2exon, threeutr_p, 
+                    by.x=c("txid", "exon_rank"),
+                    by.y=c("txid", "exon_rank"), all.x = TRUE)
+        
+        #exon <- merge(threeutr2exon,ids,by.x=c("tx_name"),by.y="tx_name",all.x = TRUE)
+        exon <- threeutr2exon[order(threeutr2exon$txid, threeutr2exon$exon_rank), ]
+        
+        colnames(exon) <- c("tx_id","rank", "chromosome_name", 
+            "exon_chrom_start", "exon_chrom_end", "start_position", 
+            "end_position", "strand", "tx_name", "cds_chr_start", 
+            "cds_chr_end", "cds_start", "cds_end", "5_utr_start", 
+            "5_utr_end", "3_utr_start", "3_utr_end")
+    }else{
+        exon <- cds2exon
+        colnames(exon) <- c("tx_id","rank", "chromosome_name", 
+            "exon_chrom_start", "exon_chrom_end", "start_position", 
+            "end_position", "strand", "tx_name", "cds_chr_start", 
+            "cds_chr_end", "cds_start", "cds_end")
+    }
     pro_name <- ids[match(exon[, 'tx_name'], ids[, 'tx_name']), 'pro_name']
     gene_name <- ids[match(exon[, 'tx_name'], ids[, 'tx_name']), 'gene_name']
     exon <- cbind(exon, pro_name, gene_name)
@@ -256,7 +270,7 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
         index <- which(elementLengths(exonByTx)==1)
         exonByTx_mul <- exonByTx[-index]
         exons_mul <- IRanges::as.data.frame(exonByTx_mul)
-        exonslist <- split(exons_mul, exons_mul$group)
+        exonslist <- split(exons_mul, exons_mul$group_name)
         #system.time( exonByTx <- exonsBy(txdb,"tx", use.names=F))
         splicemax_list <- lapply(exonslist, .gen_splicmatrix)
         splicemax <- do.call(rbind, splicemax_list)
