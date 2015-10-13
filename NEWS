@@ -1,0 +1,28 @@
+CHANGES IN VERSION 1.5.3
+-------------------------
+
+BUG FIXES
+
+    o Fix a bug, ID mapping, in function OutputNovelJun.R
+
+
+CHANGES IN VERSION 1.5.4
+-------------------------
+
+BUG FIXES
+
+    o Fix a bug, novel junction coding sequence on '-' strand, in function OutputNovelJun.R
+
+CHANGES IN VERSION 1.5.5
+-------------------------
+
+BUG FIXES
+
+    o Fix a bug in function OutputNovelJun.R
+
+CHANGES IN VERSION 1.8.2
+-------------------------
+
+UPDATED FUNCTIONS
+
+    o Update functions PrepareAnnotationEnsembl.R and PrepareAnnotationRefseq.R due to updates in depending packages
