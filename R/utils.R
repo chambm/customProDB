@@ -195,7 +195,7 @@ joinDataFrameWithName2Val <- function(x, join_colname, name2val, vals_colname)
     ## could be a factor (subsetting by a factor is equivalent to subsetting
     ## by an integer vector but this is not what we want here).
     tmp <- tmp[as.character(x[[join_colname]])]
-    x <- x[rep.int(seq_len(nrow(x)), elementLengths(tmp)), ]
+    x <- x[rep.int(seq_len(nrow(x)), elementNROWS(tmp)), ]
     row.names(x) <- NULL
     if (nrow(x) == 0L)
         vals <- name2val[FALSE]

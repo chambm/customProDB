@@ -1,4 +1,5 @@
 import(RCurl)
+import(S4Vectors)
 import(IRanges)
 import(GenomeInfoDb)
 import(GenomicRanges)

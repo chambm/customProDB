@@ -292,7 +292,7 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
         message("Prepare exon splice information (splicemax.RData) ... ", 
                 appendLF=FALSE)
         exonByTx <- exonsBy(txdb, "tx", use.names=F)
-        index <- which(elementLengths(exonByTx)==1)
+        index <- which(elementNROWS(exonByTx)==1)
         exonByTx_mul <- exonByTx[-index]
         exons_mul <- IRanges::as.data.frame(exonByTx_mul)
         exonslist <- split(exons_mul, exons_mul$group)
