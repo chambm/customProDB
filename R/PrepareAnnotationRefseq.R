@@ -228,9 +228,9 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
         dbsnps <- trackNames(session)[grep('snp', trackNames(session), fixed=T)]
         dbsnp <- pmatch(dbsnp, dbsnps)
         if (is.na(dbsnp)) 
-            stop("invalid dbsnp name for specified genome")
+            stop(paste("invalid dbsnp name for specified genome; available dbsnp sets:", dbsnps))
         if (dbsnp == -1) 
-            stop("ambiguous dbsnp name")
+            stop(paste("ambiguous dbsnp name; try matching to just one of the available dbsnp sets:", dbsnps))
         dbsnp_query <- ucscTableQuery(session, dbsnps[dbsnp],
                     table=paste(dbsnps[dbsnp], 'CodingDbSnp', sep=''))
         snpCodingTab <- getTable(dbsnp_query)
