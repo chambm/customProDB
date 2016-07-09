@@ -26,3 +26,15 @@ CHANGES IN VERSION 1.8.2
 UPDATED FUNCTIONS
 
     o Update functions PrepareAnnotationEnsembl.R and PrepareAnnotationRefseq.R due to updates in depending packages
+
+CHANGES IN VERSION 1.13.1
+-------------------------
+
+BUG FIXES
+
+    o Fix a small bug in function JunctionType.R
+
+NEW FEATURES
+
+    o Update the function OutputVarproseq.R to output a data frame 'snvproseq'
+	o Add a function OutputVarprocodingseq.R to output a data frame 'snvprocoding'

@@ -10,7 +10,7 @@
 ##'             Must provide dbSNP information in function Positionincoding() if put TRUE here.
 ##' @param RPKM If includes the RPKM value in the header of each sequence, default is NULL.
 ##' @param ... Additional arguments
-##' @return FASTA file containing proteins with single nucleotide variation.
+##' @return a FASTA file and a data frame containing proteins with single nucleotide variation.
 ##' @author Xiaojing Wang
 ##' @examples
 ##' 
@@ -32,7 +32,7 @@
 ##' codingseq <- procodingseq[procodingseq[, 'tx_id'] %in% txlist, ]
 ##' mtab <- aaVariation (postable_snv, codingseq)
 ##' outfile <- paste(tempdir(), '/test_snv.fasta',sep='')
-##' OutputVarproseq(mtab, proteinseq, outfile, ids, lablersid=TRUE)
+##' snvproseq <- OutputVarproseq(mtab, proteinseq, outfile, ids, lablersid=TRUE, RPKM=NULL)
 ##' 
 
 
@@ -109,5 +109,17 @@ OutputVarproseq <- function(vartable, proteinseq, outfile, ids, lablersid=FALSE,
         
             
         write(outformat, file=outfile)
+		
+		#######used as input for proBAMr 
+		snvproseq <-  ftab
+        snvproseq[, 'pro_name'] <- paste(snvproseq[, 'pro_name'], 
+                                        "_", snvproseq[, 'var_name'], sep='')
+        
+        
+        snvproseq <- snvproseq[, c('pro_name', 'peptide', 'tx_name.x', 
+								'pro_name_v', 'gene_name', 'description')]
+        colnames(snvproseq) <- c('pro_name', 'peptide', 'tx_name', 'pro_name_v',
+                                    'gene_name', 'description')
+        snvproseq   
         
     }
