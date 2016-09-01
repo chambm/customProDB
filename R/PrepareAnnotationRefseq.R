@@ -49,7 +49,7 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     query_refGene <- ucscTableQuery(session, "refGene", table="refGene", 
                     names=transcript_ids)
     refGene <- getTable(query_refGene)
-    query <- ucscTableQuery(session, "refGene", table="refLink", 
+    query <- ucscTableQuery(session, "refGene", table="hgFixed.refLink", 
                 names=refGene[, 'name2'])
     reflink <- getTable(query)
     ids <- subset(reflink, mrnaAcc %in% refGene[, 'name'], select = name:protAcc)
@@ -110,7 +110,7 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
                 width=cdss[, "width"])
     ttt <- split(cds_p, cds_p$txid)
     
-        cds_p_new_list <-lapply(ttt, function(x){
+    cds_p_new <- rbindlist(lapply(ttt, function(x){
         #len <- x[,'cds_e']-x[,'cds_s']+1
         #cum <- cumsum(len)
         cum <- cumsum(x[, 'width'])
@@ -118,10 +118,10 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
         colnames(rdis) <- c('cds_start', 'cds_end')
         tmp <- cbind(x, rdis)
         tmp
-        })
+        }))
     
 
-    cds_p_new <- do.call(rbind, cds_p_new_list)
+    #cds_p_new <- do.call(rbind, cds_p_new_list)
     cds_p_new <- cds_p_new[, -which(names(cds_p_new) %in% c("width"))]
     
     #for(i in 1:length(ttt)) {

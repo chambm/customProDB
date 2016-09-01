@@ -9,6 +9,7 @@ import(Biostrings)
 import(GenomicFeatures)
 import(VariantAnnotation)
 import(RSQLite)
+import(data.table)
 
 
 importFrom(rtracklayer,browserSession, ucscTableQuery,

@@ -36,68 +36,96 @@ OutputVarprocodingseq <- function(vartable, procodingseq, ids,
             lablersid=FALSE, ...)
     {
         options(stringsAsFactors=FALSE)
-        nonsy <- vartable[vartable[, 'vartype'] == "non-synonymous", ]
+        nonsy <- vartable[vartable$vartype == "non-synonymous", ]
         
         aavar2pro <- nonsy
         
-        refbase <- mapply(function(x, y) 
-                ifelse(y=='+', x, toString(reverseComplement(DNAStringSet(x)))), 
-                    aavar2pro[, 'refbase'], aavar2pro[, 'strand'])
-        varbase <- mapply(function(x,y) 
-                ifelse(y=='+', x, toString(reverseComplement(DNAStringSet(x)))), 
-                    aavar2pro[, 'varbase'], aavar2pro[, 'strand'])
-        aavar2pro[, 'refbase'] <- refbase
-        aavar2pro[, 'varbase'] <- varbase
-        aavar2pro <- aavar2pro[aavar2pro[, 'aaref']!="*", ]
+        complements <- c("A"="T","T"="A",
+                         "G"="C","C"="G",
+                         "M"="K","K"="M",
+                         "R"="Y","Y"="R",
+                         "W"="W","S"="S",
+                         "D"="H","H"="D",
+                         "B"="V","V"="B")
+        
+        fastComplement = function(base) complements[[base]]
+        refbase <- mapply(function(base, strand) ifelse(strand=='+', base, fastComplement(base)), aavar2pro$refbase, aavar2pro$strand)
+        varbase <- mapply(function(base, strand) ifelse(strand=='+', base, fastComplement(base)), aavar2pro$varbase, aavar2pro$strand)
+
+        aavar2pro$refbase <- refbase
+        aavar2pro$varbase <- varbase
+        aavar2pro <- aavar2pro[aavar2pro$aaref != "*", ]
         #aavar2pro <- aavar2pro[aavar2pro[, 'aavar']!="*", ]
         aavar2pro <- unique(aavar2pro)
 
+        setDT(aavar2pro, key=c("proname", "aapos"))
         
-        plist <- unique(aavar2pro[, 'proname'])
-        pepcoding <- procodingseq[procodingseq[, 'pro_name'] %in% plist, ]
-
-        pep_var <- pepcoding
-        pep_all<- c()
-        test <- c()
-        for(i in 1:dim(pep_var)[1]){
+        plist <- unique(aavar2pro$proname)
+        pepcoding <- procodingseq[procodingseq$pro_name %in% plist, ]
+        pep_vars_by_name = lapply(plist, function(x) aavar2pro[x, .(varbase, aaref, aavar=unlist(aavar), aapos, pincoding, rsid)])
+        names(pep_vars_by_name) = plist
+        
+        coding_index = which(colnames(pepcoding)=="coding")
+        complement_index = which(colnames(pepcoding)=="dna_complement")
+        
+        #pep_var <- pepcoding
+        var_names <- vector('character', length(plist))
+        pb = txtProgressBar(0, nrow(pepcoding), style=3)
+        for(i in 1:nrow(pepcoding)){
+            setTxtProgressBar(pb, i)
             #print(i)
-            pvar <-subset(aavar2pro,aavar2pro[, 'proname'] == pep_var[i, 'pro_name'])
-            pvar <- pvar[order(as.numeric(pvar[, 'aapos'])), ]
-            for(j in 1:dim(pvar)[1]){
-                substr(pep_var[i, 'coding'],as.integer(pvar[j, 'pincoding']), 
-                    as.integer(pvar[j, 'pincoding'])) <- 
-                                substr(pvar[j, 'varbase'], 1, 1)
-            }
-            if(pep_var[i, 'coding']!=pepcoding[i, 'coding']){
-                if(lablersid){
-                    var_name <- apply(pvar, 1, function(x) ifelse(is.na(x['rsid']),
-                            paste(x['aaref'], x['aapos'], x['aavar'], sep=""), 
-                            paste(x['rsid'], ":", x['aaref'], x['aapos'], x['aavar'], 
-                            sep="")))
-                }else{
-                    var_name <- apply(pvar, 1, function(x) 
-                            paste(x['aaref'], x['aapos'], x['aavar'], sep=""))
-                }
-                pep_name <- cbind(pep_var[i,], 
-                            var_name=gsub(" ", "", toString(var_name)))
-                pep_all <- rbind(pep_all, pep_name)
-
-            }else{
-                test <- c(test, pep_var[i, 'pro_name'])
-            }
-        }
+            #pvar <- aavar2pro[pep_var$pro_name[i, 'pro_name'])
+            #pvar <- pvar[order(as.numeric(pvar[, 'aapos'])), ]
+            pro_name = pepcoding$pro_name[[i]]
+            varcoding = pepcoding$coding[[i]]
+            varcomplement = pepcoding$dna_complement[[i]]
+            
+            pvar = pep_vars_by_name[[pro_name]]
+            pincoding = pvar$pincoding
+            aaref = pvar$aaref
+            aapos = pvar$aapos
+            aavar = pvar$aavar
+            rsid = pvar$rsid
+            varbase = pvar$varbase
+            
+            var_names_each = vector('character', nrow(pvar))
+            
+            # apply the SNPs to the reference coding sequence
+            for(j in 1:nrow(pvar)){
+                p = pincoding[[j]]
+                var = substr(varbase[[j]], 1, 1)
+                substr(varcoding, p, p) <- var
+                substr(varcomplement, p, p) <- fastComplement(var)
                 
-        ftab <- merge(pep_all, ids, by.x='pro_name', by.y='pro_name', all=F, 
-                    stringsAsFactors = FALSE)
-        snvprocoding <-  ftab
-        snvprocoding[, 'pro_name'] <- paste(snvprocoding[, 'pro_name'], 
-                                        "_", snvprocoding[, 'var_name'], sep='')
+                if(lablersid && !is.na(rsid[[j]])){
+                  var_names_each[[j]] <- paste0(rsid[[j]], ":", aaref[[j]], aapos[[j]], aavar[[j]])
+                }else{
+                  var_names_each[[j]] <- paste0(aaref[[j]], aapos[[j]], aavar[[j]])
+                }
+            }
+            # assign by reference
+            set(pepcoding, i, coding_index, varcoding)
+            set(pepcoding, i, complement_index, varcomplement)
+
+            var_names[[i]] = paste0(var_names_each, collapse=",")
+
+        }
+        close(pb)
         
+        pep_all = data.table(pro_name=pepcoding$pro_name,
+                             tx_name=pepcoding$tx_name,
+                             tx_id=pepcoding$tx_id,
+                             coding=pepcoding$coding,
+                             dna_complement=pepcoding$dna_complement,
+                             var_name=var_names,
+                             key="pro_name")
+
+        setDT(ids, key="pro_name")
+        snvprocoding = pep_all[ids, nomatch=0]
+        snvprocoding$pro_name <- paste0(snvprocoding$pro_name, "_", snvprocoding$var_name)
         
-        snvprocoding <- snvprocoding[, c(1:4, 6, 8)]
-        colnames(snvprocoding) <- c('pro_name', 'coding', 'tx_name', 'tx_id',
-                                    'gene_name', 'description')
-        snvprocoding    
+        snvprocoding[, .(pro_name, tx_name, tx_id,
+                         coding, dna_complement,
+                         gene_name, description)]
         #write(outformat, file=outfile)
-        
     }
