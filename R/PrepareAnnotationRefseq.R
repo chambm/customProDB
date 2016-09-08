@@ -110,7 +110,7 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
                 width=cdss[, "width"])
     ttt <- split(cds_p, cds_p$txid)
     
-    cds_p_new <- rbindlist(lapply(ttt, function(x){
+    cds_p_new <- as.data.frame(rbindlist(lapply(ttt, function(x){
         #len <- x[,'cds_e']-x[,'cds_s']+1
         #cum <- cumsum(len)
         cum <- cumsum(x[, 'width'])
@@ -118,7 +118,7 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
         colnames(rdis) <- c('cds_start', 'cds_end')
         tmp <- cbind(x, rdis)
         tmp
-        }))
+        })))
     
 
     #cds_p_new <- do.call(rbind, cds_p_new_list)
