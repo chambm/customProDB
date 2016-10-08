@@ -38,3 +38,11 @@ NEW FEATURES
 
     o Update the function OutputVarproseq.R to output a data frame 'snvproseq'
 	o Add a function OutputVarprocodingseq.R to output a data frame 'snvprocoding'
+
+CHANGES IN VERSION 1.13.2
+-------------------------
+
+UPDATED FUNCTIONS
+
+    o Update functions PrepareAnnotationEnsembl.R and PrepareAnnotationRefseq.R due to updates in depending packages
+

@@ -91,15 +91,20 @@ All the annotations are saved to a specified directory for latter use.
 
 The dbSNP data is huge and is getting larger and larger. 
 These two functions only download the data in coding region for performance reasons. 
-Use the code below to check the current dbSNP versions for a specified genome provided by the UCSC table browser
+Table \ref{tab:ChoosedbSNPversion} shows which dbSNP version to choose for a specified genome.
 
-<<dbSNPversion>>=
-library('rtracklayer')
-session <- browserSession()
-genome(session) <- 'hg19'
-dbsnps <- trackNames(session)[grep('snp', trackNames(session), fixed=T)]
-dbsnps
-@
+\begin{table*}[!ht]
+	\centering
+		\begin{tabular}{clll}\hline
+			Genome	&	Ensembl  dataset & Ensembl version & dbSNP version \\ \hline
+			hg19 & hsapiens\_gene\_ensembl	&	v55-now & snp131/snp132/snp135/snp137 \\
+			hg19 & hsapiens\_gene\_ensembl	&	v54 & snp130 \\
+			mm10 & mmusculus\_gene\_ensembl	&	v69-now & snp137 \\
+			mm9 & mmusculus\_gene\_ensembl	&	v54-v68 & snp128 \\ \hline
+		\end{tabular}
+	\caption{Choose dbSNP version}
+	\label{tab:ChoosedbSNPversion}
+\end{table*}
 
 
 
@@ -155,8 +160,7 @@ An alternative resource for annotation is ENSEMBL.
 The \Rfunction{PrepareAnnotationEnsembl} function downloads the annotation from ENSEMBL through \Rpackage{biomaRt}. 
 This process may take several hours if users choose to download the whole dataset.
 The ENSEMBL version number can be specified in the \Rfunarg{host} in \Rfunction{useMart} function.
-Go to website http://useast.ensembl.org/info/website/archives/index.html to check the currently available archives.
-It took about 1.5 hour to prepare all annotations for ENSEMBL v82 in our tests.
+It took about 1.5 hour to prepare all annotations for ENSEMBL v66 in our tests.
 
 <<PrepareAnnoENSEMBL, eval=FALSE>>=
 ensembl <- useMart("ENSEMBL_MART_ENSEMBL", dataset="hsapiens_gene_ensembl",

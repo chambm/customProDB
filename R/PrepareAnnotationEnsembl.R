@@ -14,7 +14,7 @@
 ##' @examples
 ##' 
 ##' ensembl <- useMart("ENSEMBL_MART_ENSEMBL", dataset="hsapiens_gene_ensembl",
-##' host="feb2012.archive.ensembl.org", path="/biomart/martservice", 
+##' host="sep2015.archive.ensembl.org", path="/biomart/martservice", 
 ##' archive=FALSE)
 ##' 
 ##' annotation_path <- tempdir()
