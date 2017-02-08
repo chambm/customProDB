@@ -43,19 +43,22 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
             if(host == 'may2009.archive.ensembl.org'){
                 genome(session) <- 'hg18'
                 dbsnps <- 'snp130'
-            }else{
+            }else if(host == 'may2012.archive.ensembl.org'||host == 'dec2013.archive.ensembl.org'||host == 'feb2014.archive.ensembl.org'){
                 genome(session) <- 'hg19'
                 dbsnps <- trackNames(session)[grep('snp', trackNames(session), fixed=T)]
-            }
+            }else{
+				genome(session) <- 'hg38'
+                dbsnps <- trackNames(session)[grep('snp', trackNames(session), fixed=T)]
+			}
         }
         
         if(dataset == 'mmusculus_gene_ensembl') {
-            if(host == 'jan2013.archive.ensembl.org'||host == 'oct2012.archive.ensembl.org'){
-                genome(session) <- 'mm10'
-                dbsnps <- 'snp137'
-            }else{
-                genome(session) <- 'mm9'
+            if(host == 'may2009.archive.ensembl.org'||host == 'may2012.archive.ensembl.org'){
+				genome(session) <- 'mm9'
                 dbsnps <- 'snp128'
+            }else{
+				genome(session) <- 'mm10'
+                dbsnps <- trackNames(session)[grep('snp', trackNames(session), fixed=T)]
             }
         }
         
@@ -154,7 +157,10 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     
     exon <- merge(exon, cds_chr_p_coding, by.y=c("tx_id", "rank"), 
             by.x=c("tx_id", "rank"), all.x=T)
-        
+    ###Ensembl use 1 & -1, change it to +/-
+	exon[, 'strand'] <- unlist(lapply(exon[, 'strand'], function(x) 
+			ifelse(x=='1', '+', '-')))
+    
     save(exon,file=paste(annotation_path, '/exon_anno.RData', sep=''))
     packageStartupMessage(" done")
     
@@ -212,7 +218,7 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
         proteinseq <- rbind(proteinseq, tmp)
     }
     colnames(proteinseq) <- c("peptide", "pro_name", "tx_name")
-    save(proteinseq, file=paste(annotation_path, '/proseq.RData', sep=''))
+    save(proteinseq, file=paste(annotation_path, '/proteinseq.RData', sep=''))
     packageStartupMessage(" done")
     
     

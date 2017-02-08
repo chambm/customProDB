@@ -64,7 +64,47 @@ OutputNovelJun <- function(junction_type, genome, outfile,
                 strand=novel_junc$strand, 
                 junction_id=novel_junc$id)
         
-        #match1_protx <- findOverlaps(junRange1,pro_trans)
+		######prepare annotation for proBAMr
+		jr1 <-  IRanges::as.data.frame(junRange1)
+		jr2 <- IRanges::as.data.frame(junRange2)
+		jr1_rank <- unlist(lapply(jr1[, 'strand'], function(x) ifelse(x=='+', 1, 2)))
+		jr1 <- cbind(jr1, rank=jr1_rank)
+		jr2_rank <- unlist(lapply(jr2[, 'strand'], function(x) ifelse(x=='+', 2, 1)))
+		
+		jr2 <- cbind(jr2, rank=jr2_rank)
+		
+		jrs <- rbind(jr1, jr2)
+		colnames(jrs) <- c('chromosome_name', 'cds_chr_start', 'cds_chr_end', 'width', 'strand', 'tx_name', 'rank')
+		ttt <- split(jrs, jrs$tx_name)
+
+        jrs_list <-lapply(ttt, function(x){
+        #len <- x[,'cds_e']-x[,'cds_s']+1
+        #cum <- cumsum(len)
+		x <- x[order(x$rank),]
+        cum <- cumsum(x[, 'width'])
+        rdis <- cbind(c(1, cum[1:length(cum)-1]+1), cum)
+        colnames(rdis) <- c('cds_start', 'cds_end')
+        tmp <- cbind(x, rdis)
+        tmp
+        })
+		
+		nov_jun_anno <- do.call(rbind, jrs_list)
+		
+		jun_anno <- merge(novel_junc[, 1:7], nov_jun_anno, by.x='id', by.y='tx_name')
+		jun_anno <- jun_anno[, -c(2, 6)]
+		colnames(jun_anno) <- c("tx_name", "start_position", "end_position", 'intron_len', 'cov',"chromosome_name", 
+			"cds_chr_start", "cds_chr_end", "width", 'strand', "rank", "cds_start", 
+			"cds_end")
+		pro_name <- paste(paste(jun_anno[, 'tx_name'], '_', 
+                    jun_anno[, 'chromosome_name'], ':', 
+                    jun_anno[, 'start_position'], '-', jun_anno[, 'end_position'], 
+                    sep=''), jun_anno[, 'cov'],sep='|')
+		jun_anno <- cbind(jun_anno, 'pro_name'=pro_name)
+		jun_anno[, 'chromosome_name'] <- gsub('chr', '', jun_anno[, 'chromosome_name'] )
+		save(jun_anno, file=paste(outfile, '_jun_anno.RData', sep=''))
+        
+        
+		#match1_protx <- findOverlaps(junRange1,pro_trans)
         #match2_protx <- findOverlaps(junRange2,pro_trans)
         
         #juntransRange1 <- junRange1[unique(queryHits(match1_protx))]
@@ -105,7 +145,8 @@ OutputNovelJun <- function(junction_type, genome, outfile,
                     
         junpepcoding <- data.frame('pro_name'=seqs_name, 
                                     'coding'=as.data.frame(seqs)[, 1])
-        #save(junpepcoding, file=outfile_c)
+        ######## coding seqs could be used as input for proBAMr
+		save(junpepcoding, file=paste(outfile, '_coding.RData', sep=''))
         
         peptides_r1 <- translate(seqs)
         peptides_r2 <- translate(subseq(seqs, start=2))
@@ -160,14 +201,24 @@ OutputNovelJun <- function(junction_type, genome, outfile,
         }else all_pep_rmstop <- all_pep
         ### check if any peptides can be found in the normal database, remove those
 
-        index_nor <- lapply(all_pep_rmstop[, 2], function(x) 
+        ###slow
+		index_nor <- lapply(all_pep_rmstop[, 2], function(x) 
                             grep(x, proteinseq[, 'peptide'], fixed=T))
         index_nor <- which(unlist(lapply(index_nor, length)) > 0)
         
         if(length(index_nor) > 0){
             all_pep_new <- all_pep_rmstop[-index_nor, ] 
         }else all_pep_new <- all_pep_rmstop
-        tmp <- paste('>', all_pep_new[, 1], '\n', all_pep_new[, 2], sep='')
+        
+		tmp <- paste('>', all_pep_new[, 1], '\n', all_pep_new[, 2], sep='')
         write(tmp, file=outfile)
+        
+		junpep <- data.frame( 'peptide'=all_pep_new[, 2], 'pro_name_v'=all_pep_new[, 1], 
+                             'pro_name' = unlist(lapply(all_pep_new[, 1], function(x)
+												strsplit(x, ' ')[[1]][1]
+											))
+							  )
+		
+		save(junpep, file=paste(outfile, '_junpep.RData', sep=''))
         
     }

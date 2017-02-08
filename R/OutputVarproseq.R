@@ -117,9 +117,10 @@ OutputVarproseq <- function(vartable, proteinseq, outfile, ids, lablersid=FALSE,
         
         
         snvproseq <- snvproseq[, c('pro_name', 'peptide', 'tx_name.x', 
-								'pro_name_v', 'gene_name', 'description')]
-        colnames(snvproseq) <- c('pro_name', 'peptide', 'tx_name', 'pro_name_v',
+								 'gene_name', 'description')]
+        colnames(snvproseq) <- c('pro_name', 'peptide', 'tx_name', 
                                     'gene_name', 'description')
-        snvproseq   
+        snvproseq
+		save(snvproseq, file=paste(outfile, '_snvproseq.RData', sep=''))
         
     }

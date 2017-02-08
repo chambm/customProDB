@@ -46,3 +46,16 @@ UPDATED FUNCTIONS
 
     o Update functions PrepareAnnotationEnsembl.R and PrepareAnnotationRefseq.R due to updates in depending packages
 
+
+CHANGES IN VERSION 1.14.1
+-------------------------
+
+UPDATED FUNCTIONS
+
+    o Update mouse dbsnp version part in function PrepareAnnotationEnsembl.R
+	o Update function OutputVarproseq.R, JunctionType.R and  calculateRPKM.R
+	 
+NEW FEATURES
+	o Update function OutputNovelJun.R to save '_jun_anno.RData', '_coding.RData' and '_junpep.RData', which could be used as input for proBAMr package
+	
+	
