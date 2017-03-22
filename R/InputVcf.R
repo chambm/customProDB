@@ -23,14 +23,15 @@
 
 InputVcf <- function(vcfFile, ...)
     {
+        library(VariantAnnotation)
         options(stringsAsFactors=FALSE)
-        vcf <- scanVcf(vcfFile)
         #vcf_header <-scanBcfHeader(vcfFile)
         vcf_header <-scanVcfHeader(vcfFile)
         #vcf_header
         #samname <- vcf_header[[1]]$Sample
         samname <- samples(vcf_header)
         samnum <- length(samname)
+        vcf <- scanVcf(vcfFile)
         
         ### remove position have multiple ALT
         #index_mul <- grep(',',vcf[[1]]$ALT, fixed=T)

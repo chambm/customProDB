@@ -3,7 +3,7 @@
 ##' This function uses the output of aaVariation() as input, introduces the nonsynonymous variation into the protein database.
 ##' @title Output the variant(SNVs) protein coding sequences
 ##' @param vartable A data frame which is the output of aaVariation().
-##' @param proteinseq A dataframe containing protein ids and the protein sequence.
+##' @param procodingseq A dataframe containing protein ids and coding sequence for the protein.
 ##' @param ids A dataframe containing gene/transcript/protein id mapping information.
 ##' @param lablersid If includes the dbSNP rsid in the header of each sequence, default is FALSE. 
 ##'             Must provide dbSNP information in function Positionincoding() if put TRUE here.

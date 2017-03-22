@@ -88,7 +88,7 @@ JunctionType <- function(jun, splicemax, txdb, ids, ...)
         part2_exon[queryHits(match2)] <- values(exons)["exon_id"][subjectHits(match2), ]
         
         ########################junction type
-        # the order below is matters
+        # the order below matters
         ##################################
         jun_type[intersect(unique(queryHits(match1_any)), 
             unique(queryHits(match2_any)))] <- 

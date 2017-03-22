@@ -9,14 +9,14 @@ OutputVarprocodingseq(vartable, procodingseq, ids, lablersid = FALSE, ...)
 \arguments{
 \item{vartable}{A data frame which is the output of aaVariation().}
 
+\item{procodingseq}{A dataframe containing protein ids and coding sequence for the protein.}
+
 \item{ids}{A dataframe containing gene/transcript/protein id mapping information.}
 
 \item{lablersid}{If includes the dbSNP rsid in the header of each sequence, default is FALSE. 
 Must provide dbSNP information in function Positionincoding() if put TRUE here.}
 
 \item{...}{Additional arguments}
-
-\item{proteinseq}{A dataframe containing protein ids and the protein sequence.}
 }
 \value{
 a data frame containing protein coding sequence proteins with single nucleotide variation.
