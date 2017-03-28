@@ -6,6 +6,7 @@
 ##' @param ... additional arguments
 ##' @return a list of GRanges object containing a representation of data from the VCF file
 ##' @author Xiaojing Wang
+##' @export
 ##' @examples
 ##' ## multiple samples in one VCF file
 ##' 
@@ -23,7 +24,6 @@
 
 InputVcf <- function(vcfFile, ...)
     {
-        library(VariantAnnotation)
         options(stringsAsFactors=FALSE)
         #vcf_header <-scanBcfHeader(vcfFile)
         vcf_header <-scanVcfHeader(vcfFile)

@@ -9,6 +9,7 @@
 ##' @param ... additional arguments
 ##' @return a GRange object that contains the shared junctions
 ##' @author Xiaojing Wang
+##' @export
 ##' @examples
 ##' 
 ##' path <- system.file("extdata/beds", package="customProDB")

@@ -58,4 +58,3 @@ snvproseq <- OutputVarproseq(mtab, proteinseq, outfile, ids, lablersid=TRUE, RPK
 \author{
 Xiaojing Wang
 }
-

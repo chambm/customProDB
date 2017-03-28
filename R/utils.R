@@ -277,3 +277,98 @@ makeExonRankCol <- function(exon_count, tx_strand)
     )
     unlist(ans)
 }
+
+
+
+#' Read the cached result of an expression from a locally cached file if it exists,
+#' else evaluate the expression, cache it, and return result.
+#' 
+#' @param expression The expression to be evaluated and returned if the cached result does not exist.
+#' @param local_cache_path The path that stores the cached objects. If NULL, no caching is performed.
+#' @param object_name The name of the object used to read/create the cache file.
+#' @return The result of evaluating the expression, either read from cache or from actually evaluating it.
+#' 
+#' @note If evaluating the expression has side-effects,
+#' they will not happen if the result is returned from cache.
+#' 
+#' @examples
+#' read_or_update_local_cache(2+2, temp_dir(), "TwoPlusTwo")
+read_or_update_local_cache <- function(expression, local_cache_path, object_name)
+{
+  if (is.null(local_cache_path))
+  {
+    return (expression)
+  }
+  else
+  {
+    cached_filepath = paste0(local_cache_path, "/", object_name, ".rds")
+    if (file.exists(cached_filepath))
+    {
+      return (readRDS(cached_filepath))
+    }
+    else
+    {
+      if (!dir.exists(local_cache_path)) { dir.create(local_cache_path, recursive=TRUE) }
+      result = expression
+      saveRDS(result, file=cached_filepath)
+      return (result)
+    }
+  }
+}
+
+read_or_update_local_cacheDb <- function(expression, local_cache_path, object_name)
+{
+  if (is.null(local_cache_path))
+  {
+    return (expression)
+  }
+  else
+  {
+    cached_filepath = paste0(local_cache_path, "/", object_name, ".sqlite")
+    if (file.exists(cached_filepath))
+    {
+      return (loadDb(cached_filepath))
+    }
+    else
+    {
+      if (!dir.exists(local_cache_path)) { dir.create(local_cache_path, recursive=TRUE) }
+      result = expression
+      saveDb(result, file=cached_filepath)
+      return (result)
+    }
+  }
+}
+
+# @return full path to this script
+#' current script file (in full path)
+#' @return The path of the currently executing script or code snippet.
+#' @examples
+#' current_script_file()
+#' @note Works with Rscript, source() or in RStudio Run selection
+current_script_file <- function() {
+  # http://stackoverflow.com/a/32016824/2292993
+  cmdArgs = commandArgs(trailingOnly = FALSE)
+  needle = "--file="
+  match = grep(needle, cmdArgs)
+  if (length(match) > 0) {
+    # Rscript via command line
+    return(normalizePath(sub(needle, "", cmdArgs[match])))
+  } else {
+    ls_vars = ls(sys.frames()[[1]])
+    if ("fileName" %in% ls_vars) {
+      # Source'd via RStudio
+      return(normalizePath(sys.frames()[[1]]$fileName)) 
+    } else {
+      if (!is.null(sys.frames()[[1]]$ofile)) {
+        # Source'd via R console
+        return(normalizePath(sys.frames()[[1]]$ofile))
+      } else if (rstudioapi::isAvailable() && nchar(rstudioapi::getActiveDocumentContext()$path) > 0) {
+        # RStudio Run Selection
+        # http://stackoverflow.com/a/35842176/2292993  
+        return(normalizePath(rstudioapi::getActiveDocumentContext()$path))
+      } else {
+        return("")
+      }
+    }
+  }
+}

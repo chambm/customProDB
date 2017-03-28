@@ -22,6 +22,7 @@
 ##' @param ... Additional arguments
 ##' @return A table file contains detailed variation information and several FASTA files.
 ##' @author Xiaojing Wang
+##' @export
 ##' @examples
 ##' 
 ##' bampath <- system.file("extdata/bams", package="customProDB")

@@ -3,13 +3,14 @@
 ##' by taking the RPKM value as input, the function outputs sequences of the proteins that pass the cutoff.
 ##' @title output FASTA format file contains proteins that have expression level above the cutoff
 ##' @param rpkm a numeric vector containing RPKM for each protein
-##' @param cutoff cutoff of RPKM value. Two options are available, percentage format or RPKM. By default we use "30%" or the RPKM value of 1. "30%" means we keep top 70% proteins according to their RPKMs.
+##' @param cutoff cutoff of RPKM value. Two options are available, percentage format or RPKM. By default we use "30\%" or the RPKM value of 1. "30\%" means we keep top 70\% proteins according to their RPKMs.
 ##' @param proteinseq a dataframe containing  protein ids and protein sequences.
 ##' @param outfile output file name.
 ##' @param ids a dataframe containing gene/transcript/protein id mapping information.
 ##' @param ... additional arguments
 ##' @return FASTA file contains proteins with RPKM above the cutoff.
 ##' @author Xiaojing Wang
+##' @export
 ##' @examples
 ##' 
 ##' load(system.file("extdata/refseq", "exon_anno.RData", package="customProDB"))

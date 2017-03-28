@@ -10,6 +10,7 @@
 ##' @param ... additional arguments
 ##' @return a data frame of type and source for each junction.
 ##' @author Xiaojing Wang
+##' @export
 ##' @examples
 ##' 
 ##' bedfile <- system.file("extdata/beds", "junctions1.bed", package="customProDB")

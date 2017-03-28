@@ -4,7 +4,8 @@
 \alias{OutputVarprocodingseq}
 \title{Output the variant(SNVs) protein coding sequences}
 \usage{
-OutputVarprocodingseq(vartable, procodingseq, ids, lablersid = FALSE, ...)
+OutputVarprocodingseq(vartable, procodingseq, ids, lablersid = FALSE,
+  show_progress = FALSE, ...)
 }
 \arguments{
 \item{vartable}{A data frame which is the output of aaVariation().}
@@ -15,6 +16,8 @@ OutputVarprocodingseq(vartable, procodingseq, ids, lablersid = FALSE, ...)
 
 \item{lablersid}{If includes the dbSNP rsid in the header of each sequence, default is FALSE. 
 Must provide dbSNP information in function Positionincoding() if put TRUE here.}
+
+\item{show_progress}{If true, a progress bar will be shown.}
 
 \item{...}{Additional arguments}
 }
@@ -52,4 +55,3 @@ OutputVarprocodingseq(mtab, codingseq, ids, lablersid=TRUE)
 \author{
 Xiaojing Wang
 }
-

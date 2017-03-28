@@ -12,6 +12,7 @@
 ##' @param ... Additional arguments
 ##' @return a FASTA file and a data frame containing proteins with single nucleotide variation.
 ##' @author Xiaojing Wang
+##' @export
 ##' @examples
 ##' 
 ##' vcffile <- system.file("extdata/vcfs", "test1.vcf", package="customProDB")

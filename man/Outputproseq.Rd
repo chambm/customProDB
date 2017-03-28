@@ -11,7 +11,7 @@
 
   \item{cutoff}{cutoff of RPKM value. Two options are
   available, percentage format or RPKM. By default we use
-  "30%" or the RPKM value of 1. "30%" means we keep top 70%
+  "30\%" or the RPKM value of 1. "30\%" means we keep top 70\%
   proteins according to their RPKMs.}
 
   \item{proteinseq}{a dataframe containing protein ids and

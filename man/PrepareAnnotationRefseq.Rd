@@ -6,7 +6,7 @@
 \usage{
 PrepareAnnotationRefseq(genome = "hg19", CDSfasta, pepfasta, annotation_path,
   dbsnp = NULL, transcript_ids = NULL, splice_matrix = FALSE,
-  COSMIC = FALSE, ...)
+  COSMIC = FALSE, local_cache_path = NULL, ...)
 }
 \arguments{
 \item{genome}{specify the UCSC DB identifier (e.g. "hg19")}
@@ -50,4 +50,3 @@ PrepareAnnotationRefseq(genome='hg19', CDSfasta, pepfasta, annotation_path,
 \author{
 Xiaojing Wang
 }
-

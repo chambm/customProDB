@@ -11,6 +11,7 @@
 ##' @param ... additional arguments
 ##' @return a FASTA file containing proteins with RPKM above the cutoff in at least certain number of samples
 ##' @author Xiaojing Wang
+##' @export
 ##' @examples
 ##' 
 ##' path <- system.file("extdata/bams", package="customProDB")

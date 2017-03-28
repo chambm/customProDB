@@ -9,6 +9,7 @@
 ##' @param ... Additional arguments.
 ##' @return FASTA file that contains novel junction peptides.
 ##' @author Xiaojing Wang
+##' @export
 ##' @examples
 ##' 
 ##' bedfile <- system.file("extdata/beds", "junctions1.bed", package="customProDB")

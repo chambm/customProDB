@@ -7,9 +7,13 @@
 ##' @param ids A dataframe containing gene/transcript/protein id mapping information.
 ##' @param lablersid If includes the dbSNP rsid in the header of each sequence, default is FALSE. 
 ##'             Must provide dbSNP information in function Positionincoding() if put TRUE here.
+##' @param show_progress If true, a progress bar will be shown.
 ##' @param ... Additional arguments
 ##' @return a data frame containing protein coding sequence proteins with single nucleotide variation.
 ##' @author Xiaojing Wang
+##' @import Biostrings
+##' @importFrom data.table data.table rbindlist setkey setDT set
+##' @export
 ##' @examples
 ##' 
 ##' vcffile <- system.file("extdata/vcfs", "test1.vcf", package="customProDB")
@@ -32,8 +36,7 @@
 ##' OutputVarprocodingseq(mtab, codingseq, ids, lablersid=TRUE)
 ##' 
 
-OutputVarprocodingseq <- function(vartable, procodingseq, ids, 
-            lablersid=FALSE, ...)
+OutputVarprocodingseq <- function(vartable, procodingseq, ids, lablersid=FALSE, show_progress=FALSE, ...)
     {
         options(stringsAsFactors=FALSE)
         nonsy <- vartable[vartable$vartype == "non-synonymous", ]
@@ -70,9 +73,9 @@ OutputVarprocodingseq <- function(vartable, procodingseq, ids,
         
         #pep_var <- pepcoding
         var_names <- vector('character', length(plist))
-        pb = txtProgressBar(0, nrow(pepcoding), style=3)
+        if (show_progress) { pb = txtProgressBar(0, nrow(pepcoding), style=3) }
         for(i in 1:nrow(pepcoding)){
-            setTxtProgressBar(pb, i)
+            if (show_progress) { setTxtProgressBar(pb, i) }
             #print(i)
             #pvar <- aavar2pro[pep_var$pro_name[i, 'pro_name'])
             #pvar <- pvar[order(as.numeric(pvar[, 'aapos'])), ]
@@ -110,7 +113,7 @@ OutputVarprocodingseq <- function(vartable, procodingseq, ids,
             var_names[[i]] = paste0(var_names_each, collapse=",")
 
         }
-        close(pb)
+        if (show_progress) { close(pb) }
         
         pep_all = data.table(pro_name=pepcoding$pro_name,
                              tx_name=pepcoding$tx_name,

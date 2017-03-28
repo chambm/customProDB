@@ -11,6 +11,13 @@
 ##' @param ... additional arguments
 ##' @return several .RData file containing annotations needed for following analysis.
 ##' @author Xiaojing Wang
+##' @importFrom AnnotationDbi saveDb loadDb
+##' @importFrom data.table data.table rbindlist setkey setDT 
+##' @importFrom rtracklayer browserSession ucscTableQuery tableNames getTable trackNames ucscSchema genome<-
+##' @importFrom GetoptLong qq
+##' @importFrom plyr ddply
+##' @import GenomicFeatures Biostrings
+##' @export
 ##' @examples
 ##' 
 ##' ensembl <- useMart("ENSEMBL_MART_ENSEMBL", dataset="hsapiens_gene_ensembl",
@@ -47,17 +54,17 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
                 genome(session) <- 'hg19'
                 dbsnps <- trackNames(session)[grep('snp', trackNames(session), fixed=T)]
             }else{
-				genome(session) <- 'hg38'
+                genome(session) <- 'hg38'
                 dbsnps <- trackNames(session)[grep('snp', trackNames(session), fixed=T)]
-			}
+            }
         }
         
         if(dataset == 'mmusculus_gene_ensembl') {
             if(host == 'may2009.archive.ensembl.org'||host == 'may2012.archive.ensembl.org'){
-				genome(session) <- 'mm9'
+                genome(session) <- 'mm9'
                 dbsnps <- 'snp128'
             }else{
-				genome(session) <- 'mm10'
+                genome(session) <- 'mm10'
                 dbsnps <- trackNames(session)[grep('snp', trackNames(session), fixed=T)]
             }
         }

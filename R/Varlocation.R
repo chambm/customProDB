@@ -10,6 +10,7 @@
 ##' @param ... additional arguments
 ##' @return a data frame of locations for each variation
 ##' @author Xiaojing Wang
+##' @export
 ##' @examples
 ##' \dontrun{
 ##' vcffile <- system.file("extdata/vcfs", "test1.vcf", package="customProDB")

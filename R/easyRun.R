@@ -19,6 +19,7 @@
 ##' @param ... Additional arguments
 ##' @return A table file contains detailed variation information and several FASTA files. 
 ##' @author Xiaojing Wang
+##' @export
 ##' @examples
 ##' 
 ##' bamFile <- system.file("extdata/bams", "test1_sort.bam", 

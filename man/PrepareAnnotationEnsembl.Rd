@@ -51,4 +51,3 @@ PrepareAnnotationEnsembl(mart=ensembl, annotation_path=annotation_path,
 \author{
 Xiaojing Wang
 }
-

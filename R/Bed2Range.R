@@ -10,6 +10,7 @@
 ##' @param ... additional arguments
 ##' @return a GRanges object containing all candidate junctions from the BED file.
 ##' @author Xiaojing Wang
+##' @export
 ##' @examples
 ##' 
 ##' bedfile <- system.file("extdata/beds", "junctions1.bed", package="customProDB")

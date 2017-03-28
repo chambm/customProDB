@@ -10,6 +10,8 @@
 ##' @param ... additional arguments
 ##' @return RPKM value for all transcripts or protein coding transcripts.
 ##' @author Xiaojing Wang
+##' @import Rsamtools GenomicRanges GenomicAlignments
+##' @export
 ##' @examples
 ##' 
 ##' ##test1.bam file is part of the whole bam file. 

@@ -9,6 +9,7 @@
 ##' @param ... additional arguments
 ##' @return a data frame containing the position in coding sequence for each variation
 ##' @author Xiaojing Wang
+##' @export
 ##' @examples
 ##' 
 ##' vcffile <- system.file("extdata/vcfs", "test1.vcf", package="customProDB")

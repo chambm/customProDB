@@ -7,6 +7,7 @@
 ##' @param ... additional arguments
 ##' @return a GRange object that contains the shared variations
 ##' @author Xiaojing Wang
+##' @export
 ##' @examples
 ##' 
 ##' path <- system.file("extdata/vcfs", package="customProDB")

@@ -12,6 +12,7 @@
 ##' @param ... Additional arguments.
 ##' @return FASTA file containing aberrant proteins.
 ##' @author Xiaojing Wang
+##' @export
 ##' @examples
 ##' 
 ##' vcffile <- system.file("extdata/vcfs", "test1.vcf", package="customProDB")

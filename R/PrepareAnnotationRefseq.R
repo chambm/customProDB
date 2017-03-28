@@ -12,6 +12,12 @@
 ##' @param ... additional arguments
 ##' @return several .RData file containing annotations needed for further analysis.
 ##' @author Xiaojing Wang
+##' @importFrom AnnotationDbi saveDb loadDb
+##' @importFrom data.table data.table rbindlist setkey setDT 
+##' @importFrom rtracklayer browserSession ucscTableQuery tableNames getTable trackNames ucscSchema genome<-
+##' @importFrom GetoptLong qq
+##' @import GenomicFeatures Biostrings
+##' @export
 ##' @examples
 ##' 
 ##' transcript_ids <- c("NM_001126112", "NM_033360", "NR_073499", "NM_004448",
@@ -30,29 +36,41 @@
 
 PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta, 
                 annotation_path, dbsnp=NULL, transcript_ids=NULL, 
-                splice_matrix=FALSE, COSMIC=FALSE, 
- ...) {
+                splice_matrix=FALSE, COSMIC=FALSE, local_cache_path=NULL, ...) {
     options(stringsAsFactors=FALSE)
+  
+    message("Creating UCSC browser session ... ", appendLF=TRUE)
     session  <- browserSession()
     genome(session) <- genome
     tablename <- 'refGene'
+    
+    if (!dir.exists(annotation_path) && !dir.create(annotation_path, recursive=TRUE)) {
+      stop("error creating annotation_path: ", annotation_path)
+    }
+    local_cache_path = paste0(local_cache_path, "/", genome)
 
-    message("Build TranscriptDB object (txdb.sqlite) ... ", appendLF=TRUE)    
-    txdb <- makeTxDbFromUCSC(genome=genome, tablename=tablename, 
-                transcript_ids=transcript_ids)
+    message("Building TranscriptDB object (txdb.sqlite) ... ", appendLF=TRUE)
+    txdb <- read_or_update_local_cacheDb(makeTxDbFromUCSC(genome=genome, tablename=tablename,
+                                                        transcript_ids=transcript_ids),
+                                         local_cache_path, "txdb")
     saveDb(txdb, file=paste(annotation_path, '/txdb.sqlite', sep=''))
     packageStartupMessage(" done")
     
     message("Prepare gene/transcript/protein id mapping information (ids.RData) ... ", 
             appendLF=FALSE)
     
-    query_refGene <- ucscTableQuery(session, "refGene", table="refGene", 
-                    names=transcript_ids)
-    refGene <- getTable(query_refGene)
-    query <- ucscTableQuery(session, "refGene", table="hgFixed.refLink", 
-                names=refGene[, 'name2'])
-    reflink <- getTable(query)
+    refGene <- read_or_update_local_cache(getTable(ucscTableQuery(session, "refGene", table="refGene",
+                                                                  names=transcript_ids)),
+                                          local_cache_path, "refGene")
+    stopifnot(nrow(refGene) > 0)
+    
+    reflink <- read_or_update_local_cache(getTable(ucscTableQuery(session, "refGene", table="hgFixed.refLink",
+                                                                  names=refGene[, 'name2'])),
+                                          local_cache_path, "reflink")
+    stopifnot(nrow(reflink) > 0)
+    
     ids <- subset(reflink, mrnaAcc %in% refGene[, 'name'], select = name:protAcc)
+    stopifnot(nrow(ids) > 0)
     colnames(ids) <- c('gene_name', 'description', 'tx_name', 'pro_name')
     save(ids, file=paste(annotation_path, '/ids.RData', sep=''))
     packageStartupMessage(" done")
@@ -69,11 +87,13 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     #saveDb(txdb_noncoding, 
     #        file=paste(annotation_path, '/txdb_noncoding.sqlite', sep=''))
     
-    message("Prepare exon annotation information (exon_anno.RData) ... ", 
+    message("Preparing exon annotation information (exon_anno.RData) ... ", 
             appendLF=FALSE)
     
     transGrange <- transcripts(txdb)
     tr <- IRanges::as.data.frame(transGrange)
+    stopifnot(nrow(tr) > 0)
+    
     cdsByTx <- cdsBy(txdb, "tx", use.names=F)
     exonByTx <- exonsBy(txdb, "tx", use.names=F)
     fiveutrByTx <- fiveUTRsByTranscript(txdb, use.names=F)
@@ -110,7 +130,7 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
                 width=cdss[, "width"])
     ttt <- split(cds_p, cds_p$txid)
     
-    cds_p_new <- as.data.frame(rbindlist(lapply(ttt, function(x){
+    cds_p_new <- as.data.frame(data.table::rbindlist(lapply(ttt, function(x){
         #len <- x[,'cds_e']-x[,'cds_s']+1
         #cum <- cumsum(len)
         cum <- cumsum(x[, 'width'])
@@ -177,11 +197,12 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     pro_name <- ids[match(exon[, 'tx_name'], ids[, 'tx_name']), 'pro_name']
     gene_name <- ids[match(exon[, 'tx_name'], ids[, 'tx_name']), 'gene_name']
     exon <- cbind(exon, pro_name, gene_name)
+    stopifnot(nrow(exon) > 0)
     
     save(exon, file=paste(annotation_path, '/exon_anno.RData', sep=''))
     packageStartupMessage(" done")
     
-    message("Prepare protein sequence (proseq.RData) ... ", appendLF=FALSE)
+    message("Preparing protein sequence (proseq.RData) ... ", appendLF=FALSE)
     pro_seqs <- readAAStringSet(pepfasta, format= 'fasta')
     pro_name_v <- names(pro_seqs)
     pro_name <- unlist(lapply(pro_name_v, function(x) strsplit(x, '\\.')[[1]][1]))
@@ -190,10 +211,11 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     proteinseq <- cbind(proteinseq, pro_name_v, pro_name, tx_name)
     colnames(proteinseq) <- c("peptide", "pro_name_v", "pro_name", "tx_name")
     proteinseq <- subset(proteinseq, tx_name %in% refGene[, 'name'])
+    stopifnot(nrow(proteinseq) > 0)
     save(proteinseq, file=paste(annotation_path, '/proseq.RData', sep=''))
     packageStartupMessage(" done")
     
-    message("Prepare protein coding sequence (procodingseq.RData)... ", 
+    message("Preparing protein coding sequence (procodingseq.RData)... ", 
                 appendLF=FALSE)
     cds_seqs <- readDNAStringSet(CDSfasta, format= 'fasta')
     tx_name_tmp <- unlist(lapply(names(cds_seqs), function(x) strsplit(x, ' ')[[1]][1]))
@@ -218,22 +240,45 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     procodingseq <- cbind(procodingseq, names(cds_seqs), pro_name, tx_name, tx_id)
     colnames(procodingseq) <- c("coding", "tx_name_full", "pro_name", "tx_name", "tx_id")
     procodingseq <- subset(procodingseq, tx_name %in% refGene[, 'name'])
+    stopifnot(nrow(procodingseq) > 0)
     save(procodingseq, file=paste(annotation_path, '/procodingseq.RData', sep=''))
     
     packageStartupMessage(" done")
     
     if (!is.null(dbsnp)) {
-        message("Prepare dbSNP information (dbsnpinCoding.RData) ... ", 
-                appendLF=FALSE)
+        dbsnp_cache_path = paste0(local_cache_path, "/", dbsnp)
+        
+        message("Preparing dbSNP information (dbsnpinCoding.RData) ... ", appendLF=FALSE)
         dbsnps <- trackNames(session)[grep('snp', trackNames(session), fixed=T)]
         dbsnp <- pmatch(dbsnp, dbsnps)
         if (is.na(dbsnp)) 
             stop("invalid dbsnp name for specified genome")
         if (dbsnp == -1) 
             stop("ambiguous dbsnp name")
-        dbsnp_query <- ucscTableQuery(session, dbsnps[dbsnp],
-                    table=paste(dbsnps[dbsnp], 'CodingDbSnp', sep=''))
-        snpCodingTab <- getTable(dbsnp_query)
+        
+        # for a small set of transcripts, query UCSC's MySQL table directly
+        if (!is.null(transcript_ids) && length(transcript_ids) < 1000) {
+          getSnpTable = function(genome, transcripts) {
+            snpTable = paste0(dbsnps[dbsnp], 'CodingDbSnp')
+            transcriptSet = paste0('("', paste(transcript_ids, collapse='", "'), '")', collapse="")
+            sql = qq('SELECT snp.chrom, chromStart, chromEnd, snp.name, snp.transcript, alleleCount, alleles
+FROM @{snpTable} snp
+JOIN (SELECT chrom, txStart, txEnd FROM refGene WHERE name IN @{transcriptSet}) txInfo ON snp.chrom=txInfo.chrom
+AND snp.chromStart BETWEEN txInfo.txStart AND txInfo.txEnd
+WHERE snp.transcript IN @{transcriptSet}')
+            ucscDb = RMySQL::dbConnect(RMySQL::MySQL(), host="genome-mysql.soe.ucsc.edu", user="genome", dbname=genome)
+            result = DBI::dbGetQuery(ucscDb, sql)
+            RMySQL::dbDisconnect(ucscDb)
+            return (result)
+          }
+          
+          snpCodingTab = read_or_update_local_cache(getSnpTable(genome, transcript_ids), dbsnp_cache_path, "snpCodingTab")
+        } else {
+          snpCodingTab = read_or_update_local_cache(getTable(ucscTableQuery(session, dbsnps[dbsnp],
+                                                                            table=paste0(dbsnps[dbsnp],
+                                                                                         'CodingDbSnp'))),
+                                                    dbsnp_cache_path, "snpCodingTab")
+        }
         snpCoding <- subset(snpCodingTab,transcript %in% refGene[, 'name'], 
                         select=c(chrom:name, alleleCount, alleles))
         snpCoding <- unique(snpCoding)
@@ -243,17 +288,16 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
             end=snpCoding[, 'chromEnd']), strand='*', 
             rsid=snpCoding[, 'name'], alleleCount=snpCoding[, 'alleleCount'], 
             alleles=snpCoding[, 'alleles'])    
-        save(dbsnpinCoding, file=paste(annotation_path, '/dbsnpinCoding.RData', 
-                sep=''))
+        save(dbsnpinCoding, file=paste(annotation_path, '/dbsnpinCoding.RData', sep=''))
         packageStartupMessage(" done")
     }
     
     if (COSMIC) {
         #cosmic <- trackNames(session)[grep('cosmic',trackNames(session), fixed=T)]
-        message("Prepare COSMIC information (cosmic.RData) ... ", appendLF=FALSE)
+        message("Preparing COSMIC information (cosmic.RData) ... ", appendLF=FALSE)
         
-        cosmic_query <- ucscTableQuery(session, 'cosmic', table='cosmic')
-        cosmicTab <- getTable(cosmic_query)
+        cosmicTab <- read_or_update_local_cache(getTable(ucscTableQuery(session, 'cosmic', table='cosmic')),
+                                                local_cache_path, "cosmicTab")
         cosmic <- GRanges(seqnames=cosmicTab[, 'chrom'], 
         ranges=IRanges(start=cosmicTab[, 'chromStart'], end=cosmicTab[, 'chromEnd']), 
         strand = '*', cosid=cosmicTab[,'name'])    
@@ -264,9 +308,9 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
         save(cosmic,file=paste(annotation_path, '/cosmic.RData', sep=''))
         packageStartupMessage(" done")        
     }
+    
     if(splice_matrix){
-        message("Prepare exon splice information (splicemax.RData) ... ", 
-                appendLF=FALSE)
+        message("Preparing exon splice information (splicemax.RData) ... ", appendLF=FALSE)
         index <- which(elementNROWS(exonByTx)==1)
         exonByTx_mul <- exonByTx[-index]
         exons_mul <- IRanges::as.data.frame(exonByTx_mul)

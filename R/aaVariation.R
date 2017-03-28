@@ -5,9 +5,12 @@
 ##' @title get the functional consequencece of SNVs located in coding region
 ##' @param position_tab a data frame from Positionincoding()
 ##' @param coding a data frame cotaining coding sequence for each protein.
+##' @param show_progress If true, a progress bar will be shown.
 ##' @param ... Additional arguments
 ##' @return a data frame containing consequence for each variations.
 ##' @author Xiaojing Wang
+##' @importFrom data.table data.table rbindlist setkey setDT 
+##' @export
 ##' @examples
 ##' 
 ##' vcffile <- system.file("extdata/vcfs", "test1.vcf", package="customProDB")
@@ -28,7 +31,7 @@
 ##' 
 ##' 
 
-aaVariation <-  function(position_tab, coding, ...)
+aaVariation <-  function(position_tab, coding, show_progress=FALSE, ...)
 {
   options(stringsAsFactors=FALSE)
   
@@ -80,7 +83,7 @@ aaVariation <-  function(position_tab, coding, ...)
   
   fastTranslate = function(codon) tryCatch(GENETIC_CODE[[codon]], error=function(e) "X")
   
-  pb = txtProgressBar(style=3, min=1, max=length(varcode))
+  if (show_progress) { pb = txtProgressBar(style=3, min=1, max=length(varcode)) }
   
   varaa = vector('character', length(varcode))
   vartype <- vector('character', length(varcode))
@@ -89,7 +92,7 @@ aaVariation <-  function(position_tab, coding, ...)
   aavar <- vector('character', length(varcode))
   for (i in 1:length(varcode))
   {
-    setTxtProgressBar(pb, i)
+    if (show_progress) { setTxtProgressBar(pb, i) }
     
     # if there are no ambiguous bases, simply do a quick translation
     if (!stringi::stri_detect_regex(varcode[[i]], "[^ACGT]")) {
@@ -123,7 +126,7 @@ aaVariation <-  function(position_tab, coding, ...)
       }
     }
   }
-  close(pb)
+  if (show_progress) { close(pb) }
 
   # return input table with new columns added
   mtable$refcode = unlist(refcode)
