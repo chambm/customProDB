@@ -5,7 +5,8 @@
 \title{prepare annotation from ENSEMBL}
 \usage{
 PrepareAnnotationEnsembl(mart, annotation_path, splice_matrix = FALSE,
-  dbsnp = NULL, transcript_ids = NULL, COSMIC = FALSE, ...)
+  dbsnp = NULL, transcript_ids = NULL, COSMIC = FALSE,
+  local_cache_path = NULL, ...)
 }
 \arguments{
 \item{mart}{which version of ENSEMBL dataset to use. see useMart from package biomaRt for more detail.}

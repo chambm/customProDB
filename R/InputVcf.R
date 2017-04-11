@@ -6,6 +6,7 @@
 ##' @param ... additional arguments
 ##' @return a list of GRanges object containing a representation of data from the VCF file
 ##' @author Xiaojing Wang
+##' @importFrom VariantAnnotation scanVcfHeader scanVcf samples
 ##' @export
 ##' @examples
 ##' ## multiple samples in one VCF file

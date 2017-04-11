@@ -15,8 +15,8 @@
 ##' @importFrom data.table data.table rbindlist setkey setDT 
 ##' @importFrom rtracklayer browserSession ucscTableQuery tableNames getTable trackNames ucscSchema genome<-
 ##' @importFrom GetoptLong qq
-##' @importFrom plyr ddply
-##' @import GenomicFeatures Biostrings
+##' @importFrom plyr ddply .
+##' @import GenomicFeatures Biostrings biomaRt
 ##' @export
 ##' @examples
 ##' 
@@ -38,14 +38,21 @@
 
 
 PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE, 
-                dbsnp=NULL, transcript_ids=NULL, COSMIC=FALSE,
- ...) {
+                dbsnp=NULL, transcript_ids=NULL, COSMIC=FALSE, local_cache_path=NULL, ...) {
     options(stringsAsFactors=FALSE)
+  
     dataset <- biomaRt:::martDataset(mart)
     biomart <- biomaRt:::martBM(mart)
+    version <- sub("Ensembl Genes (\\d+)", "\\1", listEnsembl(mart)[listEnsembl(mart)["biomart"]=="ensembl", 2])
+  
+    if (!dir.exists(annotation_path) && !dir.create(annotation_path, recursive=TRUE)) {
+      stop("error creating annotation_path: ", annotation_path)
+    }
+    local_cache_path = qq("@{local_cache_path}/@{dataset}_@{version}")
+  
     host <- strsplit(strsplit(biomaRt:::martHost(mart), ':')[[1]][2], '//')[[1]][2]
     if (!is.null(dbsnp)) {
-        session  <- browserSession()
+      session  <- browserSession()
         if(dataset == 'hsapiens_gene_ensembl') {
             if(host == 'may2009.archive.ensembl.org'){
                 genome(session) <- 'hg18'
@@ -69,23 +76,29 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
             }
         }
         
-        dbsnp <- pmatch(dbsnp, dbsnps)
-        if (is.na(dbsnp)) 
+        dbsnp_cache_path = paste0(local_cache_path, "/", dbsnp)
+        
+        if (!is.null(dbsnp))
+        {
+            dbsnp <- pmatch(dbsnp, dbsnps)
+            if (is.na(dbsnp)) 
                 stop("invalid dbsnp name for specified genome")
-        if (dbsnp == -1) 
+            if (dbsnp == -1) 
                 stop("ambiguous dbsnp name")
+        }
     }
     
-    message("Prepare gene/transcript/protein id mapping information (ids.RData) ... ", 
-            appendLF=FALSE)
+    message("Prepare gene/transcript/protein id mapping information (ids.RData) ... ", appendLF=FALSE)
     
     if(is.null(transcript_ids)){ 
-        transcript_ids <- getBM(attributes=c("ensembl_transcript_id"), mart=mart)[,1]
-        
+        transcript_ids <- read_or_update_local_cache(getBM(attributes=c("ensembl_transcript_id"), mart=mart)[,1],
+                                                     local_cache_path, "transcript_ids")
     }
     attributes.id <- c("ensembl_gene_id", "hgnc_symbol", "description") 
-    idstab <- getBM(attributes=attributes.id, mart=mart, 
-                filters='ensembl_transcript_id', values=transcript_ids)
+    idstab <- read_or_update_local_cache(getBM(attributes=attributes.id, mart=mart, 
+                                               filters='ensembl_transcript_id', values=transcript_ids),
+                                         local_cache_path, "idstab")
+    stopifnot(nrow(idstab) > 0)
     colnames(idstab) <- c("ensembl_gene_id", "hgnc_symbol", "description") 
     
             idssum <- ddply(idstab, .(ensembl_gene_id), function(x) {
@@ -97,8 +110,10 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     
     attributes.tr <- c("ensembl_gene_id", "ensembl_transcript_id",
         "ensembl_peptide_id")
-    tr <- getBM(attributes=attributes.tr, mart=mart, 
-                filters='ensembl_transcript_id', values=transcript_ids)
+    tr <- read_or_update_local_cache(getBM(attributes=attributes.tr, mart=mart,
+                                           filters='ensembl_transcript_id', values=transcript_ids),
+                                     local_cache_path, "tr")
+    stopifnot(nrow(tr) > 0)
     colnames(tr) <- c("ensembl_gene_id", "ensembl_transcript_id", 
         "ensembl_peptide_id")
     ids <- merge(tr, idssum, by='ensembl_gene_id')
@@ -113,9 +128,10 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     tr_coding <- subset(ids, pro_name != "")
     tr_noncoding <- subset(ids, pro_name == "")
     
-    txdb<- makeTranscriptDbFromBiomart_archive(biomart=biomart, dataset=dataset, 
-            host=host, path="/biomart/martservice", archive=FALSE, 
-            transcript_ids=transcript_ids)
+    txdb<- read_or_update_local_cacheDb(makeTranscriptDbFromBiomart_archive(biomart=biomart, dataset=dataset, 
+                                                                            host=host, archive=FALSE, 
+                                                                            transcript_ids=transcript_ids),
+            local_cache_path, "txdb")
     #saveFeatures(txdb, file=paste(annotation_path,'/txdb.sqlite',sep=''))
     saveDb(txdb, file=paste(annotation_path, '/txdb.sqlite', sep=''))
     packageStartupMessage(" done")
@@ -142,8 +158,10 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
         "chromosome_name", "start_position", "end_position", "exon_chrom_start", 
         "exon_chrom_end", "strand", "5_utr_start", "5_utr_end", "3_utr_start", 
         "3_utr_end", "cds_start", "cds_end", "rank", "ensembl_transcript_id")
-    exon <- getBM(attributes=attributes.exon, mart=mart, 
-            filters='ensembl_transcript_id', values=transcript_ids)
+    exon <- read_or_update_local_cache(getBM(attributes=attributes.exon, mart=mart, 
+                                             filters='ensembl_transcript_id', values=transcript_ids),
+                                       local_cache_path, "exon")
+    stopifnot(nrow(exon) > 0)
     colnames(exon) <- attributes.exon
     exon <- merge(exon, transintxdb, by.x="ensembl_transcript_id", by.y="tx_name")
     
@@ -171,30 +189,33 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     save(exon,file=paste(annotation_path, '/exon_anno.RData', sep=''))
     packageStartupMessage(" done")
     
-    message("Prepare protein coding sequence (procodingseq.RData)... ", 
-            appendLF=FALSE)
+    message("Prepare protein coding sequence (procodingseq.RData)... ", appendLF=FALSE)
     attributes.codingseq <- c("coding", "ensembl_peptide_id", 
             "ensembl_transcript_id") 
-    if(length(tr_coding[, 'pro_name']<10000)){
-        coding <- getBM(attributes=attributes.codingseq, 
-                    filters="ensembl_peptide_id", values=tr_coding[, 'pro_name'], 
-                    mart=mart)
-    }else{ 
+
+    getCoding = function() {
+      if(length(tr_coding[, 'pro_name']<10000)){
+        getBM(attributes=attributes.codingseq, filters="ensembl_peptide_id", 
+              values=tr_coding[, 'pro_name'], mart=mart)
+      }else{ 
         index <- floor(length(tr_coding[, 'pro_name'])/10000)
         coding <- c()
         for(i in 1:index) {
-            st <- (i-1)*10000+1
-            ed <- i*10000
-            tmp <- getBM(attributes=attributes.codingseq, filters="ensembl_peptide_id", 
-                        values=tr_coding[st:ed, 'pro_name'], mart=mart)
-            coding <- rbind(coding, tmp)
-            #print(i)
+          st <- (i-1)*10000+1
+          ed <- i*10000
+          tmp <- getBM(attributes=attributes.codingseq, filters="ensembl_peptide_id", 
+                       values=tr_coding[st:ed, 'pro_name'], mart=mart)
+          coding <- rbind(coding, tmp)
+          #print(i)
         }
         tmp <- getBM(attributes=attributes.codingseq, filters="ensembl_peptide_id", 
-                values=tr_coding[ed+1:length(tr_coding[, 'pro_name']), 'pro_name'], 
-                mart=mart)
+                     values=tr_coding[ed+1:length(tr_coding[, 'pro_name']), 'pro_name'], 
+                     mart=mart)
         coding <- rbind(coding, tmp)
+      }
     }
+    coding <- read_or_update_local_cache(getCoding(), local_cache_path, "coding")
+    stopifnot(nrow(coding) > 0)
     colnames(coding) <- attributes.codingseq 
     tx_id <- transintxdb[match(coding[, 'ensembl_transcript_id'], 
                 transintxdb[, 'tx_name']), 'tx_id']
@@ -205,34 +226,37 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     
     message("Prepare protein sequence (proseq.RData) ... ", appendLF=FALSE)
     attributes.proseq <- c("peptide", "ensembl_peptide_id", "ensembl_transcript_id") 
-    if(length(tr_coding[, 'pro_name']<10000)){
-        proteinseq <- getBM(attributes=attributes.proseq, 
-            filters="ensembl_peptide_id", values=tr_coding[,'pro_name'], mart=mart)
-    }else{ 
+    getProteinseq = function() {
+      if(length(tr_coding[, 'pro_name']<10000)){
+        getBM(attributes=attributes.proseq, filters="ensembl_peptide_id",
+              values=tr_coding[,'pro_name'], mart=mart)
+      }else{ 
         index <- floor(length(tr_coding[, 'pro_name'])/10000)
         proteinseq <- c()
         for(i in 1:index) {
-            st <- (i-1)*10000+1
-            ed <- i*10000
-            tmp <- getBM(attributes=attributes.proseq, filters="ensembl_peptide_id", 
-                    values= tr_coding[st:ed, 'pro_name'], mart=mart)
-            proteinseq <- rbind(proteinseq, tmp)
-            #print(i)
+          st <- (i-1)*10000+1
+          ed <- i*10000
+          tmp <- getBM(attributes=attributes.proseq, filters="ensembl_peptide_id", 
+                       values= tr_coding[st:ed, 'pro_name'], mart=mart)
+          proteinseq <- rbind(proteinseq, tmp)
+          #print(i)
         }
         tmp <- getBM(attributes=attributes.proseq, filters="ensembl_peptide_id", 
-            values=tr_coding[ed+1:length(tr_coding[, 'pro_name']), 'pro_name'], 
-            mart=mart)
+                     values=tr_coding[ed+1:length(tr_coding[, 'pro_name']), 'pro_name'], 
+                     mart=mart)
         proteinseq <- rbind(proteinseq, tmp)
+      }
     }
+    proteinseq <- read_or_update_local_cache(getProteinseq(), local_cache_path, "proteinseq")
+    stopifnot(nrow(proteinseq) > 0)
     colnames(proteinseq) <- c("peptide", "pro_name", "tx_name")
-    save(proteinseq, file=paste(annotation_path, '/proteinseq.RData', sep=''))
+    save(proteinseq, file=paste(annotation_path, '/proseq.RData', sep=''))
     packageStartupMessage(" done")
     
     
     if (!is.null(dbsnp)) {
         
-        message("Prepare dbSNP information (dbsnpinCoding.RData) ... ", 
-            appendLF=FALSE)
+        message("Prepare dbSNP information (dbsnpinCoding.RData) ... ", appendLF=FALSE)
         
         if(length(dbsnps) == 1&&dbsnps == 'snp128'){
             dbsnp_query <- ucscTableQuery(session, dbsnps[dbsnp], table='snp128')
@@ -240,7 +264,7 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
             dbsnp_query <- ucscTableQuery(session, dbsnps[dbsnp], 
                     table=paste(dbsnps[dbsnp], 'CodingDbSnp', sep=''))
         }
-        snpCodingTab <- getTable(dbsnp_query)
+        snpCodingTab <- read_or_update_local_cache(getTable(dbsnp_query), dbsnp_cache_path, "snpCodingTab")
         snpCodingTab[, 'chrom'] <- gsub('chr', '', snpCodingTab[, 'chrom'])
         chrlist <- paste(c(seq(1:22),'X','Y'))
         snpCoding <- subset(snpCodingTab, chrom %in% chrlist ,select=c(chrom:name, alleleCount, alleles))
@@ -277,26 +301,34 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     }
     
     if (COSMIC) {
-        message("Prepare COSMIC information (cosmic.RData) ... ", 
-                appendLF=FALSE)
-    
-        cosmic_query <- ucscTableQuery(session, 'cosmic', table='cosmic')
-        cosmicTab <- getTable(cosmic_query)
-        cosmicTab[,'chrom'] <- gsub('chrM', 'MT', cosmicTab[, 'chrom'])
-        cosmicTab[,'chrom'] <- gsub('chr', '', cosmicTab[, 'chrom']) 
-        chrlist <- paste(c(seq(1:22),'X','Y','MT')) 
-        cosmicTab <- subset(cosmicTab, chrom %in% chrlist)
-        cosmic <- GRanges(seqnames=cosmicTab[, 'chrom'], 
-                ranges=IRanges(start=cosmicTab[, 'chromStart'], 
-                end=cosmicTab[, 'chromEnd']), strand = '*', 
-                cosid=cosmicTab[, 'name'])   
-        
-        transGrange_cosmic <- transGrange 
-        #transGrange_cosmic <- keepSeqlevels(transGrange_cosmic, cosmic)        
-        #cosmic <- keepSeqlevels(cosmic, transGrange_cosmic)
-        cosmic <- subsetByOverlaps(cosmic, transGrange_cosmic)
-        
-        save(cosmic,file=paste(annotation_path, '/cosmic.RData', sep=''))    
+        message("Prepare COSMIC information (cosmic.RData) ... ", appendLF=FALSE)
+      
+        getCOSMIC = function() {
+            # hsapiens_snp_som.default.snp.refsnp_id
+            # hsapiens_snp_som.default.snp.chr_name
+            # hsapiens_snp_som.default.snp.chrom_start
+            # hsapiens_snp_som.default.snp.chrom_end
+            #FILTERS=hsapiens_snp_som.default.filters.variation_source."COSMIC"
+            varmart = useMart("ENSEMBL_MART_SNP", host=host, dataset="hsapiens_snp_som")
+            cosmicAttributes = c("refsnp_id", "chr_name", "chrom_start")
+            cosmicTab = getBM(attributes=cosmicAttributes, filters="variation_source", values="COSMIC", mart=varmart)
+            
+            chrlist <- paste(c(seq(1:22),'X','Y','MT')) 
+            cosmicTab <- subset(cosmicTab, chr_name %in% chrlist)
+            cosmic <- GRanges(seqnames=cosmicTab[, 'chr_name'], 
+                              ranges=IRanges(start=cosmicTab[, 'chrom_start'], 
+                                             end=cosmicTab[, 'chrom_start']), strand = '*', 
+                              cosid=cosmicTab[, 'refsnp_id'])   
+            
+            transGrange_cosmic <- transGrange 
+            #transGrange_cosmic <- keepSeqlevels(transGrange_cosmic, cosmic)        
+            #cosmic <- keepSeqlevels(cosmic, transGrange_cosmic)
+            cosmic <- subsetByOverlaps(cosmic, transGrange_cosmic)
+            cosmic
+        }
+        cosmic <- read_or_update_local_cache(getCOSMIC(), local_cache_path, "cosmic")
+
+        save(cosmic, file=paste(annotation_path, '/cosmic.RData', sep=''))    
         packageStartupMessage(" done")        
     }
     

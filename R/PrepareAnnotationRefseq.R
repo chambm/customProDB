@@ -296,16 +296,20 @@ WHERE snp.transcript IN @{transcriptSet}')
         #cosmic <- trackNames(session)[grep('cosmic',trackNames(session), fixed=T)]
         message("Preparing COSMIC information (cosmic.RData) ... ", appendLF=FALSE)
         
-        cosmicTab <- read_or_update_local_cache(getTable(ucscTableQuery(session, 'cosmic', table='cosmic')),
-                                                local_cache_path, "cosmicTab")
-        cosmic <- GRanges(seqnames=cosmicTab[, 'chrom'], 
-        ranges=IRanges(start=cosmicTab[, 'chromStart'], end=cosmicTab[, 'chromEnd']), 
-        strand = '*', cosid=cosmicTab[,'name'])    
-        
-        #cosmic <- keepSeqlevels(cosmic,transGrange)
-        cosmic <- subsetByOverlaps(cosmic, transGrange)
-        
-        save(cosmic,file=paste(annotation_path, '/cosmic.RData', sep=''))
+        getCOSMIC = function() {
+          cosmicTab = getTable(ucscTableQuery(session, 'cosmic', table='cosmic'))
+          cosmic <- GRanges(seqnames=cosmicTab[, 'chrom'],
+                            ranges=IRanges(start=cosmicTab[, 'chromStart'],
+                                           end=cosmicTab[, 'chromEnd']), 
+                            strand = '*',
+                            cosid=cosmicTab[,'name'])    
+          
+          #cosmic <- keepSeqlevels(cosmic,transGrange)
+          cosmic <- subsetByOverlaps(cosmic, transGrange)
+          cosmic
+        }
+        cosmic <- read_or_update_local_cache(getCOSMIC(), local_cache_path, "cosmic")
+        save(cosmic, file=paste(annotation_path, '/cosmic.RData', sep=''))
         packageStartupMessage(" done")        
     }
     
