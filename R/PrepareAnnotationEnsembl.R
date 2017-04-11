@@ -48,7 +48,10 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     if (!dir.exists(annotation_path) && !dir.create(annotation_path, recursive=TRUE)) {
       stop("error creating annotation_path: ", annotation_path)
     }
-    local_cache_path = qq("@{local_cache_path}/@{dataset}_@{version}")
+    
+    if (!is.null(local_cache_path)) {
+      local_cache_path = qq("@{local_cache_path}/@{dataset}_@{version}")
+    }
   
     host <- strsplit(strsplit(biomaRt:::martHost(mart), ':')[[1]][2], '//')[[1]][2]
     if (!is.null(dbsnp)) {

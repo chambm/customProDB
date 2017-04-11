@@ -47,7 +47,10 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     if (!dir.exists(annotation_path) && !dir.create(annotation_path, recursive=TRUE)) {
       stop("error creating annotation_path: ", annotation_path)
     }
-    local_cache_path = paste0(local_cache_path, "/", genome)
+    
+    if (!is.null(local_cache_path)) {
+      local_cache_path = paste0(local_cache_path, "/", genome)
+    }
 
     message("Building TranscriptDB object (txdb.sqlite) ... ", appendLF=TRUE)
     txdb <- read_or_update_local_cacheDb(makeTxDbFromUCSC(genome=genome, tablename=tablename,
