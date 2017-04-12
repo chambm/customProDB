@@ -29,8 +29,8 @@
 ##' load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
 ##' load(system.file("extdata/refseq", "proseq.RData", package="customProDB"))
 ##' postable_snv <- Positionincoding(SNVvcf, exon, dbsnpinCoding)
-##' txlist <- unique(postable_snv[, 'txid'])
-##' codingseq <- procodingseq[procodingseq[, 'tx_id'] %in% txlist, ]
+##' txlist <- unique(postable_snv$txid)
+##' codingseq <- procodingseq[procodingseq$tx_id %in% txlist, ]
 ##' mtab <- aaVariation (postable_snv, codingseq)
 ##' outfile <- paste(tempdir(), '/test_snv_single.fasta',sep='')
 ##' OutputVarproseq_single(mtab, proteinseq, outfile, ids, lablersid=TRUE)
@@ -41,7 +41,7 @@ OutputVarproseq_single <- function(vartable, proteinseq, outfile, ids,
             lablersid=FALSE, RPKM=NULL, ...)
     {
         options(stringsAsFactors=FALSE)
-        nonsy <- vartable[vartable[, 'vartype'] == "non-synonymous", ]
+        nonsy <- vartable[vartable$vartype == "non-synonymous", ]
         
         if(lablersid){
             aavar2pro <- subset(nonsy, select=c(genename, txname, proname, 
@@ -50,14 +50,14 @@ OutputVarproseq_single <- function(vartable, proteinseq, outfile, ids,
             aavar2pro <- subset(nonsy,select=c(genename, txname, proname, 
                         aaref, aapos, aavar))
         }
-        aavar2pro <- aavar2pro[aavar2pro[, 'aaref']!="*", ]
-        #aavar2pro <- aavar2pro[aavar2pro[, 'aavar']!="*", ]
+        aavar2pro <- aavar2pro[aavar2pro$aaref!="*", ]
+        #aavar2pro <- aavar2pro[aavar2pro$aavar!="*", ]
         aavar2pro <- unique(aavar2pro)
         
         pep_all<- c()
         for(i in 1:dim(aavar2pro)[1]){
             pvar <- aavar2pro[i, ]
-            pep_nor <- proteinseq[proteinseq[, 'pro_name'] == as.character(pvar['proname']), ]
+            pep_nor <- proteinseq[proteinseq$pro_name == as.character(pvar['proname']), ]
             pepseq_nor <- as.character(pep_nor['peptide'])
             pepseq_var <- pepseq_nor
             
@@ -88,11 +88,11 @@ OutputVarproseq_single <- function(vartable, proteinseq, outfile, ids,
         
 
         if(!is.null(RPKM)){
-            v <- unlist(lapply(ftab[, 'pro_name'], function(x) 
+            v <- unlist(lapply(ftab$pro_name, function(x) 
                         ifelse(x %in% names(RPKM), 
                         paste(round(RPKM[x], 4), sep=';'), paste('NA'))))
             ftab <- cbind(ftab, v)            
-            ftab <- ftab[order(as.numeric(ftab[, 'v']), decreasing=T), ]
+            ftab <- ftab[order(as.numeric(ftab$v), decreasing=T), ]
             outformat <- apply(ftab, 1, function(x) paste('>', x['pro_name'], 
                         "_", x['var_name'], " |", x['v'], "|", x['tx_name'], 
                         "|", x['gene_name'], "|", x['description'],'\n', 

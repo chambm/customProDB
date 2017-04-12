@@ -23,8 +23,8 @@
 ##' load(system.file("extdata/refseq", "dbsnpinCoding.RData", package="customProDB"))
 ##' load(system.file("extdata/refseq", "procodingseq.RData", package="customProDB"))
 ##' postable_snv <- Positionincoding(SNVvcf,exon,dbsnpinCoding)
-##' txlist <- unique(postable_snv[,'txid'])
-##' codingseq <- procodingseq[procodingseq[,'tx_id'] %in% txlist,]
+##' txlist <- unique(postable_snv$txid)
+##' codingseq <- procodingseq[procodingseq$tx_id %in% txlist,]
 ##' mtab <- aaVariation (postable_snv,codingseq)
 ##' mtab[1:3,]
 ##' 

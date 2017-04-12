@@ -81,12 +81,11 @@ easyRun <- function(bamFile, RPKM=NULL, vcfFile, annotation_path, outfile_path,
                         sep='')
         if(!is.null(postable_indel)){
             chrlist <- paste('chr',c(seq(1:22),'X','Y'),sep='')
-            indexchr <-which(postable_indel[,'chr'] %in% chrlist)
+            indexchr <-which(postable_indel$chr %in% chrlist)
             postable_indel <- postable_indel[indexchr,]
 
-            txlist_indel <- unique(postable_indel[, 'txid'])
-            codingseq_indel <- procodingseq[procodingseq[, 'tx_id'] %in% 
-                        txlist_indel, ]
+            txlist_indel <- unique(postable_indel$txid)
+            codingseq_indel <- procodingseq[procodingseq$tx_id %in% txlist_indel, ]
             Outputaberrant(postable_indel, coding=codingseq_indel, 
                 proteinseq=proteinseq, outfile=outf_indel, ids=ids, RPKM=RPKM)
         }
@@ -119,8 +118,8 @@ easyRun <- function(bamFile, RPKM=NULL, vcfFile, annotation_path, outfile_path,
             postable_snv <- Positionincoding(SNVvcf, exon)
         }
     }
-    txlist <- unique(postable_snv[, 'txid'])
-    codingseq <- procodingseq[procodingseq[, 'tx_id'] %in% txlist, ]
+    txlist <- unique(postable_snv$txid)
+    codingseq <- procodingseq[procodingseq$tx_id %in% txlist, ]
     mtab <- aaVariation (postable_snv, codingseq)
     
     outf_mtab <- paste(outfile_path, '/', outfile_name, '_snv.tab', sep='')

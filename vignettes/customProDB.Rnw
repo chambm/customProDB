@@ -260,7 +260,7 @@ index <- which(values(vcf[[1]])[['INDEL']]==FALSE)
 SNVvcf <- vcf[[1]][index]
 
 load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
-txdb <- loadDb(system.file("extdata/refseq", "txdb.sqlite", package="customProDB"))
+txdb <- AnnotationDbi::loadDb(system.file("extdata/refseq", "txdb.sqlite", package="customProDB"))
 SNVloc <- Varlocation(SNVvcf,txdb,ids)
 indelloc <- Varlocation(indelvcf,txdb,ids)
 table(SNVloc[,'location'])
@@ -291,8 +291,8 @@ The non-synonymous variations are labeled as either AposB (A is the reference co
 
 <<aavar>>=
 load(system.file("extdata/refseq", "procodingseq.RData", package="customProDB"))
-txlist <- unique(postable_snv[, 'txid'])
-codingseq <- procodingseq[procodingseq[, 'tx_id'] %in% txlist,]
+txlist <- unique(postable_snv$txid)
+codingseq <- procodingseq[procodingseq$tx_id %in% txlist,]
 mtab <- aaVariation (postable_snv, codingseq)
 mtab
 @
@@ -316,8 +316,8 @@ Short insertion/deletion may led to frame shift thus produce aberrant proteins.
 We provide a function \Rfunction{OutputabrrentPro} to generate a FASTA file containing such proteins. 
 
 <<outabber, echo=TRUE>>=
-txlist_indel <- unique(postable_indel[, 'txid'])
-codingseq_indel <- procodingseq[procodingseq[, 'tx_id'] %in% txlist_indel, ]
+txlist_indel <- unique(postable_indel$txid)
+codingseq_indel <- procodingseq[procodingseq$tx_id %in% txlist_indel, ]
 outfile <-  paste(tempdir(), '/test_indel.fasta', sep='')
 Outputaberrant(postable_indel, coding=codingseq_indel, proteinseq=proteinseq, 
 			outfile=outfile, ids=ids)
@@ -368,7 +368,7 @@ load(system.file("extdata/refseq", "splicemax.RData", package="customProDB"))
 load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
 junction_type <- JunctionType(jun, splicemax, txdb, ids) 
 junction_type[10:19,]
-table(junction_type[, 'jun_type'])
+table(junction_type$jun_type)
 @
 
 Except for 'known junction', all others are treated as putative novel junctions.

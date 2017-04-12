@@ -30,13 +30,13 @@ Outputproseq <- function(rpkm, cutoff="30%", proteinseq, outfile, ids, ...)
             cutoff <- quantile(rpkm, as.numeric(gsub('%', '', cutoff))/100)
             }else cutoff <- as.numeric(cutoff)
         s<-rpkm[rpkm >= cutoff]
-        seqs <- proteinseq[proteinseq[, 'pro_name'] %in% names(s), ]
-        v <- s[seqs[, 'pro_name']]
+        seqs <- proteinseq[proteinseq$pro_name %in% names(s), ]
+        v <- s[seqs$pro_name]
         seqs <- cbind(seqs, v)
 
         ftab <- merge(ids,seqs, by.x='pro_name', by.y='pro_name', all=FALSE, 
                     stringsAsFactors=FALSE)
-        ftab <- ftab[order(ftab[, 'v'], decreasing=TRUE), ]
+        ftab <- ftab[order(ftab$v, decreasing=TRUE), ]
 
         tmp <- apply(ftab, 1, function(x) 
                 paste('>', x['pro_name'], " |", round(as.numeric(x['v']), 4), "|", 

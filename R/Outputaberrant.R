@@ -12,6 +12,7 @@
 ##' @param ... Additional arguments.
 ##' @return FASTA file containing aberrant proteins.
 ##' @author Xiaojing Wang
+##' @importFrom stringr str_sub<-
 ##' @export
 ##' @examples
 ##' 
@@ -29,8 +30,8 @@
 ##' load(system.file("extdata/refseq", "proseq.RData", package="customProDB"))
 ##' load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
 ##' postable_indel <- Positionincoding(indelvcf, exon)
-##' txlist_indel <- unique(postable_indel[, 'txid'])
-##' codingseq_indel <- procodingseq[procodingseq[, 'tx_id'] %in% txlist_indel, ]
+##' txlist_indel <- unique(postable_indel$txid)
+##' codingseq_indel <- procodingseq[procodingseq$tx_id %in% txlist_indel, ]
 ##' outfile <-  paste(tempdir(), '/test_indel.fasta', sep='')
 ##' Outputaberrant(postable_indel, coding=codingseq_indel, 
 ##' proteinseq=proteinseq, outfile=outfile, ids=ids)
@@ -41,15 +42,22 @@
 
 Outputaberrant <- function(positiontab, outfile, coding, proteinseq, ids, 
                     RPKM=NULL, ...)
-    {
+{
+        stopifnot(nrow(coding) > 0, nrow(proteinseq) > 0, nrow(ids) > 0)
+        if (nrow(positiontab) < 1)
+        {
+          Bwarning("empty positiontab; Outputaberrant has nothing to do")
+          return()
+        }
+  
         options(stringsAsFactors=FALSE)
-        idx <- grep(',', positiontab[, 'varbase'], fixed=T)
+        idx <- grep(',', positiontab$varbase, fixed=T)
         if(length(idx) > 0) {
             muti <- positiontab[idx, ]
             muti_new <- c()
             for(i in 1:dim(muti)[1]){
                 tmp <- cbind(muti[i, 1:8], 
-                        unlist(strsplit(muti[i, 'varbase'], ',', fixed=T)), 
+                        unlist(strsplit(as.character(muti[i, 'varbase']), ',', fixed=T)), 
                         muti[i, 10])
                 muti_new <- rbind(muti_new, tmp)
             }
@@ -63,34 +71,34 @@ Outputaberrant <- function(positiontab, outfile, coding, proteinseq, ids,
                         stringsAsFactors = FALSE)
         #mtable <- cbind(positiontab,codingseq)
 
-        mtab_plus <- subset(mtable, strand == '+')
-        mtab_minus <- subset(mtable, strand == '-')
+        mtab_plus <- as.data.frame(subset(mtable, strand == '+'))
+        mtab_minus <- as.data.frame(subset(mtable, strand == '-'))
 
-        str_sub(mtab_plus[, 'coding'], mtab_plus[, 'pincoding'], 
-        nchar(mtab_plus[, 'refbase']) + mtab_plus[, 'pincoding'] - 1) <- mtab_plus[, 'varbase']
+        str_sub(mtab_plus$coding, mtab_plus$pincoding, 
+        nchar(mtab_plus$refbase) + mtab_plus$pincoding - 1) <- unlist(mtab_plus$varbase)
 
-        str_sub(mtab_minus[, 'coding'], mtab_minus[, 'pincoding'], 
-        mtab_minus[, 'pincoding'] + nchar(mtab_minus[, 'refbase']) - 1) <- 
-        as.character(reverseComplement(DNAStringSet(mtab_minus[, 'varbase'])))
+        str_sub(mtab_minus$coding, mtab_minus$pincoding, 
+                mtab_minus$pincoding + nchar(mtab_minus$refbase) - 1) <- 
+          as.character(reverseComplement(DNAStringSet(mtab_minus$varbase)))
 
         total <- rbind(mtab_plus,mtab_minus)
 
         ## the translate() function cann't deal with base which is not 'ATGC', so replace 'N' with 'A' and lable it in the header
-        lable <- unlist(lapply(total[,'coding'], function(x){
+        lable <- unlist(lapply(total$coding, function(x){
                          if(grepl ('N',x,fixed=T)){
                             paste('with N in pos ', paste(as.character(
                             gregexpr('N', x, fixed=T)[[1]]), collapse=' '), 
                             sep='')
                          }else  ""}))
-        total[,'coding'] <- gsub('N', 'A', total[, 'coding'], fixed=T)
-        aa <- as.character(translate(DNAStringSet(total[, 'coding'])))
+        total$coding <- gsub('N', 'A', total$coding, fixed=T)
+        aa <- as.character(translate(DNAStringSet(total$coding)))
 
         total <- cbind(total, aa, lable)
         pep <- apply(total, 1, function(x) unlist(strsplit(x['aa'], '\\*'))[1])
         total <- cbind(total, pep)
 
         #########remove the entry identical to normal sequence
-        plist <- unique(total[, 'proname'])
+        plist <- unique(total$proname)
         proteinseq <- subset(proteinseq, pro_name %in% plist)
         mseq <- merge(total,proteinseq, by.x='proname', by.y='pro_name', 
                     all=FALSE, stringsAsFactors = FALSE)
@@ -107,22 +115,22 @@ Outputaberrant <- function(positiontab, outfile, coding, proteinseq, ids,
 
         mseq_f <- merge(mseq_r, ids, by.x='pro_name', by.y='pro_name', 
                     all=FALSE, stringsAsFactors = FALSE)
-        outformat <- paste('>', mseq_f[, 'pro_name'], "_", mseq_f[, 'pincoding'], 
-                    ":", mseq_f[, 'refbase'], '>', mseq_f[, 'varbase'], " |", 
-                    mseq_f[, 'tx_name'], "|", mseq_f[, 'gene_name'], "|", 
-                    mseq_f[, 'description'], "|", mseq_f[, 'lable'], '\n', 
-                    mseq_f[, 'pep'], sep='')
+        outformat <- paste('>', mseq_f$pro_name, "_", mseq_f$pincoding, 
+                    ":", mseq_f$refbase, '>', mseq_f$varbase, " |", 
+                    mseq_f$tx_name, "|", mseq_f$gene_name, "|", 
+                    mseq_f$description, "|", mseq_f$lable, '\n', 
+                    mseq_f$pep, sep='')
         
         if(!is.null(RPKM)){
-            v <- unlist(lapply(mseq_f[, 'pro_name'], function(x) 
+            v <- unlist(lapply(mseq_f$pro_name, function(x) 
                 ifelse(x %in% names(RPKM), paste(round(RPKM[x], 4)), paste('NA'))))
             mseq_f <- cbind(mseq_f, v)
-            mseq_f <- mseq_f[order(as.numeric(mseq_f[, 'v']), decreasing=T),]
-            outformat <- paste('>', mseq_f[, 'pro_name'], "_", 
-                        mseq_f[, 'pincoding'], ":", mseq_f[, 'refbase'], '>', 
-                        mseq_f[, 'varbase'], " |", mseq_f[, 'v'], "|", 
-                        mseq_f[, 'tx_name'], "|", mseq_f[, 'gene_name'], "|", 
-                        mseq_f[, 'description'], "|", mseq_f[, 'lable'], '\n', 
+            mseq_f <- mseq_f[order(as.numeric(mseq_f$v), decreasing=T),]
+            outformat <- paste('>', mseq_f$pro_name, "_", 
+                        mseq_f$pincoding, ":", mseq_f$refbase, '>', 
+                        mseq_f$varbase, " |", mseq_f$v, "|", 
+                        mseq_f$tx_name, "|", mseq_f$gene_name, "|", 
+                        mseq_f$description, "|", mseq_f[, 'lable'], '\n', 
                         mseq_f[, 'pep'], sep='')
     
         }

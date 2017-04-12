@@ -115,7 +115,7 @@ Positionincoding<- function(Vars, exon, dbsnp=NULL, COSMIC=NULL,...)
     #res_tmp <- cbind(res, chrpos)
     
     #tmptab <- merge(nonsy,dbsnp_id,by.x='chrpos',by.y='chrstart',all.x=T)
-    #rsid <- dbsnp_id[match(res_tmp[, 'chrpos'], dbsnp_id[, 'chrstart']), 'name']
+    #rsid <- dbsnp_id[match(res_tmp$chrpos, dbsnp_id$chrstart), 'name']
     #res <- cbind(res, rsid)
     
     res = dbsnp[res, .(genename, txname, txid, proname, chr, strand, pos, refbase, varbase, pincoding, rsid), mult="first"]
@@ -134,7 +134,7 @@ Positionincoding<- function(Vars, exon, dbsnp=NULL, COSMIC=NULL,...)
     #res_tmp <- cbind(res, chrpos)
     
     #tmptab <- merge(nonsy,dbsnp_id,by.x='chrpos',by.y='chrstart',all.x=T)
-    #COSMIC_id <- cos_id[match(res_tmp[, 'chrpos'],cos_id[, 'cos_chrstart']), 'name']
+    #COSMIC_id <- cos_id[match(res_tmp$chrpos,cos_id$cos_chrstart), 'name']
     #res <- cbind(res, COSMIC_id)
     
     if(is.null(dbsnp))

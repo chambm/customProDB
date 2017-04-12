@@ -30,8 +30,8 @@
 ##' load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
 ##' load(system.file("extdata/refseq", "proseq.RData", package="customProDB"))
 ##' postable_snv <- Positionincoding(SNVvcf, exon, dbsnpinCoding)
-##' txlist <- unique(postable_snv[, 'txid'])
-##' codingseq <- procodingseq[procodingseq[, 'tx_id'] %in% txlist, ]
+##' txlist <- unique(postable_snv$txid)
+##' codingseq <- procodingseq[procodingseq$tx_id %in% txlist, ]
 ##' mtab <- aaVariation (postable_snv, codingseq)
 ##' OutputVarprocodingseq(mtab, codingseq, ids, lablersid=TRUE)
 ##' 
@@ -58,7 +58,7 @@ OutputVarprocodingseq <- function(vartable, procodingseq, ids, lablersid=FALSE, 
         aavar2pro$refbase <- refbase
         aavar2pro$varbase <- varbase
         aavar2pro <- aavar2pro[aavar2pro$aaref != "*", ]
-        #aavar2pro <- aavar2pro[aavar2pro[, 'aavar']!="*", ]
+        #aavar2pro <- aavar2pro[aavar2pro$aavar!="*", ]
         aavar2pro <- unique(aavar2pro)
 
         setDT(aavar2pro, key=c("proname", "aapos"))
@@ -78,7 +78,7 @@ OutputVarprocodingseq <- function(vartable, procodingseq, ids, lablersid=FALSE, 
             if (show_progress) { setTxtProgressBar(pb, i) }
             #print(i)
             #pvar <- aavar2pro[pep_var$pro_name[i, 'pro_name'])
-            #pvar <- pvar[order(as.numeric(pvar[, 'aapos'])), ]
+            #pvar <- pvar[order(as.numeric(pvar$aapos)), ]
             pro_name = pepcoding$pro_name[[i]]
             varcoding = pepcoding$coding[[i]]
             varcomplement = pepcoding$dna_complement[[i]]

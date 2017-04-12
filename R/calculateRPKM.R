@@ -79,7 +79,7 @@ calculateRPKM <- function(bamFile,exon, proteincodingonly = TRUE,ids=NULL,...)
         
         if(proteincodingonly==TRUE){
             proex <- RPKM
-            names(proex) <- ids[match(names(RPKM),ids[,'tx_name']),'pro_name']    
+            names(proex) <- ids[match(names(RPKM),ids$tx_name),'pro_name']    
             proex <- proex[which((names(proex)!=''))]
             
             proex

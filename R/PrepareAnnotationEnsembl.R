@@ -120,7 +120,7 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     colnames(tr) <- c("ensembl_gene_id", "ensembl_transcript_id", 
         "ensembl_peptide_id")
     ids <- merge(tr, idssum, by='ensembl_gene_id')
-    description <- paste(ids[, 'hgnc_symbol'], ids[, 'description'], sep='|')
+    description <- paste(ids$hgnc_symbol, ids$description, sep='|')
     ids <- cbind(ids[, 1:3], description)
     colnames(ids) <- c('gene_name', 'tx_name', 'pro_name', 'description')
     save(ids, file=paste(annotation_path, '/ids.RData', sep=''))
@@ -140,13 +140,13 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     packageStartupMessage(" done")
     #txdb_coding <- makeTranscriptDbFromBiomart_archive(biomart=biomart, 
     #   dataset=dataset, host=host, path="/biomart/martservice", archive=FALSE, 
-    #   transcript_ids=tr_coding[, "tx_name"])
+    #   transcript_ids=tr_coding$tx_name)
     #saveFeatures(txdb_coding, file=paste(annotation_path, '/txdb_coding.sqlite', sep=''))
     #saveDb(txdb_coding, file=paste(annotation_path, '/txdb_coding.sqlite', sep=''))
 
     #txdb_noncoding <- makeTranscriptDbFromBiomart_archive(biomart=biomart, 
     #    dataset =dataset, host=host, path="/biomart/martservice", 
-    #    archive=FALSE, transcript_ids=tr_noncoding[, "tx_name"])
+    #    archive=FALSE, transcript_ids=tr_noncoding$tx_name)
     #saveFeatures(txdb_noncoding, file=paste(annotation_path, '/txdb_noncoding.sqlite', sep=''))
     #saveDb(txdb_noncoding, file=paste(annotation_path, '/txdb_noncoding.sqlite', sep=''))
 
@@ -176,17 +176,17 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     
     cdsByTx <- cdsBy(txdb, "tx", use.names=FALSE)
     cdss <-  IRanges::as.data.frame(cdsByTx)
-    cds_chr_p <- data.frame(tx_id=cdss[, "group_name"],
-                    cds_chr_start=cdss[, "start"], 
-                    cds_chr_end=cdss[, "end"], rank=cdss[, "exon_rank"])
+    cds_chr_p <- data.frame(tx_id=cdss$group_name,
+                    cds_chr_start=cdss$start, 
+                    cds_chr_end=cdss$end, rank=cdss$exon_rank)
     
     
-    cds_chr_p_coding <- subset(cds_chr_p, tx_id %in% exon[which(exon[, 'pro_name'] != ''), 'tx_id'])
+    cds_chr_p_coding <- subset(cds_chr_p, tx_id %in% exon[which(exon$pro_name != ''), 'tx_id'])
     
     exon <- merge(exon, cds_chr_p_coding, by.y=c("tx_id", "rank"), 
             by.x=c("tx_id", "rank"), all.x=T)
     ###Ensembl use 1 & -1, change it to +/-
-	exon[, 'strand'] <- unlist(lapply(exon[, 'strand'], function(x) 
+	exon$strand <- unlist(lapply(exon$strand, function(x) 
 			ifelse(x=='1', '+', '-')))
     
     save(exon,file=paste(annotation_path, '/exon_anno.RData', sep=''))
@@ -197,11 +197,11 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
             "ensembl_transcript_id") 
 
     getCoding = function() {
-      if(length(tr_coding[, 'pro_name']<10000)){
+      if(length(tr_coding$pro_name<10000)){
         getBM(attributes=attributes.codingseq, filters="ensembl_peptide_id", 
-              values=tr_coding[, 'pro_name'], mart=mart)
+              values=tr_coding$pro_name, mart=mart)
       }else{ 
-        index <- floor(length(tr_coding[, 'pro_name'])/10000)
+        index <- floor(length(tr_coding$pro_name)/10000)
         coding <- c()
         for(i in 1:index) {
           st <- (i-1)*10000+1
@@ -212,7 +212,7 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
           #print(i)
         }
         tmp <- getBM(attributes=attributes.codingseq, filters="ensembl_peptide_id", 
-                     values=tr_coding[ed+1:length(tr_coding[, 'pro_name']), 'pro_name'], 
+                     values=tr_coding[ed+1:length(tr_coding$pro_name), 'pro_name'], 
                      mart=mart)
         coding <- rbind(coding, tmp)
       }
@@ -220,8 +220,8 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     coding <- read_or_update_local_cache(getCoding(), local_cache_path, "coding")
     stopifnot(nrow(coding) > 0)
     colnames(coding) <- attributes.codingseq 
-    tx_id <- transintxdb[match(coding[, 'ensembl_transcript_id'], 
-                transintxdb[, 'tx_name']), 'tx_id']
+    tx_id <- transintxdb[match(coding$ensembl_transcript_id, 
+                transintxdb$tx_name), 'tx_id']
     procodingseq <- cbind(coding, tx_id)
     colnames(procodingseq) <- c("coding", "pro_name", "tx_name", "tx_id")
     save(procodingseq,file=paste(annotation_path, '/procodingseq.RData', sep=''))
@@ -230,11 +230,11 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     message("Prepare protein sequence (proseq.RData) ... ", appendLF=FALSE)
     attributes.proseq <- c("peptide", "ensembl_peptide_id", "ensembl_transcript_id") 
     getProteinseq = function() {
-      if(length(tr_coding[, 'pro_name']<10000)){
+      if(length(tr_coding$pro_name<10000)){
         getBM(attributes=attributes.proseq, filters="ensembl_peptide_id",
-              values=tr_coding[,'pro_name'], mart=mart)
+              values=tr_coding$pro_name, mart=mart)
       }else{ 
-        index <- floor(length(tr_coding[, 'pro_name'])/10000)
+        index <- floor(length(tr_coding$pro_name)/10000)
         proteinseq <- c()
         for(i in 1:index) {
           st <- (i-1)*10000+1
@@ -245,7 +245,7 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
           #print(i)
         }
         tmp <- getBM(attributes=attributes.proseq, filters="ensembl_peptide_id", 
-                     values=tr_coding[ed+1:length(tr_coding[, 'pro_name']), 'pro_name'], 
+                     values=tr_coding[ed+1:length(tr_coding$pro_name), 'pro_name'], 
                      mart=mart)
         proteinseq <- rbind(proteinseq, tmp)
       }
@@ -268,19 +268,19 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
                     table=paste(dbsnps[dbsnp], 'CodingDbSnp', sep=''))
         }
         snpCodingTab <- read_or_update_local_cache(getTable(dbsnp_query), dbsnp_cache_path, "snpCodingTab")
-        snpCodingTab[, 'chrom'] <- gsub('chr', '', snpCodingTab[, 'chrom'])
+        snpCodingTab$chrom <- gsub('chr', '', snpCodingTab$chrom)
         chrlist <- paste(c(seq(1:22),'X','Y'))
         snpCoding <- subset(snpCodingTab, chrom %in% chrlist ,select=c(chrom:name, alleleCount, alleles))
         snpCoding <- unique(snpCoding)
-        #snpCoding[, 'chrom'] <- gsub('chrM', 'MT', snpCoding[, 'chrom'])
+        #snpCoding$chrom <- gsub('chrM', 'MT', snpCoding$chrom)
         #
         
         #save(snpCoding,file=paste(annotation_path,'/snpcoding.RData',sep=''))
-        snpCoding <- GRanges(seqnames=snpCoding[, 'chrom'], 
-                    ranges=IRanges(start=snpCoding[, 'chromStart'], 
-                    end=snpCoding[, 'chromEnd']), strand='*', 
-                    rsid=snpCoding[, 'name'], alleleCount=snpCoding[, 'alleleCount'], 
-                    alleles=snpCoding[, 'alleles'])
+        snpCoding <- GRanges(seqnames=snpCoding$chrom, 
+                    ranges=IRanges(start=snpCoding$chromStart, 
+                    end=snpCoding$chromEnd), strand='*', 
+                    rsid=snpCoding$name, alleleCount=snpCoding$alleleCount, 
+                    alleles=snpCoding$alleles)
         
         #seqlevels(snpCoding)
         
@@ -318,10 +318,10 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
             
             chrlist <- paste(c(seq(1:22),'X','Y','MT')) 
             cosmicTab <- subset(cosmicTab, chr_name %in% chrlist)
-            cosmic <- GRanges(seqnames=cosmicTab[, 'chr_name'], 
-                              ranges=IRanges(start=cosmicTab[, 'chrom_start'], 
-                                             end=cosmicTab[, 'chrom_start']), strand = '*', 
-                              cosid=cosmicTab[, 'refsnp_id'])   
+            cosmic <- GRanges(seqnames=cosmicTab$chr_name, 
+                              ranges=IRanges(start=cosmicTab$chrom_start, 
+                                             end=cosmicTab$chrom_start), strand = '*', 
+                              cosid=cosmicTab$refsnp_id)   
             
             transGrange_cosmic <- transGrange 
             #transGrange_cosmic <- keepSeqlevels(transGrange_cosmic, cosmic)        

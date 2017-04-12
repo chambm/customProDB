@@ -20,7 +20,7 @@
 ##' txdb <- loadDb(system.file("extdata/refseq", "txdb.sqlite", 
 ##'             package="customProDB"))
 ##' junction_type <- JunctionType(jun, splicemax, txdb, ids)
-##' table(junction_type[, 'jun_type'])
+##' table(junction_type$jun_type)
 ##' 
 
              
@@ -33,18 +33,18 @@ JunctionType <- function(jun, splicemax, txdb, ids, ...)
         #            stringsAsFactors = F, skip=skip)
         #jun5 <- subset(jun, V5 > covfilter)
         
-        #part1_len <- as.numeric(as.data.frame(strsplit(jun5[, 'V11'], ','))[1, ])
-        #part2_len <- as.numeric(as.data.frame(strsplit(jun5[, 'V11'], ','))[2, ])
-        #gap_len <- as.numeric(as.data.frame(strsplit(jun5[, 'V12'], ','))[2, ])
-        #part1_sta <- as.numeric(jun5[, 'V2']) + 1
+        #part1_len <- as.numeric(as.data.frame(strsplit(jun5$V11, ','))[1, ])
+        #part2_len <- as.numeric(as.data.frame(strsplit(jun5$V11, ','))[2, ])
+        #gap_len <- as.numeric(as.data.frame(strsplit(jun5$V12, ','))[2, ])
+        #part1_sta <- as.numeric(jun5$V2) + 1
         #part1_end <- part1_sta + part1_len - 1
         #part2_sta <- part1_sta + gap_len
-        #part2_end <- as.numeric(jun5[, 'V3'])
+        #part2_end <- as.numeric(jun5$V3)
         #junction <- as.data.frame(jun)
         #colnames(junction) <- c('chr', 'start', 'end', 'width', 'strand', 'id', 'cov')
-        #junction <- data.frame(chr=jun5[, 'V1'], id=jun5[, 'V4'], 
-        #            start=jun5[, 'V2'], end=jun5[, 'V3'], cov=jun5[, 'V5'], 
-        #            strand=jun5[, 'V6'], part1_len, part2_len, part1_sta, 
+        #junction <- data.frame(chr=jun5$V1, id=jun5$V4, 
+        #            start=jun5$V2, end=jun5$V3, cov=jun5$V5, 
+        #            strand=jun5$V6, part1_len, part2_len, part1_sta, 
         #            part1_end, part2_sta, part2_end)
         #if('chrM' %in% junction$chr){
         #    junction <- junction[-which(junction$chr == 'chrM'), ]
@@ -130,8 +130,8 @@ JunctionType <- function(jun, splicemax, txdb, ids, ...)
                           all=T)
         index_NA <- which(apply(matchid, 1, function(x) any(is.na(x))) == TRUE)
         if(length(index_NA) >= 0) matchid_new <- matchid[-index_NA, ]
-        match1_exon <- values(exons[matchid_new[, 'subjectHits.x'], ])['exon_id'][, 1]
-        match2_exon <- values(exons[matchid_new[, 'subjectHits.y'], ])['exon_id'][, 1]
+        match1_exon <- values(exons[matchid_new$subjectHits.x, ])['exon_id'][, 1]
+        match2_exon <- values(exons[matchid_new$subjectHits.y, ])['exon_id'][, 1]
         matchexon <- cbind(matchid_new, match1_exon, match2_exon)
 
         exonmatrix <- paste(matchexon[, 4], matchexon[, 5], sep='-')
@@ -144,9 +144,9 @@ JunctionType <- function(jun, splicemax, txdb, ids, ...)
         jun_type[matchid_new[index_know, 'queryHits']] <- 'known junction'
         
         index_diff_ge <- which(mapply(function(x, y) 
-            length(intersect(unlist(strsplit(x, '\\,')), 
-            unlist(strsplit(y, '\\,')))), 
-           tx_part1[, 'ge_name_part1'], tx_part2[, 'ge_name_part2']) == 0)
+            length(intersect(strsplit(x, '\\,'), 
+                             strsplit(y, '\\,'))), 
+           tx_part1[, "ge_name_part1"], tx_part2[, "ge_name_part2"]) == 0)
         
         index_fu <- intersect(matchid_new[index_unknown, 'queryHits'],index_diff_ge)
         if(length(index_fu) > 0) jun_type[index_fu] <- 'gene fusion'
@@ -168,7 +168,7 @@ JunctionType <- function(jun, splicemax, txdb, ids, ...)
         
         tx_id_match <- values(txs)["tx_id"][subjectHits(match_tx), ]
         tx_name_match <- values(txs)["tx_name"][subjectHits(match_tx), ]
-        gene_match <- ids[match(tx_name_match,ids[,'tx_name']),'gene_name']
+        gene_match <- ids[match(tx_name_match,ids$tx_name),'gene_name']
         tx_part <- cbind(as.data.frame(match_tx), tx_id_match, tx_name_match, 
                     gene_match)
         ttt <- split(tx_part, tx_part$queryHits)

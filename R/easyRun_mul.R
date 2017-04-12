@@ -95,11 +95,11 @@ easyRun_mul <- function(bamFile_path, RPKM_mtx=NULL, vcfFile_path,
                 '_indel.fasta', sep='')
         if(!is.null(postable_indel)){
             chrlist <- paste('chr',c(seq(1:22),'X','Y'),sep='')
-            indexchr <-which(postable_indel[,'chr'] %in% chrlist)
+            indexchr <-which(postable_indel$chr %in% chrlist)
             postable_indel <- postable_indel[indexchr,]
 
-            txlist_indel <- unique(postable_indel[, 'txid'])
-            codingseq_indel <- procodingseq[procodingseq[,'tx_id'] %in% 
+            txlist_indel <- unique(postable_indel$txid)
+            codingseq_indel <- procodingseq[procodingseq$tx_id %in% 
                     txlist_indel, ]
             Outputaberrant(postable_indel, coding=codingseq_indel, 
                         proteinseq=proteinseq, outfile=outf_indel, ids=ids, 
@@ -135,8 +135,8 @@ easyRun_mul <- function(bamFile_path, RPKM_mtx=NULL, vcfFile_path,
         }
     }
     
-    txlist <- unique(postable_snv[, 'txid'])
-    codingseq <- procodingseq[procodingseq[, 'tx_id'] %in% txlist, ]
+    txlist <- unique(postable_snv$txid)
+    codingseq <- procodingseq[procodingseq$tx_id %in% txlist, ]
     mtab <- aaVariation (postable_snv, codingseq)
     
     outf_mtab <- paste(outfile_path,'/', outfile_name, '_snv.tab', sep='')

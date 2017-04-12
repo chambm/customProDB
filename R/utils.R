@@ -36,7 +36,7 @@ dbEasyQuery <- function(conn, SQL, j0=NA)
             stop("[debugSQL] 'SQL' must be a single string")
         cat("[debugSQL] SQL query: ", SQL, "\n", sep="")
         st <- system.time(data0 <- dbGetQuery(conn, SQL))
-        cat("[debugSQL]      time: ", st["user.self"], " seconds\n", sep="")
+        cat("[debugSQL]      time: ", st$user.self, " seconds\n", sep="")
     } else {
         data0 <- dbGetQuery(conn, SQL)
     }
@@ -67,7 +67,7 @@ dbEasyPreparedQuery <- function(conn, SQL, bind.data)
                   dbBeginTransaction(conn)
                   dbGetPreparedQuery(conn, SQL, bind.data)
                   dbCommit(conn)})
-        cat("[debugSQL]               time: ", st["user.self"],
+        cat("[debugSQL]               time: ", st$user.self,
             " seconds\n", sep="")
     } else {
         dbBeginTransaction(conn)

@@ -68,11 +68,11 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     stopifnot(nrow(refGene) > 0)
     
     reflink <- read_or_update_local_cache(getTable(ucscTableQuery(session, "refGene", table="hgFixed.refLink",
-                                                                  names=refGene[, 'name2'])),
+                                                                  names=refGene$name2)),
                                           local_cache_path, "reflink")
     stopifnot(nrow(reflink) > 0)
     
-    ids <- subset(reflink, mrnaAcc %in% refGene[, 'name'], select = name:protAcc)
+    ids <- subset(reflink, mrnaAcc %in% refGene$name, select = name:protAcc)
     stopifnot(nrow(ids) > 0)
     colnames(ids) <- c('gene_name', 'description', 'tx_name', 'pro_name')
     save(ids, file=paste(annotation_path, '/ids.RData', sep=''))
@@ -81,12 +81,12 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     #tr_coding <- subset(ids,pro_name!="")
     #tr_noncoding <- subset(ids,pro_name == "")
     #txdb_coding <- makeTranscriptDbFromUCSC(genome=genome, tablename=tablename, 
-    #                transcript_ids=tr_coding[, "tx_name"] )
+    #                transcript_ids=tr_coding$tx_name )
     #saveDb(txdb_coding, 
     #       file=paste(annotation_path, '/txdb_coding.sqlite', sep=''))
     
     #txdb_noncoding <- makeTranscriptDbFromUCSC(genome=genome, 
-    #        tablename=tablename, transcript_ids=tr_noncoding[, "tx_name"] )
+    #        tablename=tablename, transcript_ids=tr_noncoding$tx_name )
     #saveDb(txdb_noncoding, 
     #        file=paste(annotation_path, '/txdb_noncoding.sqlite', sep=''))
     
@@ -119,24 +119,24 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     
     #txid <- matrix(unlist(strsplit(rownames(exons), '\\.')), ncol = 2, byrow =T)[, 1]
     #txid <- gsub('=','\\.', txid)
-    exon_p <- data.frame(txid=exons[, "group_name"], chr=exons[, "seqnames"], 
-                exon_s=exons[, "start"], exon_e=exons[, "end"], 
-                exon_rank=exons[, "exon_rank"])
+    exon_p <- data.frame(txid=exons$group_name, chr=exons$seqnames, 
+                exon_s=exons$start, exon_e=exons$end, 
+                exon_rank=exons$exon_rank)
     exon2tr <-  merge(exon_p, tr,by.y="tx_id", by.x="txid")
     exon2tr <- exon2tr[, -which(names(exon2tr) %in% c("seqnames", "width"))]
 
     #txid <- matrix(unlist(strsplit(rownames(cdss), '\\.')), ncol = 2, 
     #       byrow =T)[, 1]
     #txid <- gsub('=','\\.',txid)
-    cds_p <- data.frame(txid=cdss[, "group_name"], cds_s=cdss[, "start"], 
-                cds_e=cdss[, "end"], exon_rank=cdss[, "exon_rank"], 
-                width=cdss[, "width"])
+    cds_p <- data.frame(txid=cdss$group_name, cds_s=cdss$start, 
+                cds_e=cdss$end, exon_rank=cdss$exon_rank, 
+                width=cdss$width)
     ttt <- split(cds_p, cds_p$txid)
     
     cds_p_new <- as.data.frame(data.table::rbindlist(lapply(ttt, function(x){
-        #len <- x[,'cds_e']-x[,'cds_s']+1
+        #len <- x$cds_e-x$cds_s+1
         #cum <- cumsum(len)
-        cum <- cumsum(x[, 'width'])
+        cum <- cumsum(x$width)
         rdis <- cbind(c(1, cum[1:length(cum)-1]+1), cum)
         colnames(rdis) <- c('cds_start', 'cds_end')
         tmp <- cbind(x, rdis)
@@ -150,7 +150,7 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     #for(i in 1:length(ttt)) {
     #    print(i)
     #    ttt1 <- ttt[[i]]
-    #    len <- ttt1[,'cds_e']-ttt1[,'cds_s']+1
+    #    len <- ttt1$cds_e-ttt1$cds_s+1
     #    cum <- cumsum(len)
     #    rdis <- cbind(c(1,cum[1:length(cum)-1]+1),cum)
     #    colnames(rdis) <- c('cds_start','cds_end')
@@ -164,20 +164,20 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     #               byrow =T)[, 1]
     #txid <- gsub('=','\\.', txid)
     if(dim(fiveutrs)[1] > 0){
-        fiveutr_p <- data.frame(txid=fiveutrs[, "group_name"], 
-                                fiveutr_s=fiveutrs[, "start"], 
-                                fiveutr_e=fiveutrs[, "end"], 
-                                exon_rank=fiveutrs[, "exon_rank"])
+        fiveutr_p <- data.frame(txid=fiveutrs$group_name, 
+                                fiveutr_s=fiveutrs$start, 
+                                fiveutr_e=fiveutrs$end, 
+                                exon_rank=fiveutrs$exon_rank)
         fiveutr2exon <- merge(cds2exon, fiveutr_p, by.x=c("txid", "exon_rank"), 
                     by.y =c("txid", "exon_rank"), all.x = TRUE)
                  
         #txid <- matrix(unlist(strsplit(rownames(threeutrs),'\\.')), 
         #s    ncol = 2,byrow =T)[, 1]
         #txid <- gsub('=','\\.', txid)
-        threeutr_p <- data.frame(txid=threeutrs[, "group_name"], 
-                                threeutr_s=threeutrs[, "start"], 
-                                threeutr_e=threeutrs[, "end"], 
-                                exon_rank=threeutrs[, "exon_rank"])
+        threeutr_p <- data.frame(txid=threeutrs$group_name, 
+                                threeutr_s=threeutrs$start, 
+                                threeutr_e=threeutrs$end, 
+                                exon_rank=threeutrs$exon_rank)
         threeutr2exon <- merge(fiveutr2exon, threeutr_p, 
                     by.x=c("txid", "exon_rank"),
                     by.y=c("txid", "exon_rank"), all.x = TRUE)
@@ -197,8 +197,8 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
             "end_position", "strand", "tx_name", "cds_chr_start", 
             "cds_chr_end", "cds_start", "cds_end")
     }
-    pro_name <- ids[match(exon[, 'tx_name'], ids[, 'tx_name']), 'pro_name']
-    gene_name <- ids[match(exon[, 'tx_name'], ids[, 'tx_name']), 'gene_name']
+    pro_name <- ids[match(exon$tx_name, ids$tx_name), 'pro_name']
+    gene_name <- ids[match(exon$tx_name, ids$tx_name), 'gene_name']
     exon <- cbind(exon, pro_name, gene_name)
     stopifnot(nrow(exon) > 0)
     
@@ -209,11 +209,11 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     pro_seqs <- readAAStringSet(pepfasta, format= 'fasta')
     pro_name_v <- names(pro_seqs)
     pro_name <- unlist(lapply(pro_name_v, function(x) strsplit(x, '\\.')[[1]][1]))
-    tx_name <- ids[match(pro_name, ids[, 'pro_name']), 'tx_name']
+    tx_name <- ids[match(pro_name, ids$pro_name), 'tx_name']
     proteinseq <- as.data.frame(pro_seqs)
     proteinseq <- cbind(proteinseq, pro_name_v, pro_name, tx_name)
     colnames(proteinseq) <- c("peptide", "pro_name_v", "pro_name", "tx_name")
-    proteinseq <- subset(proteinseq, tx_name %in% refGene[, 'name'])
+    proteinseq <- subset(proteinseq, tx_name %in% refGene$name)
     stopifnot(nrow(proteinseq) > 0)
     save(proteinseq, file=paste(annotation_path, '/proseq.RData', sep=''))
     packageStartupMessage(" done")
@@ -229,20 +229,20 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     tx_cds_end <- unlist(lapply(tx_range_tmp, function(x) strsplit(strsplit(x, ':')[[1]][2], '-')[[1]][[2]]))
     
     tx_name_cds <- refGene[match(paste(tx_name, tx_chr, tx_cds_sta, tx_cds_end, sep=' '), 
-                    paste(refGene[, 'name'], refGene[, 'chrom'], 
-                    refGene[, 'cdsStart']+1, refGene[, 'cdsEnd'], sep=' ')),
+                    paste(refGene$name, refGene$chrom, 
+                    refGene$cdsStart+1, refGene$cdsEnd, sep=' ')),
                     c('name','chrom','txStart','txEnd')]
     
-    tx_id <- tr[match(paste(tx_name_cds[, 'name'], tx_name_cds[, 'chrom'], 
-            tx_name_cds[, 'txStart']+1, tx_name_cds[, 'txEnd'], sep=' '), 
-            paste(tr[, 'tx_name'], tr[, 'seqnames'], tr[, 'start'], 
-            tr[, 'end'], sep=' ')), 'tx_id']
+    tx_id <- tr[match(paste(tx_name_cds$name, tx_name_cds$chrom, 
+            tx_name_cds$txStart+1, tx_name_cds$txEnd, sep=' '), 
+            paste(tr$tx_name, tr$seqnames, tr$start, 
+            tr$end, sep=' ')), 'tx_id']
     
-    pro_name <- ids[match(tx_name,ids[, 'tx_name']), 'pro_name']
+    pro_name <- ids[match(tx_name,ids$tx_name), 'pro_name']
     procodingseq <- as.data.frame(cds_seqs)
     procodingseq <- cbind(procodingseq, names(cds_seqs), pro_name, tx_name, tx_id)
     colnames(procodingseq) <- c("coding", "tx_name_full", "pro_name", "tx_name", "tx_id")
-    procodingseq <- subset(procodingseq, tx_name %in% refGene[, 'name'])
+    procodingseq <- subset(procodingseq, tx_name %in% refGene$name)
     stopifnot(nrow(procodingseq) > 0)
     save(procodingseq, file=paste(annotation_path, '/procodingseq.RData', sep=''))
     
@@ -282,15 +282,15 @@ WHERE snp.transcript IN @{transcriptSet}')
                                                                                          'CodingDbSnp'))),
                                                     dbsnp_cache_path, "snpCodingTab")
         }
-        snpCoding <- subset(snpCodingTab,transcript %in% refGene[, 'name'], 
+        snpCoding <- subset(snpCodingTab,transcript %in% refGene$name, 
                         select=c(chrom:name, alleleCount, alleles))
         snpCoding <- unique(snpCoding)
         #save(snpCoding,file=paste(annotation_path, '/snpcoding.RData', sep=''))
-        dbsnpinCoding <- GRanges(seqnames=snpCoding[, 'chrom'], 
-            ranges=IRanges(start=snpCoding[, 'chromStart'], 
-            end=snpCoding[, 'chromEnd']), strand='*', 
-            rsid=snpCoding[, 'name'], alleleCount=snpCoding[, 'alleleCount'], 
-            alleles=snpCoding[, 'alleles'])    
+        dbsnpinCoding <- GRanges(seqnames=snpCoding$chrom, 
+            ranges=IRanges(start=snpCoding$chromStart, 
+            end=snpCoding$chromEnd), strand='*', 
+            rsid=snpCoding$name, alleleCount=snpCoding$alleleCount, 
+            alleles=snpCoding$alleles)    
         save(dbsnpinCoding, file=paste(annotation_path, '/dbsnpinCoding.RData', sep=''))
         packageStartupMessage(" done")
     }
@@ -301,11 +301,11 @@ WHERE snp.transcript IN @{transcriptSet}')
         
         getCOSMIC = function() {
           cosmicTab = getTable(ucscTableQuery(session, 'cosmic', table='cosmic'))
-          cosmic <- GRanges(seqnames=cosmicTab[, 'chrom'],
-                            ranges=IRanges(start=cosmicTab[, 'chromStart'],
-                                           end=cosmicTab[, 'chromEnd']), 
+          cosmic <- GRanges(seqnames=cosmicTab$chrom,
+                            ranges=IRanges(start=cosmicTab$chromStart,
+                                           end=cosmicTab$chromEnd), 
                             strand = '*',
-                            cosid=cosmicTab[,'name'])    
+                            cosid=cosmicTab$name)    
           
           #cosmic <- keepSeqlevels(cosmic,transGrange)
           cosmic <- subsetByOverlaps(cosmic, transGrange)

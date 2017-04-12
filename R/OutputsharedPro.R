@@ -49,8 +49,8 @@ OutputsharedPro <- function(RPKMs, cutoff="30%",share_sample='50%', proteinseq,
         rpkms_res <- rpkms_new[which(test >= share_sample), ]
         proid <- rownames(rpkms_res)
 
-        seqs <- proteinseq[proteinseq[, 'pro_name'] %in% proid,]
-        mean_rpkm <- unlist(lapply(seqs[, 'pro_name'], function(x) 
+        seqs <- proteinseq[proteinseq$pro_name %in% proid,]
+        mean_rpkm <- unlist(lapply(seqs$pro_name, function(x) 
                         round(mean(as.numeric(rpkms_res[x, ])),4)))
         seqs <- cbind(seqs, mean_rpkm)
 
@@ -60,8 +60,8 @@ OutputsharedPro <- function(RPKMs, cutoff="30%",share_sample='50%', proteinseq,
                     stringsAsFactors = FALSE)
 
     
-        tmp <- paste('>', ftab[, 'pro_name'], " |", ftab[, 'mean_rpkm'], "|", 
-                ftab[, 'tx_name.x'],"|",ftab[, 'gene_name'], "|", 
+        tmp <- paste('>', ftab$pro_name, " |", ftab$mean_rpkm, "|", 
+                ftab$tx_name.x,"|",ftab$gene_name, "|", 
                 ftab[, 'description'], '\n', 
                 ftab[, 'peptide'], sep='')
         write(tmp,file=outfile)

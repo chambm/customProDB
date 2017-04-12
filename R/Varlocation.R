@@ -27,7 +27,7 @@
 ##' load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
 ##' SNVloc <- Varlocation(SNVvcf,txdb,ids)
 ##' indelloc <- Varlocation(indelvcf,txdb,ids)
-##' table(SNVloc[,'location'])
+##' table(SNVloc$location)
 ##' }
 ##'
 
@@ -43,8 +43,8 @@ Varlocation <- function(Vars, txdb, ids, ...)
         tr_noncoding <- subset(ids, pro_name == "")
      
         trans <- transcripts(txdb)
-        tr_coding_id <- values(trans)['tx_id'][, 1][which(values(trans)['tx_name'][, 1] %in% tr_coding[, 'tx_name'])]
-        tr_noncoding_id <- values(trans)['tx_id'][, 1][which(values(trans)['tx_name'][, 1] %in% tr_noncoding[, 'tx_name'])]
+        tr_coding_id <- values(trans)['tx_id'][, 1][which(values(trans)['tx_name'][, 1] %in% tr_coding$tx_name)]
+        tr_noncoding_id <- values(trans)['tx_id'][, 1][which(values(trans)['tx_name'][, 1] %in% tr_noncoding$tx_name)]
         
         
         exonsByTx <- exonsBy(txdb, "tx", use.names=F)

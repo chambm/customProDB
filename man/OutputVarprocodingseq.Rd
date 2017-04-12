@@ -46,8 +46,8 @@ load(system.file("extdata/refseq", "procodingseq.RData",
 load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
 load(system.file("extdata/refseq", "proseq.RData", package="customProDB"))
 postable_snv <- Positionincoding(SNVvcf, exon, dbsnpinCoding)
-txlist <- unique(postable_snv[, 'txid'])
-codingseq <- procodingseq[procodingseq[, 'tx_id'] \%in\% txlist, ]
+txlist <- unique(postable_snv$txid)
+codingseq <- procodingseq[procodingseq$tx_id \%in\% txlist, ]
 mtab <- aaVariation (postable_snv, codingseq)
 OutputVarprocodingseq(mtab, codingseq, ids, lablersid=TRUE)
 

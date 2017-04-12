@@ -19,7 +19,7 @@
 ##' txdb <- loadDb(system.file("extdata/refseq", "txdb.sqlite", 
 ##'             package="customProDB"))
 ##' junction_type <- JunctionType(jun, splicemax, txdb, ids)
-##' table(junction_type[, 'jun_type'])
+##' table(junction_type$jun_type)
 ##' chrom <- paste('chr',c(1:22,'X','Y','M'),sep='')
 ##' junction_type <- subset(junction_type, seqnames %in% chrom)
 ##' outf_junc <- paste(tempdir(), '/test_junc.fasta', sep='')
@@ -39,18 +39,18 @@ OutputNovelJun <- function(junction_type, genome, outfile,
         #ids <- subset(ids,pro_name!='')
         
         #trans <- transcripts(txdb)
-        #index <- which(values(trans)[['tx_name']] %in% ids[,'tx_name'])
+        #index <- which(values(trans)[['tx_name']] %in% ids$tx_name)
         #pro_trans <- trans[index]
         novel_junc <- subset(junction_type, jun_type != 'known junction')
-        if(!length(grep('chr', novel_junc[, 'seqnames'], fixed=T))>0) {
-            novel_junc[, 'seqnames'] <- paste('chr', novel_junc[, 'seqnames'], sep='')
-            idx <- which(novel_junc[, 'seqnames'] %in% seqnames(genome))
+        if(!length(grep('chr', novel_junc$seqnames, fixed=T))>0) {
+            novel_junc$seqnames <- paste('chr', novel_junc$seqnames, sep='')
+            idx <- which(novel_junc$seqnames %in% seqnames(genome))
             novel_junc <- novel_junc[idx, ]
         }
         
         ###remove abnormal junctions
-        idx_abn <- union(which(novel_junc[, 'start'] < 0),  
-                    which(novel_junc[, 'end'] < 0))
+        idx_abn <- union(which(novel_junc$start < 0),  
+                    which(novel_junc$end < 0))
         if(length(idx_abn > 0)) novel_junc <- novel_junc[-idx_abn, ]
         
         junRange1 <- GRanges(seqnames=novel_junc$seqnames, 
@@ -68,9 +68,9 @@ OutputNovelJun <- function(junction_type, genome, outfile,
 		######prepare annotation for proBAMr
 		jr1 <-  IRanges::as.data.frame(junRange1)
 		jr2 <- IRanges::as.data.frame(junRange2)
-		jr1_rank <- unlist(lapply(jr1[, 'strand'], function(x) ifelse(x=='+', 1, 2)))
+		jr1_rank <- unlist(lapply(jr1$strand, function(x) ifelse(x=='+', 1, 2)))
 		jr1 <- cbind(jr1, rank=jr1_rank)
-		jr2_rank <- unlist(lapply(jr2[, 'strand'], function(x) ifelse(x=='+', 2, 1)))
+		jr2_rank <- unlist(lapply(jr2$strand, function(x) ifelse(x=='+', 2, 1)))
 		
 		jr2 <- cbind(jr2, rank=jr2_rank)
 		
@@ -79,10 +79,10 @@ OutputNovelJun <- function(junction_type, genome, outfile,
 		ttt <- split(jrs, jrs$tx_name)
 
         jrs_list <-lapply(ttt, function(x){
-        #len <- x[,'cds_e']-x[,'cds_s']+1
+        #len <- x$cds_e-x$cds_s+1
         #cum <- cumsum(len)
 		x <- x[order(x$rank),]
-        cum <- cumsum(x[, 'width'])
+        cum <- cumsum(x$width)
         rdis <- cbind(c(1, cum[1:length(cum)-1]+1), cum)
         colnames(rdis) <- c('cds_start', 'cds_end')
         tmp <- cbind(x, rdis)
