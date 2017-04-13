@@ -6,32 +6,33 @@
 ##' @param annotation_path specify a folder to store all the annotations
 ##' @param dbsnp specify a snp dataset you want to use for the SNP annotation, default is NULL.
 ##' @param transcript_ids optionally, only retrieve transcript annotation data for the specified set of transcript ids
-##' @param splice_matrix whether generate a known exon splice matrix from the annotation. this is not necessary if you don't want to analyse junction results, default is FALSE. 
+##' @param splice_matrix whether generate a known exon splice matrix from the annotation; not necessary if you don't want to analyse junction results, default is FALSE. 
 ##' @param COSMIC whether to download COSMIC data, default is FALSE.
+##' @param local_cache_path if non-NULL, refers to a directory where previously downloaded resources
+##' (like protein coding sequences and COSMIC data) are cached so that the function can be re-run without
+##' needing to download identical data again
 ##' @param ... additional arguments
 ##' @return several .RData file containing annotations needed for following analysis.
 ##' @author Xiaojing Wang
-##' @importFrom AnnotationDbi saveDb loadDb
-##' @importFrom data.table data.table rbindlist setkey setDT 
 ##' @importFrom rtracklayer browserSession ucscTableQuery tableNames getTable trackNames ucscSchema genome<-
-##' @importFrom GetoptLong qq
 ##' @importFrom plyr ddply .
-##' @import GenomicFeatures Biostrings biomaRt
+##' @import biomaRt
 ##' @export
 ##' @examples
 ##' 
-##' ensembl <- useMart("ENSEMBL_MART_ENSEMBL", dataset="hsapiens_gene_ensembl",
-##' host="sep2015.archive.ensembl.org", path="/biomart/martservice", 
-##' archive=FALSE)
+##' ensembl <- biomaRt::useMart("ENSEMBL_MART_ENSEMBL",
+##'                             dataset="hsapiens_gene_ensembl",
+##'                             host="sep2015.archive.ensembl.org")
 ##' 
+##' cache_path <- system.file("extdata", "cache", package="customProDB")
 ##' annotation_path <- tempdir()
 ##' transcript_ids <- c("ENST00000234420", "ENST00000269305", "ENST00000445888", 
-##'     "ENST00000257430", "ENST00000508376", "ENST00000288602", 
-##'     "ENST00000269571", "ENST00000256078", "ENST00000384871")
+##'                     "ENST00000257430", "ENST00000508376", "ENST00000288602", 
+##'                     "ENST00000269571", "ENST00000256078", "ENST00000384871")
 ##' 
 ##' PrepareAnnotationEnsembl(mart=ensembl, annotation_path=annotation_path, 
 ##'     splice_matrix=FALSE, dbsnp=NULL, transcript_ids=transcript_ids, 
-##'     COSMIC=FALSE)
+##'     COSMIC=FALSE, local_cache_path=cache_path)
 ##' 
 ##' 
 
@@ -41,8 +42,8 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
                 dbsnp=NULL, transcript_ids=NULL, COSMIC=FALSE, local_cache_path=NULL, ...) {
     options(stringsAsFactors=FALSE)
   
-    dataset <- biomaRt:::martDataset(mart)
-    biomart <- biomaRt:::martBM(mart)
+    dataset <- mart@dataset
+    biomart <- mart@biomart
     version <- sub("Ensembl Genes (\\d+)", "\\1", listEnsembl(mart)[listEnsembl(mart)["biomart"]=="ensembl", 2])
   
     if (!dir.exists(annotation_path) && !dir.create(annotation_path, recursive=TRUE)) {
@@ -53,7 +54,7 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
       local_cache_path = qq("@{local_cache_path}/@{dataset}_@{version}")
     }
   
-    host <- strsplit(strsplit(biomaRt:::martHost(mart), ':')[[1]][2], '//')[[1]][2]
+    host <- strsplit(strsplit(mart@host, ':')[[1]][2], '//')[[1]][2]
     if (!is.null(dbsnp)) {
       session  <- browserSession()
         if(dataset == 'hsapiens_gene_ensembl') {
@@ -131,9 +132,8 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     tr_coding <- subset(ids, pro_name != "")
     tr_noncoding <- subset(ids, pro_name == "")
     
-    txdb<- read_or_update_local_cacheDb(makeTranscriptDbFromBiomart_archive(biomart=biomart, dataset=dataset, 
-                                                                            host=host, archive=FALSE, 
-                                                                            transcript_ids=transcript_ids),
+    txdb<- read_or_update_local_cacheDb(makeTxDbFromBiomart(biomart=biomart, dataset=dataset, host=host,  
+                                                            transcript_ids=transcript_ids),
             local_cache_path, "txdb")
     #saveFeatures(txdb, file=paste(annotation_path,'/txdb.sqlite',sep=''))
     saveDb(txdb, file=paste(annotation_path, '/txdb.sqlite', sep=''))

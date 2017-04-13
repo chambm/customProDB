@@ -11,22 +11,18 @@
 ##' @param ... Additional arguments
 ##' @return a data frame containing protein coding sequence proteins with single nucleotide variation.
 ##' @author Xiaojing Wang
-##' @import Biostrings
 ##' @importFrom data.table data.table rbindlist setkey setDT set
 ##' @export
 ##' @examples
 ##' 
 ##' vcffile <- system.file("extdata/vcfs", "test1.vcf", package="customProDB")
 ##' vcf <- InputVcf(vcffile)
-##' table(values(vcf[[1]])[['INDEL']])
-##' index <- which(values(vcf[[1]])[['INDEL']] == FALSE)
+##' table(GenomicRanges::values(vcf[[1]])[['INDEL']])
+##' index <- which(GenomicRanges::values(vcf[[1]])[['INDEL']] == FALSE)
 ##' SNVvcf <- vcf[[1]][index]
-##' load(system.file("extdata/refseq", "exon_anno.RData", 
-##' package="customProDB"))
-##' load(system.file("extdata/refseq", "dbsnpinCoding.RData", 
-##'     package="customProDB"))
-##' load(system.file("extdata/refseq", "procodingseq.RData", 
-##'     package="customProDB"))
+##' load(system.file("extdata/refseq", "exon_anno.RData", package="customProDB"))
+##' load(system.file("extdata/refseq", "dbsnpinCoding.RData", package="customProDB"))
+##' load(system.file("extdata/refseq", "procodingseq.RData", package="customProDB"))
 ##' load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
 ##' load(system.file("extdata/refseq", "proseq.RData", package="customProDB"))
 ##' postable_snv <- Positionincoding(SNVvcf, exon, dbsnpinCoding)

@@ -26,5 +26,7 @@ If evaluating the expression has side-effects,
 they will not happen if the result is returned from cache.
 }
 \examples{
-read_or_update_local_cache(2+2, temp_dir(), "TwoPlusTwo")
+\dontrun{
+read_or_update_local_cache(2+2, tempdir(), "TwoPlusTwo")
+}
 }

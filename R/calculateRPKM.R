@@ -10,7 +10,7 @@
 ##' @param ... additional arguments
 ##' @return RPKM value for all transcripts or protein coding transcripts.
 ##' @author Xiaojing Wang
-##' @import Rsamtools GenomicRanges GenomicAlignments
+##' @import Rsamtools GenomeInfoDb GenomicAlignments
 ##' @export
 ##' @examples
 ##' 

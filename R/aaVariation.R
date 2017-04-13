@@ -15,9 +15,9 @@
 ##' 
 ##' vcffile <- system.file("extdata/vcfs", "test1.vcf", package="customProDB")
 ##' vcf <- InputVcf(vcffile)
-##' table(values(vcf[[1]])[['INDEL']])
+##' table(GenomicRanges::values(vcf[[1]])[['INDEL']])
 ##' 
-##' index <- which(values(vcf[[1]])[['INDEL']]==FALSE)
+##' index <- which(GenomicRanges::values(vcf[[1]])[['INDEL']]==FALSE)
 ##' SNVvcf <- vcf[[1]][index]
 ##' load(system.file("extdata/refseq", "exon_anno.RData", package="customProDB"))
 ##' load(system.file("extdata/refseq", "dbsnpinCoding.RData", package="customProDB"))

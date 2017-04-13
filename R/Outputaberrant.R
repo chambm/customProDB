@@ -18,15 +18,13 @@
 ##' 
 ##' vcffile <- system.file("extdata/vcfs", "test1.vcf", package="customProDB")
 ##' vcf <- InputVcf(vcffile)
-##' table(values(vcf[[1]])[['INDEL']])
-##' index <- which(values(vcf[[1]])[['INDEL']] == TRUE)
+##' table(GenomicRanges::values(vcf[[1]])[['INDEL']])
+##' index <- which(GenomicRanges::values(vcf[[1]])[['INDEL']] == TRUE)
 ##' indelvcf <- vcf[[1]][index]
 ##' 
 ##' load(system.file("extdata/refseq", "exon_anno.RData", package="customProDB"))
-##' load(system.file("extdata/refseq", "dbsnpinCoding.RData", 
-##'         package="customProDB"))
-##' load(system.file("extdata/refseq", "procodingseq.RData", 
-##'         package="customProDB"))
+##' load(system.file("extdata/refseq", "dbsnpinCoding.RData", package="customProDB"))
+##' load(system.file("extdata/refseq", "procodingseq.RData", package="customProDB"))
 ##' load(system.file("extdata/refseq", "proseq.RData", package="customProDB"))
 ##' load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
 ##' postable_indel <- Positionincoding(indelvcf, exon)

@@ -25,6 +25,10 @@ PrepareAnnotationRefseq(genome = "hg19", CDSfasta, pepfasta, annotation_path,
 
 \item{COSMIC}{whether to download COSMIC data, default is FALSE.}
 
+\item{local_cache_path}{if non-NULL, refers to a directory where previously downloaded resources
+(like protein coding sequences and COSMIC data) are cached so that the function can be re-run without
+needing to download identical data again}
+
 \item{...}{additional arguments}
 }
 \value{
@@ -36,15 +40,14 @@ prepare the annotation for Refseq through UCSC table browser.
 \examples{
 
 transcript_ids <- c("NM_001126112", "NM_033360", "NR_073499", "NM_004448",
-        "NM_000179", "NR_029605", "NM_004333", "NM_001127511")
-pepfasta <- system.file("extdata", "refseq_pro_seq.fasta", 
-            package="customProDB")
-CDSfasta <- system.file("extdata", "refseq_coding_seq.fasta", 
-            package="customProDB")
+                    "NM_000179", "NR_029605", "NM_004333", "NM_001127511")
+pepfasta <- system.file("extdata", "refseq_pro_seq.fasta", package="customProDB")
+CDSfasta <- system.file("extdata", "refseq_coding_seq.fasta", package="customProDB")
+cache_path <- system.file("extdata", "cache", package="customProDB")
 annotation_path <- tempdir()
 PrepareAnnotationRefseq(genome='hg19', CDSfasta, pepfasta, annotation_path, 
             dbsnp=NULL, transcript_ids=transcript_ids, 
-            splice_matrix=FALSE, COSMIC=FALSE)
+            splice_matrix=FALSE, COSMIC=FALSE, local_cache_path=cache_path)
 
 }
 \author{

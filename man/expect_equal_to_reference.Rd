@@ -8,10 +8,15 @@ expect_equal_to_reference(object, file, ..., info = NULL, label = NULL,
   expected.label = NULL, on.update = NULL)
 }
 \arguments{
+\item{object}{object to test}
+
 \item{file}{The file name used to store the object. Should have an "rds"
 extension.}
 
 \item{...}{other values passed to [expect_equal()]}
+
+\item{info}{extra information to be included in the message (useful when
+writing tests in loops).}
 
 \item{label}{For the full form, a label for the expected object, which is
 used in error messages. Useful to override the default (which is based on

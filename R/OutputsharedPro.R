@@ -3,7 +3,7 @@
 ##' this function takes RPKM matrix as input, users can set two paramteters,cutoff and shared, to generated a consensus expressed database 
 ##' @title Output the sequences of proteins with high expressions in multiple samples.
 ##' @param RPKMs RPKM matrix; row name (protein name) is required.
-##' @param cutoff a percentage format cutoff (e.g. '30%'), or a vector with each element as a vlaue cutoff referring to one sample
+##' @param cutoff a percentage format cutoff (e.g. '30\%'), or a vector with each element as a vlaue cutoff referring to one sample
 ##' @param share_sample the minimum share sample numbers for proteins which pass the cutoff.
 ##' @param proteinseq a dataframe containing protein ids and protein sequences
 ##' @param outfile output file name

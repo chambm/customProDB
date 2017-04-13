@@ -15,6 +15,3 @@ current script file (in full path)
 \note{
 Works with Rscript, source() or in RStudio Run selection
 }
-\examples{
-current_script_file()
-}

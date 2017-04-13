@@ -1,3 +1,4 @@
+#Sys.setenv("R_TESTS" = "")
 library(testthat)
 library(customProDB)
 library(GetoptLong)
@@ -6,17 +7,27 @@ library(biomaRt)
 context("PrepareAnnotationEnsembl")
 
 testthat_path = current_script_file()
-if (nchar(testthat_path) == 0) {
+if (!nzchar(testthat_path)) {
   testthat_path = getwd()
+  if (!dir.exists(paste0(testthat_path, "/../../inst/extdata"))) {
+    extdata_path = system.file("extdata", package="customProDB", mustWork=TRUE)
+  } else {
+    extdata_path = paste0(testthat_path, "/../../inst/extdata")
+  }
 } else {
   testthat_path = dirname(testthat_path)
+  extdata_path = paste0(testthat_path, "/../../inst/extdata")
 }
+stopifnot(dir.exists(extdata_path))
 
-extdata_path = paste0(testthat_path, "/../../inst/extdata")
 pepfasta = paste0(extdata_path, "/refseq_pro_seq.fasta")
 CDSfasta = paste0(extdata_path, "/refseq_coding_seq.fasta")
 local_cache_path = paste0(extdata_path, "/cache")
 annotation_path = tempdir()
+stopifnot(file.exists(pepfasta))
+stopifnot(file.exists(CDSfasta))
+stopifnot(dir.exists(local_cache_path))
+stopifnot(dir.exists(annotation_path))
 
 
 load_annotations = function(annotation_path, envir, dbsnp=FALSE, cosmic=FALSE) {

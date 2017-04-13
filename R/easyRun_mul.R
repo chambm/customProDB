@@ -140,7 +140,7 @@ easyRun_mul <- function(bamFile_path, RPKM_mtx=NULL, vcfFile_path,
     mtab <- aaVariation (postable_snv, codingseq)
     
     outf_mtab <- paste(outfile_path,'/', outfile_name, '_snv.tab', sep='')
-    write.table(mtab, file=outf_mtab, sep='\t', quote=F, row.names=F)
+    utils::write.table(mtab, file=outf_mtab, sep='\t', quote=F, row.names=F)
     
     outf_snv <- paste(outfile_path,'/', outfile_name, '_snv.fasta', sep='')
     OutputVarproseq_single(mtab, proteinseq, outf_snv, ids, RPKM=meanRPKM)

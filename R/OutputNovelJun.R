@@ -16,7 +16,7 @@
 ##' jun <-  Bed2Range(bedfile,skip=1,covfilter=5)
 ##' load(system.file("extdata/refseq", "splicemax.RData", package="customProDB"))
 ##' load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
-##' txdb <- loadDb(system.file("extdata/refseq", "txdb.sqlite", 
+##' txdb <- AnnotationDbi::loadDb(system.file("extdata/refseq", "txdb.sqlite", 
 ##'             package="customProDB"))
 ##' junction_type <- JunctionType(jun, splicemax, txdb, ids)
 ##' table(junction_type$jun_type)
