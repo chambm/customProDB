@@ -19,7 +19,7 @@ test_that("INDELs are separated from SNVs", {
   expect_equivalent(indelCounts["TRUE"], 7)
 })
 
-test_that("OutputVarproseq creates a FASTA file and an RData file", {
+test_that("OutputVarproseq creates a FASTA file and returns a data.frame", {
   vcf <- InputVcf(vcffile)
   index <- which(values(vcf[[1]])[['INDEL']] == FALSE)
   SNVvcf <- vcf[[1]][index]
@@ -33,12 +33,9 @@ test_that("OutputVarproseq creates a FASTA file and an RData file", {
   stopifnot(nrow(mtab) > 0)
   
   outfile <- paste(tempdir(), '/test_snv.fasta', sep='')
-  OutputVarproseq(mtab, proteinseq, outfile, ids, lablersid=TRUE, RPKM=NULL)
+  snvproseq <- OutputVarproseq(mtab, proteinseq, outfile, ids, lablersid=TRUE, RPKM=NULL)
   
   fasta = readLines(outfile)
   expect_equal_to_reference(fasta, 'test_snv.fasta.rds')
-  
-  load(paste(outfile, '_snvproseq.RData', sep=''))
-  if(!file.exists("test_snv.fasta_snvproseq.rds")) { View(snvproseq) }
   expect_equal_to_reference(snvproseq, 'test_snv.fasta_snvproseq.rds')
 })

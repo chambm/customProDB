@@ -149,11 +149,21 @@ read_or_update_local_cacheDb <- function(expression, local_cache_path, object_na
 #'   object label, which is computed from the deparsed object by default.
 #' @param expected.label Equivalent of `label` for shortcut form.
 #' @param on.update If non-NULL and if the reference file does not exist,
-#'  [on.update(a, b)] will be called with 2 parameters:
-#'  1) the object itself, and
-#'  2) a name composed of the reference file name and the object name.
+#'  [on.update(o, t)] will be called with 2 parameters:
+#'  \enumerate{
+#'  \item the new object
+#'  \item a title string composed of the reference file name and the object name
+#'  }
 #'  If on.update is NULL and the reference file does not exist, a short message
 #'  will be printed to alert the tester that the reference file was created instead of tested.
+#' @param on.fail If non-NULL and the tested object does not match the reference object,
+#'  [on.fail(ref, new, title)] will be called with 3 parameters:
+#'  \enumerate{
+#'  \item the reference object
+#'  \item the new object
+#'  \item a title string composed of the reference file name and the object name
+#'  }
+#'  If on.fail is NULL, normal testthat reporting will still occur.
 #' @param ... other values passed to [expect_equal()]
 #' @family expectations
 #' @examples
@@ -161,9 +171,13 @@ read_or_update_local_cacheDb <- function(expression, local_cache_path, object_na
 #' expect_equal_to_reference(1, "one.rds")
 #' }
 expect_equal_to_reference = function(object, file, ..., info=NULL, label=NULL, expected.label=NULL,
-                                     on.update=NULL) {
+                                     on.update=NULL, on.fail=NULL) {
   lab_act <- testthat:::make_label(object, label)
   lab_exp <- expected.label %||% paste0("reference from `", file, "`")
+  
+  # check for reference files either in current directory or in ./tests/testthat directory
+  if (!file.exists(file) && file.exists(file.path("tests", "testthat", file)))
+    file = file.path("tests", "testthat", file)
   
   if (!file.exists(file)) {
     # first time always succeeds
@@ -184,6 +198,9 @@ expect_equal_to_reference = function(object, file, ..., info=NULL, label=NULL, e
       sprintf("%s not equal to %s.\n%s", lab_act, lab_exp, comp$message),
       info = info
     )
+    
+    if (!comp$equal && !is.null(on.fail))
+        on.fail(reference, object, paste0(file, ":", deparse(substitute(object))))
   }
   
   invisible(object)

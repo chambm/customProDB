@@ -5,7 +5,7 @@
 \title{Expectation: is the object equal to a reference value stored in a file?}
 \usage{
 expect_equal_to_reference(object, file, ..., info = NULL, label = NULL,
-  expected.label = NULL, on.update = NULL)
+  expected.label = NULL, on.update = NULL, on.fail = NULL)
 }
 \arguments{
 \item{object}{object to test}
@@ -26,11 +26,22 @@ object label, which is computed from the deparsed object by default.}
 \item{expected.label}{Equivalent of `label` for shortcut form.}
 
 \item{on.update}{If non-NULL and if the reference file does not exist,
-[on.update(a, b)] will be called with 2 parameters:
-1) the object itself, and
-2) a name composed of the reference file name and the object name.
+[on.update(o, t)] will be called with 2 parameters:
+\enumerate{
+\item the new object
+\item a title string composed of the reference file name and the object name
+}
 If on.update is NULL and the reference file does not exist, a short message
 will be printed to alert the tester that the reference file was created instead of tested.}
+
+\item{on.fail}{If non-NULL and the tested object does not match the reference object,
+[on.fail(ref, new, title)] will be called with 3 parameters:
+\enumerate{
+\item the reference object
+\item the new object
+\item a title string composed of the reference file name and the object name
+}
+If on.fail is NULL, normal testthat reporting will still occur.}
 }
 \description{
 This expectation is equivalent to [expect_equal()], except that the

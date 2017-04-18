@@ -104,21 +104,17 @@ OutputVarproseq <- function(vartable, proteinseq, outfile, ids, lablersid=FALSE,
                         unlist(strsplit(x['peptide'], '\\*'))[1], sep=''))
         
         }    
-        
-            
+
         write(outformat, file=outfile)
-		
-		#######used as input for proBAMr 
-		snvproseq <-  ftab
+
+        #######used as input for proBAMr 
+        snvproseq <-  ftab
         snvproseq$pro_name <- paste(snvproseq$pro_name, 
                                         "_", snvproseq[, 'var_name'], sep='')
-        
-        
+
         snvproseq <- snvproseq[, c('pro_name', 'peptide', 'tx_name.x', 
-								 'gene_name', 'description')]
+                                   'gene_name', 'description')]
         colnames(snvproseq) <- c('pro_name', 'peptide', 'tx_name', 
-                                    'gene_name', 'description')
+                                 'gene_name', 'description')
         snvproseq
-		save(snvproseq, file=paste(outfile, '_snvproseq.RData', sep=''))
-        
     }
