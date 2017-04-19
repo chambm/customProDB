@@ -1,8 +1,8 @@
 # customProDB
 
 [![TravisCI Build Status](https://travis-ci.org/chambm/customProDB.svg?branch=master)](https://travis-ci.org/chambm/customProDB)
-[![Coverage Status](https://img.shields.io/codecov/c/github/hadley/testthat/master.svg)](https://codecov.io/github/hadley/testthat?branch=master)
-[![Platforms version](http://bioconductor.org/shields/availability/3.4/customProDB.svg)](https://cran.r-project.org/package=testthat)
+[![Coverage Status](https://img.shields.io/codecov/c/github/chambm/customProDB/master.svg)](https://codecov.io/github/chambm/customProDB?branch=master)
+[![Platforms version](http://bioconductor.org/shields/availability/3.4/customProDB.svg)](http://bioconductor.org/packages/devel/bioc/html/customProDB.html)
 <!---
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/hadley/testthat?branch=master&svg=true)](https://ci.appveyor.com/project/hadley/testthat)
 -->
@@ -18,3 +18,27 @@ spectrometry-based proteomics studies. Sample-specific protein databases derived
 better approximate the real protein pools in the samples and thus improve protein identification. 
 More importantly, single nucleotide variations, short insertion and deletions and novel junctions 
 identified from RNA-Seq data make protein databases more complete and sample-specific. 
+
+## Installation
+
+To install this package, start R and enter:
+
+```R
+## try http:// if https:// URLs are not supported
+source("https://bioconductor.org/biocLite.R")
+biocLite("customProDB")
+```
+
+Alternatively, you can install the latest version from github using devtools:
+
+```R
+# install.packages("devtools")
+devtools::install_github("chambm/customProDB")
+```
+
+## Documentation
+
+To view documentation for the version of this package installed in your system, start R and enter:
+```R
+browseVignettes("customProDB")
+```

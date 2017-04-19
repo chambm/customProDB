@@ -206,6 +206,36 @@ expect_equal_to_reference = function(object, file, ..., info=NULL, label=NULL, e
   invisible(object)
 }
 
+# stock on.update function that will open the new data with View (suitable for rectangular data)
+on.update.view = function(new_ref, t) { utils::View(new_ref, t) }
+
+# stock on.update function that will open the new data in a browser window
+on.update.edit = function(new_ref, t)
+{
+  diff = as.character(diffobj::diffPrint("Reference file missing", new_ref, interactive=FALSE, mode="unified", format="html", style=list(html.output="diff.w.style"), disp.width=2000))
+  if (!"package:knitr" %in% search())
+  {
+    diffFile = tempfile(fileext=".html")
+    cat(diff, file=diffFile)
+    utils::browseURL(diffFile, browser=NULL)
+  }
+  else
+    cat(diff)
+}
+
+# stock on.fail function that will open a diff between the reference and new data in a browser window
+on.fail.diff = function(reference, new, t)
+{
+  diff = as.character(diffobj::diffPrint(reference, new, interactive=FALSE, mode="unified", format="html", style=list(html.output="diff.w.style"), disp.width=2000))
+  if (!"package:knitr" %in% search())
+  {
+    diffFile = tempfile(fileext=".html")
+    cat(diff, file=diffFile)
+    utils::browseURL(diffFile, browser=NULL)
+  }
+  else
+    cat(diff)
+}
 
 # @return full path to this script
 #' current script file (in full path)

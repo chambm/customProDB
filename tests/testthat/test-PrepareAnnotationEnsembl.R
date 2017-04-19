@@ -59,9 +59,6 @@ load_annotations = function(annotation_path, envir, dbsnp=FALSE, cosmic=FALSE) {
 }
 
 
-on.update.view = function(o, t) { View(o, t) }
-
-
 ## Ensembl human 82
 genome = "hsapiens_gene_ensembl"
 dbsnp = "snp146"

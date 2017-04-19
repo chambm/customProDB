@@ -58,9 +58,6 @@ load_annotations = function(annotation_path, envir, dbsnp=FALSE, cosmic=FALSE) {
 }
 
 
-on.update.view = function(o, t) { View(o, t) }
-
-
 ## hg19/snp146
 genome = "hg19"
 dbsnp = "snp146"
