@@ -34,20 +34,13 @@
 
 OutputVarprocodingseq <- function(vartable, procodingseq, ids, lablersid=FALSE, show_progress=FALSE, ...)
     {
+        stopifnot(!lablersid || "rsid" %in% colnames(vartable))
+  
         options(stringsAsFactors=FALSE)
         nonsy <- vartable[vartable$vartype == "non-synonymous", ]
         
         aavar2pro <- nonsy
         
-        complements <- c("A"="T","T"="A",
-                         "G"="C","C"="G",
-                         "M"="K","K"="M",
-                         "R"="Y","Y"="R",
-                         "W"="W","S"="S",
-                         "D"="H","H"="D",
-                         "B"="V","V"="B")
-        
-        fastComplement = function(base) complements[[base]]
         refbase <- mapply(function(base, strand) ifelse(strand=='+', base, fastComplement(base)), aavar2pro$refbase, aavar2pro$strand)
         varbase <- mapply(function(base, strand) ifelse(strand=='+', base, fastComplement(base)), aavar2pro$varbase, aavar2pro$strand)
 
@@ -61,14 +54,17 @@ OutputVarprocodingseq <- function(vartable, procodingseq, ids, lablersid=FALSE, 
         
         plist <- unique(aavar2pro$proname)
         pepcoding <- procodingseq[procodingseq$pro_name %in% plist, ]
-        pep_vars_by_name = lapply(plist, function(x) aavar2pro[x, .(varbase, aaref, aavar=unlist(aavar), aapos, pincoding, rsid)])
+        if (lablersid)
+          pep_vars_by_name = lapply(plist, function(x) aavar2pro[x, .(varbase, aaref, aavar=unlist(aavar), aapos, pincoding, rsid)])
+        else
+          pep_vars_by_name = lapply(plist, function(x) aavar2pro[x, .(varbase, aaref, aavar=unlist(aavar), aapos, pincoding)])
         names(pep_vars_by_name) = plist
         
         # add DNA complement column if it is missing
         if (is.null(procodingseq$dna_complement))
         {
           #message("Optimizing procodingseq for fast reverse complement access...")
-          pepcoding$dna_complement = sapply(sapply(strsplit(pepcoding$coding, ""), function(x) complements[x]), function(x) paste(x, collapse = ""))
+          pepcoding$dna_complement = fastComplement(pepcoding$coding)
         }
         
         coding_index = which(colnames(pepcoding)=="coding")

@@ -57,6 +57,32 @@ makeExonRankCol <- function(exon_count, tx_strand)
 }
 
 
+.complements <- c("A"="T","T"="A",
+                  "G"="C","C"="G",
+                  "M"="K","K"="M",
+                  "R"="Y","Y"="R",
+                  "W"="W","S"="S",
+                  "D"="H","H"="D",
+                  "B"="V","V"="B")
+
+.fastComplement = function(base) .complements[base]
+
+#' Pure R function to turn a character vector of nucleotides into a reverse complement vector.
+#' When running on many strings, this is much faster than Biostrings::reverseComplement(DNAString).
+#'
+#' @param naString a character vector of nucleotides; IUPAC ambiguous nucleotides are supported
+#'
+#' @return the reverse complement of naString
+#' @export
+#'
+#' @examples
+#' fastComplement(c("GAT", "TACA")) # "CTA"  "ATGT"
+#' fastComplement("MAW") # "KTW"
+fastComplement = function(naString)
+{
+  sapply(lapply(strsplit(naString, ""), .fastComplement), paste0, collapse="")
+}
+
 
 #' Read the cached result of an expression from a locally cached file if it exists,
 #' else evaluate the expression, cache it, and return result.
@@ -212,29 +238,41 @@ on.update.view = function(new_ref, t) { utils::View(new_ref, t) }
 # stock on.update function that will open the new data in a browser window
 on.update.edit = function(new_ref, t)
 {
-  diff = as.character(diffobj::diffPrint("Reference file missing", new_ref, interactive=FALSE, mode="unified", format="html", style=list(html.output="diff.w.style"), disp.width=2000))
-  if (!"package:knitr" %in% search())
+  tryCatch(
   {
-    diffFile = tempfile(fileext=".html")
-    cat(diff, file=diffFile)
-    utils::browseURL(diffFile, browser=NULL)
-  }
-  else
-    cat(diff)
+    old.max.print = getOption("max.print")
+    try(options(max.print = nrow(new_ref)*ncol(new_ref)), silent=TRUE)
+    diff = as.character(diffobj::diffPrint("Reference file missing", new_ref, interactive=FALSE, mode="unified", format="html", style=list(html.output="diff.w.style"), disp.width=2000))
+    if (!"package:knitr" %in% search())
+    {
+      diffFile = tempfile(gsub("[^-\\w^&'@{},$=!#().%+~ ]", "_", t, perl=TRUE), fileext=".html")
+      cat(diff, file=diffFile)
+      utils::browseURL(diffFile, browser=NULL)
+    }
+    else
+      cat(diff)
+  },
+  finally = options(max.print = old.max.print))
 }
 
 # stock on.fail function that will open a diff between the reference and new data in a browser window
 on.fail.diff = function(reference, new, t)
 {
-  diff = as.character(diffobj::diffPrint(reference, new, interactive=FALSE, mode="unified", format="html", style=list(html.output="diff.w.style"), disp.width=2000))
-  if (!"package:knitr" %in% search())
+  tryCatch(
   {
-    diffFile = tempfile(fileext=".html")
-    cat(diff, file=diffFile)
-    utils::browseURL(diffFile, browser=NULL)
-  }
-  else
-    cat(diff)
+    old.max.print = getOption("max.print")
+    try(options(max.print = max(nrow(reference)*ncol(reference), nrow(new)*ncol(new))), silent=TRUE)
+    diff = as.character(diffobj::diffPrint(reference, new, interactive=FALSE, mode="unified", format="html", style=list(html.output="diff.w.style"), disp.width=2000))
+    if (!"package:knitr" %in% search())
+    {
+      diffFile = tempfile(gsub("[^-\\w^&'@{},$=!#().%+~ ]", "_", t, perl=TRUE), fileext=".html")
+      cat(diff, file=diffFile)
+      utils::browseURL(diffFile, browser=NULL)
+    }
+    else
+      cat(diff)
+  },
+  finally = options(max.print = old.max.print))
 }
 
 # @return full path to this script
@@ -267,4 +305,54 @@ current_script_file <- function() {
       }
     }
   }
+}
+
+# Downloaded from: https://gist.github.com/xhdong-umd/6429e7f96735142fa467f3b1daa91a2c
+# To decompress zip, gz, bzip2, xz into temp file, run function then remove temp file.
+.temp_unzip <- function(filename, fun, ...){
+  BFR.SIZE <- 1e7
+  if (!file.exists(filename)) {
+    stop("No such file: ", filename);
+  }
+  if (!is.function(fun)) {
+    stop(sprintf("Argument 'fun' is not a function: %s", mode(fun)));
+  }
+  temp_dir <- tempdir()
+  # test if it's zip
+  files_in_zip <- try(utils::unzip(filename, list = TRUE)$Name, silent = TRUE)
+  if (class(files_in_zip) == "character") {
+    # hidden files can be ignored: starting with ., ending with $, __MACOSX folder 
+    visible_files <- files_in_zip[!grepl("((^__MACOSX\\/.*)|(^\\..*)|(^.*\\$$))", 
+                                         files_in_zip)]
+    # will not continue for multiple non-hidden files since behavior is not well defined.
+    if(length(visible_files)>1) { 
+      stop(paste0("Zip file contains multiple visible files:\n", 
+                  paste0("    ", visible_files, collapse = "\n")))
+    }
+    if(length(visible_files) == 0) { stop("\n  No visible file found in Zip file")}
+    # proceed with single non-hidden file
+    utils::unzip(filename, files = visible_files[1], exdir = temp_dir, overwrite = TRUE)
+    dest_file <- file.path(temp_dir, visible_files[1])
+  } else {
+    dest_file <- tempfile()
+    # Setup input and output connections
+    inn <- gzfile(filename, open = "rb")
+    out <- file(description = dest_file, open = "wb")
+    # Process
+    nbytes <- 0
+    repeat {
+      bfr <- readBin(inn, what=raw(0L), size=1L, n=BFR.SIZE)
+      n <- length(bfr)
+      if (n == 0L) break;
+      nbytes <- nbytes + n
+      writeBin(bfr, con=out, size=1L)
+      bfr <- NULL  # Not needed anymore
+    }
+    close(inn)
+    close(out)
+  }
+  # call fun with temp file
+  res <- fun(dest_file, ...)
+  file.remove(dest_file)
+  return(res)
 }

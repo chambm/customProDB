@@ -37,6 +37,7 @@ Imports:
     data.table,
     DBI,
     RMySQL,
+    sqldf,
     testthat,
     GetoptLong
 Suggests:

@@ -58,7 +58,6 @@ OutputVarproseq <- function(vartable, proteinseq, outfile, ids, lablersid=FALSE,
         pep_all<- c()
         test <- c()
         for(i in 1:dim(pep_var)[1]){
-            #print(i)
             pvar <-subset(aavar2pro,aavar2pro$proname == pep_var[i, 'pro_name'])
             pvar <- pvar[order(as.numeric(pvar$aapos)), ]
             for(j in 1:dim(pvar)[1]){

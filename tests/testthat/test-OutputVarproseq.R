@@ -36,6 +36,6 @@ test_that("OutputVarproseq creates a FASTA file and returns a data.frame", {
   snvproseq <- OutputVarproseq(mtab, proteinseq, outfile, ids, lablersid=TRUE, RPKM=NULL)
   
   fasta = readLines(outfile)
-  expect_equal_to_reference(fasta, 'test_snv.fasta.rds')
-  expect_equal_to_reference(snvproseq, 'test_snv.fasta_snvproseq.rds')
+  customProDB:::expect_equal_to_reference(fasta, 'test_snv.fasta.rds', on.update=on.update.view, on.fail=on.fail.diff)
+  customProDB:::expect_equal_to_reference(snvproseq, 'test_snv.fasta_snvproseq.rds', on.update=on.update.view, on.fail=con.fail.diff)
 })

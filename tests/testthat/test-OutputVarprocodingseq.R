@@ -25,7 +25,6 @@ test_that("OutputVarprocodingseq returns correct coding sequences", {
   stopifnot(nrow(mtab) > 0)
   
   snvprocodingseq = OutputVarprocodingseq(mtab, codingseq, ids, lablersid=TRUE)
-  if(!file.exists("test_snv.fasta_snvprocodingseq.rds")) { View(snvprocodingseq) }
-  expect_equal_to_reference(snvprocodingseq, "test_snv.fasta_snvprocodingseq.rds")
+  expect_equal_to_reference(snvprocodingseq, "test_snv.fasta_snvprocodingseq.rds", on.update=on.update.view, on.fail=on.fail.diff)
 })
 

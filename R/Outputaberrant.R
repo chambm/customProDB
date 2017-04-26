@@ -44,7 +44,7 @@ Outputaberrant <- function(positiontab, outfile, coding, proteinseq, ids,
         stopifnot(nrow(coding) > 0, nrow(proteinseq) > 0, nrow(ids) > 0)
         if (nrow(positiontab) < 1)
         {
-          Bwarning("empty positiontab; Outputaberrant has nothing to do")
+          warning("empty positiontab; Outputaberrant has nothing to do")
           return()
         }
   
@@ -55,7 +55,7 @@ Outputaberrant <- function(positiontab, outfile, coding, proteinseq, ids,
             muti_new <- c()
             for(i in 1:dim(muti)[1]){
                 tmp <- cbind(muti[i, 1:8], 
-                        unlist(strsplit(as.character(muti[i, 'varbase']), ',', fixed=T)), 
+                        unlist(strsplit(as.character(muti[i, 'varbase']), ',', fixed=TRUE)), 
                         muti[i, 10])
                 muti_new <- rbind(muti_new, tmp)
             }
@@ -64,9 +64,10 @@ Outputaberrant <- function(positiontab, outfile, coding, proteinseq, ids,
             positiontab <- rbind(positiontab, muti_new)
         }
 
-
-        mtable <- merge(positiontab, coding, by.x='txid', by.y='tx_id', all.x=T, 
-                        stringsAsFactors = FALSE)
+        
+        coding$tx_id = as.integer(coding$tx_id)
+        mtable <- merge(positiontab, coding, by.x='txid', by.y='tx_id', all.x=TRUE, stringsAsFactors = FALSE)
+        mtable <- mtable[!is.na(mtable$coding),]
         #mtable <- cbind(positiontab,codingseq)
 
         mtab_plus <- as.data.frame(subset(mtable, strand == '+'))
@@ -76,8 +77,7 @@ Outputaberrant <- function(positiontab, outfile, coding, proteinseq, ids,
         nchar(mtab_plus$refbase) + mtab_plus$pincoding - 1) <- unlist(mtab_plus$varbase)
 
         str_sub(mtab_minus$coding, mtab_minus$pincoding, 
-                mtab_minus$pincoding + nchar(mtab_minus$refbase) - 1) <- 
-          as.character(reverseComplement(DNAStringSet(mtab_minus$varbase)))
+                mtab_minus$pincoding + nchar(mtab_minus$refbase) - 1) <- fastComplement(mtab_minus$varbase)
 
         total <- rbind(mtab_plus,mtab_minus)
 
@@ -89,7 +89,9 @@ Outputaberrant <- function(positiontab, outfile, coding, proteinseq, ids,
                             sep='')
                          }else  ""}))
         total$coding <- gsub('N', 'A', total$coding, fixed=T)
-        aa <- as.character(translate(DNAStringSet(total$coding)))
+        
+        # suppress warnings about last codon being ignored if it isn't 3 bases long
+        suppressWarnings(aa <- as.character(translate(DNAStringSet(total$coding))))
 
         total <- cbind(total, aa, lable)
         pep <- apply(total, 1, function(x) unlist(strsplit(x['aa'], '\\*'))[1])
@@ -135,5 +137,31 @@ Outputaberrant <- function(positiontab, outfile, coding, proteinseq, ids,
                 
         write(outformat, file=outfile)
 
-
+        
+        #######used as input for proBAMr 
+        
+        # add DNA complement column if it is missing
+        if (is.null(mseq_f$dna_complement))
+        {
+          #message("Optimizing procodingseq for fast reverse complement access...")
+        }
+        
+        indelproseq <- mseq_f
+        indelproseq$pro_name <- paste0(mseq_f$pro_name, "_", mseq_f$pincoding, 
+                                       ":", mseq_f$refbase, '>', mseq_f$varbase)
+        
+        indelproseq <- indelproseq[, c('pro_name', 'peptide', 'tx_name.x','gene_name', 'description')]
+        colnames(indelproseq) <- c('pro_name', 'peptide', 'tx_name','gene_name', 'description')
+        
+        indelprocoding <- mseq_f
+        indelprocoding$pro_name <- paste0(mseq_f$pro_name, "_", mseq_f$pincoding, 
+                                          ":", mseq_f$refbase, '>', mseq_f$varbase)
+        
+        indelprocoding <- indelprocoding[, c('pro_name', 'tx_name.x', 'txid', 'coding',
+                                             'gene_name', 'description')]
+        colnames(indelprocoding) <- c('pro_name', 'tx_name', 'tx_id', 'coding',
+                                      'gene_name', 'description')
+        indelprocoding$dna_complement = fastComplement(indelprocoding$coding)
+        
+        list(indelprocoding=indelprocoding, indelproseq=indelproseq)
     }

@@ -10,6 +10,7 @@
 ##' @return a data frame containing consequence for each variations.
 ##' @author Xiaojing Wang
 ##' @importFrom data.table data.table rbindlist setkey setDT 
+##' @import sqldf
 ##' @export
 ##' @examples
 ##' 
@@ -33,11 +34,13 @@
 
 aaVariation <-  function(position_tab, coding, show_progress=FALSE, ...)
 {
-  options(stringsAsFactors=FALSE)
-  
+  options(stringsAsFactors=FALSE)       
+
   setkey(position_tab, txid)
+  coding$tx_id = as.integer(coding$tx_id)
   setDT(coding, key="tx_id")
-  mtable <- position_tab[coding]
+  mtable <- unique(position_tab[coding])
+  suppressWarnings(mtable <- sqldf("SELECT * FROM 'mtable' ORDER BY genename, txid, pincoding"))
   
   iub_mul <- list("A,C"="M", "C,A"="M",
                   "A,G"="R", "G,A"="R",
@@ -53,10 +56,7 @@ aaVariation <-  function(position_tab, coding, show_progress=FALSE, ...)
   iub <- list("M"=c("A","C"),"R"=c("A","G"),"W"=c("A","T"),"S"=c("C","G"),"Y"=c("C","T"),"K"=c("G","T"),
               "B"=c("G","T","C"),"D"=c("G","T","A"),"H"=c("A","T","C"),"V"=c("G","A","C"),
               "A"="A","T"="T","G"="G","C"="C")
-  forward <- c("A","T","G","C","M","R","W","S","Y","K","B","D","H","V")
-  reverse <- c("T","A","C","G","K","Y","W","S","R","M","V","H","D","B")
-  nucle <- cbind(forward, reverse)
-  
+
   index <- which(nchar(mtable$varbase) > 1)
   var_new <- unlist(lapply(mtable$varbase, function(x) iub_mul[[x]]))
   
@@ -68,24 +68,52 @@ aaVariation <-  function(position_tab, coding, show_progress=FALSE, ...)
   
   strand <- mtable$strand
   pincoding <- mtable$pincoding
-  #refbase <- mtable[,refbase]
-  refbase <- mapply(function(x,y) ifelse(y=='+', x, nucle[nucle[, 1]== x, 2]), mtable$refbase, strand)
-  varbase <- mapply(function(x,y) ifelse(y=='+', x, nucle[nucle[, 1]== x, 2]), mtable$varbase, strand)
-  codeindex <- ceiling(pincoding/3)
-  code_s <- (codeindex-1)*3+1
-  code_e <-  codeindex*3
-  refcode <- substr(mtable$coding, code_s, code_e)
+
+  # mtable$refbase <- mapply(function(x,y) ifelse(y=='+', x, fastComplement(x)), mtable$refbase, strand)
+  # mtable$varbase <- mapply(function(x,y) ifelse(y=='+', x, fastComplement(x)), mtable$varbase, strand)
+  # codeindex <- ceiling(pincoding/3)
+  # code_s <- (codeindex-1)*3+1
+  # code_e <-  codeindex*3
+  # refcode <- substr(mtable$coding, code_s, code_e)
   
-  pcode <- ifelse(pincoding%%3==0, 3, pincoding%%3)
-  #substr(refcode,pcode,pcode) <- refbase
-  varcode <- refcode
-  substr(varcode, pcode, pcode) <- varbase
+  # Group variants by codon so that multiple changes can be applied to the same codon if necessary
+  txCodons = sqldf(paste0("SELECT genename, txname, txid, proname, chr, strand, pos, refbase, varbase,
+                           pincoding, coding, tx_name_full,",
+                           ifelse("rsid" %in% colnames(mtable), "rsid, ", ""),
+                           ifelse("cosid" %in% colnames(mtable), "cosid, ", ""),
+                           "(ROUND((pincoding + 0.5)/3)-1)*3+1 AS CodonStart,
+                           GROUP_CONCAT((CAST(pincoding AS INT) || ':' || varbase), ':') AS CodonVariants,
+                           SUBSTR(coding, (ROUND((pincoding + 0.5)/3)-1)*3+1, 3) AS RefCodon
+                           FROM 'mtable'
+                           GROUP BY txid, (ROUND((pincoding + 0.5)/3)-1)*3+1
+                           ORDER BY genename, txid, pincoding"
+                         ));
+
+  updateVar <- function(v, codonStart, refCodon, strand) {
+    vars = unlist(stringr::str_split(v, stringr::fixed(":")))
+    indices = as.numeric(vars[c(TRUE, FALSE)])-as.numeric(codonStart)+1
+    varCodon = refCodon
+    if (strand=="+")
+      for(i in 1:length(indices))
+        substr(varCodon, indices[i], indices[i]) = vars[c(FALSE, TRUE)][i]
+    else
+      for(i in 1:length(indices))
+        substr(varCodon, indices[i], indices[i]) = fastComplement(vars[c(FALSE, TRUE)][i])
+    varCodon
+  }
+  
+  varcode = mapply(FUN = updateVar, txCodons$CodonVariants, txCodons$CodonStart, txCodons$RefCodon, txCodons$strand, USE.NAMES=FALSE)
+  
+  # pcode <- ifelse(pincoding%%3==0, 3, pincoding%%3)
+  # #substr(refcode,pcode,pcode) <- refbase
+  # varcode2 <- refcode
+  # substr(varcode2, pcode, pcode) <- mtable$varbase
   
   fastTranslate = function(codon) tryCatch(GENETIC_CODE[[codon]], error=function(e) "X")
   
   if (show_progress) { pb = txtProgressBar(style=3, min=1, max=length(varcode)) }
   
-  varaa = vector('character', length(varcode))
+  varaa = vector('list', length(varcode))
   vartype <- vector('character', length(varcode))
   aaref <- vector('character', length(varcode))
   aapos <- vector('integer', length(varcode))
@@ -105,8 +133,8 @@ aaVariation <-  function(position_tab, coding, show_progress=FALSE, ...)
       varaa[[i]] = unique(lapply(vcodes, fastTranslate))
     }
 
-    aaref[[i]] = fastTranslate(refcode[[i]])
-    aapos[[i]] = codeindex[[i]]
+    aaref[[i]] = fastTranslate(txCodons$RefCodon[[i]])
+    aapos[[i]] = ceiling(txCodons$CodonStart[[i]]/3)
 
     cur_aaref = aaref[[i]]
     cur_varaa = varaa[[i]]
@@ -129,12 +157,11 @@ aaVariation <-  function(position_tab, coding, show_progress=FALSE, ...)
   if (show_progress) { close(pb) }
 
   # return input table with new columns added
-  mtable$refcode = unlist(refcode)
-  mtable$varcode = unlist(varcode)
-  mtable$vartype = vartype
-  mtable$aaref = aaref
-  mtable$aapos = aapos
-  mtable$aavar = aavar
-  as.data.frame(mtable)
+  txCodons$varcode = unlist(varcode)
+  txCodons$vartype = vartype
+  txCodons$aaref = aaref
+  txCodons$aapos = aapos
+  txCodons$aavar = aavar
+  as.data.frame(txCodons)
 }
 
