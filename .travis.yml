@@ -2,7 +2,9 @@
 
 language: R
 sudo: false
-cache: packages
+cache:
+  packages: true
+  timeout: 360
 r: bioc-release
 warnings_are_errors: false
 after_success:
