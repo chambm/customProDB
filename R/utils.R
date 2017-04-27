@@ -247,7 +247,7 @@ on.update.edit = function(new_ref, t)
     {
       diffFile = tempfile(gsub("[^-\\w^&'@{},$=!#().%+~ ]", "_", t, perl=TRUE), fileext=".html")
       cat(diff, file=diffFile)
-      utils::browseURL(diffFile, browser=NULL)
+      utils::browseURL(diffFile)
     }
     else
       cat(diff)
@@ -267,7 +267,7 @@ on.fail.diff = function(reference, new, t)
     {
       diffFile = tempfile(gsub("[^-\\w^&'@{},$=!#().%+~ ]", "_", t, perl=TRUE), fileext=".html")
       cat(diff, file=diffFile)
-      utils::browseURL(diffFile, browser=NULL)
+      utils::browseURL(diffFile)
     }
     else
       cat(diff)

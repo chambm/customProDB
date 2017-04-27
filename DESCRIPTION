@@ -3,8 +3,10 @@ Type: Package
 Title: Generate customized protein databases from NGS data for proteomics search
 Version: 1.16.0
 Date: 2017-02-08
-Author: xiaojing wang
-Maintainer: xiaojing wang <xiaojing.wang@bcm.edu>
+Authors@R: c(person("Xiaojing", "Wang", email="xiaojing.wang@bcm.edu", role=c("aut", "cre")),
+    person("Matt", "Chambers", email="matt.chambers42@gmail.com", role=c("aut", "cph")),
+    person("Baylor College of Medicine", role="cph"),
+    person("Vanderbilt University", role="cph"))
 Description: Database search is the most widely used approach for peptide and protein identification in mass-
     spectrometry-based proteomics studies. Sample-specific protein databases derived from RNA-Seq data can 
     better approximate the real protein pools in the samples and thus improve protein identification. 
