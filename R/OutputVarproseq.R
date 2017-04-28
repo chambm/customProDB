@@ -37,7 +37,9 @@
 OutputVarproseq <- function(vartable, proteinseq, outfile, ids, lablersid=FALSE, 
             RPKM=NULL, ...)
     {
-        options(stringsAsFactors=FALSE)
+        old <- options(stringsAsFactors = FALSE)
+        on.exit(options(old), add = TRUE)
+        
         nonsy <- vartable[vartable$vartype == "non-synonymous", ]
         
         if(lablersid){

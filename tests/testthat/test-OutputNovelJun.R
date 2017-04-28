@@ -1,4 +1,5 @@
 library(testthat)
+library(AnnotationDbi)
 library(customProDB)
 suppressPackageStartupMessages(library('BSgenome.Hsapiens.UCSC.hg19'))
 

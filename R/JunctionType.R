@@ -29,7 +29,9 @@
 
 JunctionType <- function(jun, splicemax, txdb, ids, ...)
     {
-        options(stringsAsFactors=FALSE)
+        old <- options(stringsAsFactors = FALSE)
+        on.exit(options(old), add = TRUE)
+        
         #jun <- read.table(bedfile, sep='\t', header=F, quote = "\"", 
         #            stringsAsFactors = F, skip=skip)
         #jun5 <- subset(jun, V5 > covfilter)

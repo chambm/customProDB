@@ -21,7 +21,9 @@
 
 Bed2Range <- function(bedfile, skip=1, covfilter=5, ...)
     {
-		options(stringsAsFactors=FALSE)
+    old <- options(stringsAsFactors = FALSE)
+    on.exit(options(old), add = TRUE)
+    
 		jun <- read.table(bedfile, sep='\t', header=F, quote = "\"", stringsAsFactors=F, 
                 skip=skip)
 		jun5 <- subset(jun,V5 > covfilter)

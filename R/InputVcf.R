@@ -25,7 +25,9 @@
 
 InputVcf <- function(vcfFile, ...)
     {
-        options(stringsAsFactors=FALSE)
+        old <- options(stringsAsFactors = FALSE)
+        on.exit(options(old), add = TRUE)
+        
         #vcf_header <-scanBcfHeader(vcfFile)
         vcf_header <-scanVcfHeader(vcfFile)
         #vcf_header

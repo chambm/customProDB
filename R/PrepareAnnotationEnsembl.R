@@ -40,7 +40,8 @@
 
 PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE, 
                 dbsnp=NULL, transcript_ids=NULL, COSMIC=FALSE, local_cache_path=NULL, ...) {
-    options(stringsAsFactors=FALSE)
+    old <- options(stringsAsFactors = FALSE)
+    on.exit(options(old), add = TRUE)
   
     dataset <- mart@dataset
     biomart <- mart@biomart

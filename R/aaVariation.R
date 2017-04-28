@@ -34,7 +34,8 @@
 
 aaVariation <-  function(position_tab, coding, show_progress=FALSE, ...)
 {
-  options(stringsAsFactors=FALSE)       
+  old <- options(stringsAsFactors = FALSE)
+  on.exit(options(old), add = TRUE)  
 
   setkey(position_tab, txid)
   coding$tx_id = as.integer(coding$tx_id)

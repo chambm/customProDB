@@ -30,7 +30,8 @@
 
 Positionincoding<- function(Vars, exon, dbsnp=NULL, COSMIC=NULL,...)
 {
-  options(stringsAsFactors=FALSE)
+  old <- options(stringsAsFactors = FALSE)
+  on.exit(options(old), add = TRUE)
   
   exon_cds <- subset(exon, !is.na(cds_start))
   exon_cds <- subset(exon_cds, !is.na(cds_end))

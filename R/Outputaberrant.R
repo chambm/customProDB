@@ -48,7 +48,9 @@ Outputaberrant <- function(positiontab, outfile, coding, proteinseq, ids,
           return()
         }
   
-        options(stringsAsFactors=FALSE)
+        old <- options(stringsAsFactors = FALSE)
+        on.exit(options(old), add = TRUE)
+  
         idx <- grep(',', positiontab$varbase, fixed=T)
         if(length(idx) > 0) {
             muti <- positiontab[idx, ]

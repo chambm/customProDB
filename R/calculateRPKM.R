@@ -75,7 +75,8 @@ calculateRPKM <- function(bamFile,exon, proteincodingonly = TRUE,ids=NULL,...)
         #names(ttt) <- names(RPKM)
         #ttt
         
-        options(stringsAsFactors=FALSE)
+        old <- options(stringsAsFactors = FALSE)
+        on.exit(options(old), add = TRUE)
         
         if(proteincodingonly==TRUE){
             proex <- RPKM

@@ -36,7 +36,9 @@ OutputVarprocodingseq <- function(vartable, procodingseq, ids, lablersid=FALSE, 
     {
         stopifnot(!lablersid || "rsid" %in% colnames(vartable))
   
-        options(stringsAsFactors=FALSE)
+        old <- options(stringsAsFactors = FALSE)
+        on.exit(options(old), add = TRUE)
+        
         nonsy <- vartable[vartable$vartype == "non-synonymous", ]
         
         aavar2pro <- nonsy

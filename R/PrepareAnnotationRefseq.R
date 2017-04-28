@@ -35,7 +35,8 @@
 PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta, 
                 annotation_path, dbsnp=NULL, transcript_ids=NULL, 
                 splice_matrix=FALSE, COSMIC=FALSE, local_cache_path=NULL, ...) {
-    options(stringsAsFactors=FALSE)
+    old <- options(stringsAsFactors = FALSE)
+    on.exit(options(old), add = TRUE)
   
     message("Creating UCSC browser session ... ", appendLF=TRUE)
     session  <- browserSession()

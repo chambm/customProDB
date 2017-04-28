@@ -35,7 +35,8 @@ OutputNovelJun <- function(junction_type, genome, outfile,
     #outfile_c, 
     proteinseq, ...)
     {
-        options(stringsAsFactors=FALSE)
+        old <- options(stringsAsFactors = FALSE)
+        on.exit(options(old), add = TRUE)
         #ids <- subset(ids,pro_name!='')
         
         #trans <- transcripts(txdb)
