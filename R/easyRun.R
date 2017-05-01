@@ -65,72 +65,72 @@ easyRun <- function(bamFile, RPKM=NULL, vcfFile, annotation_path, outfile_path,
     
     load(paste(annotation_path, '/procodingseq.RData', sep=''))
 
-    vcf <- InputVcf(vcfFile)
-    #table(values(vcf[[1]])[['INDEL']])
-    if(INDEL){
-        
-        idx_snv <- which(values(vcf[[1]])[['INDEL']] == FALSE)
-        SNVvcf <- vcf[[1]][idx_snv]
-        idx_indel <- which(values(vcf[[1]])[['INDEL']] == TRUE)
-        indelvcf <- vcf[[1]][idx_indel]
-        
-        message("Output abberant protein FASTA file caused by short INDEL... ",
-            appendLF=FALSE)
-        postable_indel <- Positionincoding(indelvcf, exon)
-        outf_indel <- paste(outfile_path, '/', outfile_name, '_indel.fasta', 
-                        sep='')
-        if(!is.null(postable_indel)){
-            chrlist <- paste('chr',c(seq(1:22),'X','Y'),sep='')
-            indexchr <-which(postable_indel$chr %in% chrlist)
-            postable_indel <- postable_indel[indexchr,]
+    readvcf <- VariantAnnotation::readVcf(vcfFile, row.names=FALSE,
+                                          param=VariantAnnotation::ScanVcfParam(geno=NA, info=NA))
+    
+    # read REF and ALT columns with the super-fast data.table::fread
+    headerLinesToSkip = grep("#CHROM", readLines(vcfFile, n=500))
+    vcftable = .temp_unzip(vcfFile, data.table::fread,
+                           skip=headerLinesToSkip-1, sep="\t", select=c("#CHROM", "POS", "REF", "ALT"))
+    ref = toupper(vcftable$REF)
+    alt = toupper(vcftable$ALT)
+    variantTypes = variantType(ref, alt)
+    
+    vcfRanges = SummarizedExperiment::rowRanges(readvcf)
+    GenomicRanges::mcols(vcfRanges)$REF = ref
+    GenomicRanges::mcols(vcfRanges)$ALT = alt
+    
+    if(lablersid) {
+      dbsnpinCoding <- ''
+      load(paste0(annotation_path, '/dbsnpinCoding.RData'))
+    }else{
+      dbsnpinCoding <- NULL
+    }
+    
+    if(COSMIC){
+      cosmic <- ''
+      load(paste0(annotation_path, '/cosmic.RData'))
+    }
+    else {
+      cosmic <- NULL
+    }
 
-            txlist_indel <- unique(postable_indel$txid)
-            codingseq_indel <- procodingseq[procodingseq$tx_id %in% txlist_indel, ]
-            Outputaberrant(postable_indel, coding=codingseq_indel, 
-                proteinseq=proteinseq, outfile=outf_indel, ids=ids, RPKM=RPKM)
-        }
+    snpVariants = vcfRanges[which(variantTypes == "snp")]
+    if (length(snpVariants) > 0)
+    {
+      postable_snv = Positionincoding(snpVariants, exon, dbsnp=dbsnpinCoding, COSMIC=cosmic)
+      if (nrow(postable_snv) > 0)
+      {
+        message("Output variation table and variant protein sequence caused by SNVs... ", appendLF=FALSE)
+        firstTxId_snp = postable_snv[, .(txid=min(txid)), txname]
+        codingseq_snp = procodingseq[procodingseq$tx_id %in% firstTxId_snp$txid, ]
         
+        variantTable = aaVariation(postable_snv, codingseq_snp)
+        OutputVarproseq(variantTable, proteinseq,
+                        paste0(outfile_path, '/', outfile_name, "_snv.fasta"),
+                        ids, lablersid=lablersid, RPKM=RPKM)
         packageStartupMessage(" done")
-    }else{
-        SNVvcf <- vcf[[1]]
+      }
     }
     
-    message("Output variation table and variant protein sequence caused by SNVs... ", 
-            appendLF=FALSE)
-    if(lablersid){
-        dbsnpinCoding <- ''
-        load(paste(annotation_path, '/dbsnpinCoding.RData', sep=''))
-        if(COSMIC){
-            cosmic <- ''
-            load(paste(annotation_path, '/cosmic.RData', sep=''))
-            postable_snv <- Positionincoding(SNVvcf, exon, dbsnp=dbsnpinCoding, 
-                            COSMIC=cosmic)
-        }else{
-            postable_snv <- Positionincoding(SNVvcf, exon, dbsnp=dbsnpinCoding)
-        }
-    }else{
-        if(COSMIC){
-            cosmic <- ''
-            load(paste(annotation_path, '/cosmic.RData', sep=''))
-            postable_snv <- Positionincoding(SNVvcf, exon, dbsnp=NULL, 
-                        COSMIC=cosmic)
-        }else{
-            postable_snv <- Positionincoding(SNVvcf, exon)
-        }
+    indelVariants = vcfRanges[which(variantTypes == "ins" | variantTypes == "del")]
+    if (length(indelVariants) > 0)
+    {
+      postable_indel = Positionincoding(indelVariants, exon, dbsnp=dbsnpinCoding, COSMIC=cosmic)
+      if (nrow(postable_indel) > 0)
+      {
+        message("Output abberant protein FASTA file caused by short INDEL... ", appendLF=FALSE)
+        firstTxId_indel = postable_indel[, .(txid=min(txid)), txname]
+        codingseq_indel = procodingseq[procodingseq$tx_id %in% firstTxId_indel$txid, ]
+        indelvariants = Outputaberrant(postable_indel,
+                                       paste0(outfile_path, '/', outfile_name, '_indel.fasta'),
+                                       codingseq_indel,
+                                       proteinseq,
+                                       ids, RPKM=RPKM)
+        packageStartupMessage(" done")
+      }
     }
-    txlist <- unique(postable_snv$txid)
-    codingseq <- procodingseq[procodingseq$tx_id %in% txlist, ]
-    mtab <- aaVariation (postable_snv, codingseq)
-    
-    outf_mtab <- paste(outfile_path, '/', outfile_name, '_snv.tab', sep='')
-    utils::write.table(mtab, file=outf_mtab, sep='\t', quote=F, row.names=F)
-    
-    outf_snv <- paste(outfile_path, '/', outfile_name, '_snv.fasta', sep='')
-    OutputVarproseq(mtab, proteinseq, outf_snv, ids, lablersid=lablersid, 
-                    RPKM=RPKM)
-    
-    packageStartupMessage(" done")
-    
+
     if(nov_junction == TRUE&!is.null(bedFile)&!is.null(genome)){
         message("Output novel junction peptides... ", appendLF=FALSE)
         splicemax <- ''

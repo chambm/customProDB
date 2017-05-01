@@ -2,6 +2,7 @@
 #' so that variants on the same codon are handled properly. This is a convenience function which calls
 #' OutputVarprocodingseq, OutputVarproseq, Outputaberrant, and OutputNovelJun.
 #'
+#' @title Get genome annotations for variants called in one or more VCF files.
 #' @param vcfFilepaths one or more VCF files to create variant proteins
 #' @param ids a dataframe mapping between gene/transcript/protein ids
 #' @param exon_anno a dataframe of exon annotations for each protein coding transcript
@@ -15,8 +16,8 @@
 #' \item{variantTable}{describes the SNP variants and their coding consequences}
 #' \item{snvprocoding}{the CDS sequences for the variant proteins from SNPs}
 #' \item{snvproseq}{the translated sequences for the variant proteins from SNPs}
-#' \item{indelprocoding}{the CDS sequences for the variant proteins}
-#' \item{indelproseq}{the translated sequences for the variant proteins}
+#' \item{indelprocoding}{the CDS sequences for the variant proteins from INDELs}
+#' \item{indelproseq}{the translated sequences for the variant proteins from INDELs}
 #' }
 #' @export
 #'
