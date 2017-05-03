@@ -32,7 +32,7 @@ Imports:
     stringi,
     RCurl,
     plyr,
-    VariantAnnotation (>= 1.13.44),
+    VariantAnnotation (>= 1.20.3),
     rtracklayer,
     RSQLite,
     AnnotationDbi,

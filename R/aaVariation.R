@@ -1,40 +1,40 @@
-##' Variations can be divided into SNVs and INDELs.
-##' By taking the output of positionincoding() as input, aaVariation() function predicts the consequences of SNVs in the harbored transcript, such as synonymous or non-synonymous.
-##'
-##' this function predicts the consequence for SNVs. for INDELs, use Outputabberrant().
-##' @title get the functional consequencece of SNVs located in coding region
-##' @param position_tab a data frame from Positionincoding()
-##' @param coding a data frame cotaining coding sequence for each protein.
-##' @param show_progress If true, a progress bar will be shown.
-##' @param ... Additional arguments
-##' @return a data frame containing consequence for each variations.
-##' @author Xiaojing Wang
-##' @importFrom data.table data.table rbindlist setkey setDT 
-##' @import sqldf
-##' @export
-##' @examples
-##' 
-##' vcffile <- system.file("extdata/vcfs", "test1.vcf", package="customProDB")
-##' vcf <- InputVcf(vcffile)
-##' table(GenomicRanges::values(vcf[[1]])[['INDEL']])
-##' 
-##' index <- which(GenomicRanges::values(vcf[[1]])[['INDEL']]==FALSE)
-##' SNVvcf <- vcf[[1]][index]
-##' load(system.file("extdata/refseq", "exon_anno.RData", package="customProDB"))
-##' load(system.file("extdata/refseq", "dbsnpinCoding.RData", package="customProDB"))
-##' load(system.file("extdata/refseq", "procodingseq.RData", package="customProDB"))
-##' postable_snv <- Positionincoding(SNVvcf,exon,dbsnpinCoding)
-##' txlist <- unique(postable_snv$txid)
-##' codingseq <- procodingseq[procodingseq$tx_id %in% txlist,]
-##' mtab <- aaVariation (postable_snv,codingseq)
-##' mtab[1:3,]
-##' 
-##' 
-##' 
+#' Variations can be divided into SNVs and INDELs.
+#' By taking the output of positionincoding() as input, aaVariation() function predicts the consequences of SNVs in the harbored transcript, such as synonymous or non-synonymous.
+#'
+#' this function predicts the consequence for SNVs. for INDELs, use Outputabberrant().
+#' @title get the functional consequencece of SNVs located in coding region
+#' @param position_tab a data frame from Positionincoding()
+#' @param coding a data frame cotaining coding sequence for each protein.
+#' @param show_progress If true, a progress bar will be shown.
+#' @param ... Additional arguments
+#' @return a data frame containing consequence for each variations.
+#' @author Xiaojing Wang
+#' @importFrom data.table data.table rbindlist setkey setDT
+#' @import sqldf
+#' @export
+#' @examples
+#'
+#' vcffile <- system.file("extdata/vcfs", "test1.vcf", package="customProDB")
+#' vcf <- InputVcf(vcffile)
+#' table(GenomicRanges::values(vcf[[1]])[['INDEL']])
+#'
+#' index <- which(GenomicRanges::values(vcf[[1]])[['INDEL']]==FALSE)
+#' SNVvcf <- vcf[[1]][index]
+#' load(system.file("extdata/refseq", "exon_anno.RData", package="customProDB"))
+#' load(system.file("extdata/refseq", "dbsnpinCoding.RData", package="customProDB"))
+#' load(system.file("extdata/refseq", "procodingseq.RData", package="customProDB"))
+#' postable_snv <- Positionincoding(SNVvcf,exon,dbsnpinCoding)
+#' txlist <- unique(postable_snv$txid)
+#' codingseq <- procodingseq[procodingseq$tx_id %in% txlist,]
+#' mtab <- aaVariation (postable_snv,codingseq)
+#' mtab[1:3,]
+#'
+#'
+#'
 
 aaVariation <-  function(position_tab, coding, show_progress=FALSE, ...)
 {
-  old <- options(stringsAsFactors = FALSE)
+  old <- options(stringsAsFactors = FALSE, gsubfn.engine = "R")
   on.exit(options(old), add = TRUE)  
 
   setkey(position_tab, txid)
