@@ -7,5 +7,7 @@ cache:
   timeout: 360
 r: bioc-release
 warnings_are_errors: false
+before_cache:
+  - rm -fr $HOME/R/Library/devtools
 after_success:
   - Rscript -e 'covr::codecov()'
