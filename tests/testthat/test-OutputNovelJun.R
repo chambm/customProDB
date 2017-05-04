@@ -26,7 +26,7 @@ test_that("OutputNovelJun creates 3 RData files", {
   junction_type <- subset(junction_type, seqnames %in% chrom)
   outf_junc <- paste(tempdir(), '/test_junc.fasta', sep='')
   #outf_junc_coding <- paste(tempdir(), '/test_junc_coding.fasta', sep='')
-  expect_warning(OutputNovelJun(junction_type, Hsapiens, outf_junc, proteinseq))
+  OutputNovelJun(junction_type, Hsapiens, outf_junc, proteinseq)
   
   load(paste(outf_junc, '_jun_anno.RData', sep=''))
   if(!file.exists("hg19_jun_anno.rds")) { View(jun_anno) }

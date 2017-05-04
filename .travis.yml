@@ -7,6 +7,7 @@ cache:
   timeout: 360
 r: bioc-release
 warnings_are_errors: false
+r_check_args: --as-cran --no-build-vignettes
 before_cache:
   - rm -fr $HOME/R/Library/devtools
 after_success:
