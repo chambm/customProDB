@@ -148,11 +148,12 @@ OutputNovelJun <- function(junction_type, genome, outfile,
         junpepcoding <- data.frame('pro_name'=seqs_name, 
                                     'coding'=as.data.frame(seqs)[, 1])
         ######## coding seqs could be used as input for proBAMr
-		save(junpepcoding, file=paste(outfile, '_coding.RData', sep=''))
+        save(junpepcoding, file=paste(outfile, '_coding.RData', sep=''))
         
-        peptides_r1 <- translate(seqs)
-        peptides_r2 <- translate(subseq(seqs, start=2))
-        peptides_r3 <- translate(subseq(seqs, start=3))
+        # suppress warnings about sequence length not being divisible by 3
+        suppressWarnings(peptides_r1 <- translate(seqs))
+        suppressWarnings(peptides_r2 <- translate(subseq(seqs, start=2)))
+        suppressWarnings(peptides_r3 <- translate(subseq(seqs, start=3)))
         
         junpos_rna_p1 <- ifelse(novel_junc_new[, 'strand'] == '+', 
                         as.numeric(novel_junc_new[, 'part1_len']), 

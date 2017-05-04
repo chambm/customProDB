@@ -238,41 +238,35 @@ on.update.view = function(new_ref, t) { utils::View(new_ref, t) }
 # stock on.update function that will open the new data in a browser window
 on.update.edit = function(new_ref, t)
 {
-  tryCatch(
+  old = options(max.print = 1000000)
+  on.exit(options(old), add = TRUE)
+
+  diff = as.character(diffobj::diffPrint("Reference file missing", new_ref, interactive=FALSE, mode="unified", format="html", style=list(html.output="diff.w.style"), disp.width=2000))
+  if (!"package:knitr" %in% search())
   {
-    old.max.print = getOption("max.print")
-    try(options(max.print = nrow(new_ref)*ncol(new_ref)), silent=TRUE)
-    diff = as.character(diffobj::diffPrint("Reference file missing", new_ref, interactive=FALSE, mode="unified", format="html", style=list(html.output="diff.w.style"), disp.width=2000))
-    if (!"package:knitr" %in% search())
-    {
-      diffFile = tempfile(gsub("[^-\\w^&'@{},$=!#().%+~ ]", "_", t, perl=TRUE), fileext=".html")
-      cat(diff, file=diffFile)
-      utils::browseURL(diffFile)
-    }
-    else
-      cat(diff)
-  },
-  finally = options(max.print = old.max.print))
+    diffFile = tempfile(gsub("[^-\\w^&'@{},$=!#().%+~ ]", "_", t, perl=TRUE), fileext=".html")
+    cat(diff, file=diffFile)
+    utils::browseURL(diffFile)
+  }
+  else
+    cat(diff)
 }
 
 # stock on.fail function that will open a diff between the reference and new data in a browser window
 on.fail.diff = function(reference, new, t)
 {
-  tryCatch(
+  old = options(max.print = 1000000)
+  on.exit(options(old), add = TRUE)
+
+  diff = as.character(diffobj::diffPrint(reference, new, interactive=FALSE, mode="unified", format="html", style=list(html.output="diff.w.style"), disp.width=2000))
+  if (!"package:knitr" %in% search())
   {
-    old.max.print = getOption("max.print")
-    try(options(max.print = max(nrow(reference)*ncol(reference), nrow(new)*ncol(new))), silent=TRUE)
-    diff = as.character(diffobj::diffPrint(reference, new, interactive=FALSE, mode="unified", format="html", style=list(html.output="diff.w.style"), disp.width=2000))
-    if (!"package:knitr" %in% search())
-    {
-      diffFile = tempfile(gsub("[^-\\w^&'@{},$=!#().%+~ ]", "_", t, perl=TRUE), fileext=".html")
-      cat(diff, file=diffFile)
-      utils::browseURL(diffFile)
-    }
-    else
-      cat(diff)
-  },
-  finally = options(max.print = old.max.print))
+    diffFile = tempfile(gsub("[^-\\w^&'@{},$=!#().%+~ ]", "_", t, perl=TRUE), fileext=".html")
+    cat(diff, file=diffFile)
+    utils::browseURL(diffFile)
+  }
+  else
+    cat(diff)
 }
 
 # @return full path to this script

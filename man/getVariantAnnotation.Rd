@@ -2,9 +2,7 @@
 % Please edit documentation in R/getVariantAnnotation.R
 \name{getVariantAnnotation}
 \alias{getVariantAnnotation}
-\title{Get genome annotations for variants called in one or more VCF files. Each sample is called separately
-so that variants on the same codon are handled properly. This is a convenience function which calls
-OutputVarprocodingseq, OutputVarproseq, Outputaberrant, and OutputNovelJun.}
+\title{Get genome annotations for variants called in one or more VCF files.}
 \usage{
 getVariantAnnotation(vcfFilepaths, ids, exon_anno, proteinseq, procodingseq,
   dbsnpinCoding = NULL, cosmic = NULL)
@@ -30,8 +28,8 @@ A list of annotation tables with named members:
 \item{variantTable}{describes the SNP variants and their coding consequences}
 \item{snvprocoding}{the CDS sequences for the variant proteins from SNPs}
 \item{snvproseq}{the translated sequences for the variant proteins from SNPs}
-\item{indelprocoding}{the CDS sequences for the variant proteins}
-\item{indelproseq}{the translated sequences for the variant proteins}
+\item{indelprocoding}{the CDS sequences for the variant proteins from INDELs}
+\item{indelproseq}{the translated sequences for the variant proteins from INDELs}
 }
 }
 \description{

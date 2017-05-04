@@ -138,15 +138,15 @@ library(customProDB)
 
 <<PrepareAnnoRef>>=
 transcript_ids <- c("NM_001126112", "NM_033360", "NR_073499", "NM_004448", 
-			"NM_000179", "NR_029605", "NM_004333", "NM_001127511")
-pepfasta <- system.file("extdata", "refseq_pro_seq.fasta", 
-				package="customProDB")
-CDSfasta <- system.file("extdata", "refseq_coding_seq.fasta",
-				package="customProDB")
+                    "NM_000179", "NR_029605", "NM_004333", "NM_001127511")
+pepfasta <- system.file("extdata", "refseq_pro_seq.fasta", package="customProDB")
+CDSfasta <- system.file("extdata", "refseq_coding_seq.fasta", package="customProDB")
+local_cache_path <- system.file("extdata/cache", package="customProDB")
 annotation_path <- tempdir()
 PrepareAnnotationRefseq(genome='hg19', CDSfasta, pepfasta, annotation_path, 
-		dbsnp = NULL, transcript_ids=transcript_ids, 
-        splice_matrix=FALSE, COSMIC=FALSE)
+                        splice_matrix=FALSE, transcript_ids=transcript_ids, 
+                        dbsnp=NULL, COSMIC=FALSE,
+                        local_cache_path=local_cache_path)
 @
 
 
@@ -158,17 +158,19 @@ The ENSEMBL version number can be specified in the \Rfunarg{host} in \Rfunction{
 Go to website http://useast.ensembl.org/info/website/archives/index.html to check the currently available archives.
 It took about 1.5 hour to prepare all annotations for ENSEMBL v82 in our tests.
 
-<<PrepareAnnoENSEMBL, eval=FALSE>>=
-ensembl <- useMart("ENSEMBL_MART_ENSEMBL", dataset="hsapiens_gene_ensembl",
-    host="sep2015.archive.ensembl.org", path="/biomart/martservice", 
-    archive=FALSE)
-annotation_path <- tempdir()
+<<PrepareAnnoENSEMBL>>=
+ensembl <- biomaRt::useMart("ENSEMBL_MART_ENSEMBL", dataset="hsapiens_gene_ensembl",
+                            host="sep2015.archive.ensembl.org", path="/biomart/martservice", 
+                            archive=FALSE)
 transcript_ids <- c("ENST00000234420", "ENST00000269305", "ENST00000445888", 
-			"ENST00000257430", "ENST00000508376", "ENST00000288602",
-			"ENST00000269571", "ENST00000256078", "ENST00000384871")
+                    "ENST00000257430", "ENST00000508376", "ENST00000288602",
+                    "ENST00000269571", "ENST00000256078", "ENST00000384871")
+local_cache_path <- system.file("extdata/cache", package="customProDB")
+annotation_path <- tempdir()
 PrepareAnnotationEnsembl(mart=ensembl, annotation_path=annotation_path, 
-			splice_matrix=FALSE, dbsnp=NULL, 
-            transcript_ids=transcript_ids, COSMIC=FALSE)
+                         splice_matrix=FALSE, transcript_ids=transcript_ids,
+                         dbsnp=NULL, COSMIC=FALSE,
+                         local_cache_path=local_cache_path)
 @
 
 
