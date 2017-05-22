@@ -1,35 +1,59 @@
-##' prepare the annotation for Refseq through UCSC table browser.
-##'
-##' @title prepare annotation for Refseq
-##' @param genome specify the UCSC DB identifier (e.g. "hg19")
-##' @param CDSfasta path to the fasta file of coding sequence.
-##' @param pepfasta path to the fasta file of protein sequence, check 'introduction' for more detail.
-##' @param annotation_path specify a folder to store all the annotations.
-##' @param dbsnp specify a snp dataset to be used for the SNP annotation, default is NULL. (e.g. "snp135")
-##' @param transcript_ids optionally, only retrieve transcript annotation data for the specified set of transcript ids. Default is NULL.
-##' @param splice_matrix whether generate a known exon splice matrix from the annotation. this is not necessary if you don't want to analyse junction results, default is FALSE. 
-##' @param COSMIC whether to download COSMIC data, default is FALSE.
-##' @param local_cache_path if non-NULL, refers to a directory where previously downloaded resources
-##' (like protein coding sequences and COSMIC data) are cached so that the function can be re-run without
-##' needing to download identical data again
-##' @param ... additional arguments
-##' @return several .RData file containing annotations needed for further analysis.
-##' @author Xiaojing Wang
-##' @importFrom rtracklayer browserSession ucscTableQuery tableNames getTable trackNames ucscSchema genome<-
-##' @export
-##' @examples
-##' 
-##' transcript_ids <- c("NM_001126112", "NM_033360", "NR_073499", "NM_004448",
-##'                     "NM_000179", "NR_029605", "NM_004333", "NM_001127511")
-##' pepfasta <- system.file("extdata", "refseq_pro_seq.fasta", package="customProDB")
-##' CDSfasta <- system.file("extdata", "refseq_coding_seq.fasta", package="customProDB")
-##' cache_path <- system.file("extdata", "cache", package="customProDB")
-##' annotation_path <- tempdir()
-##' PrepareAnnotationRefseq(genome='hg19', CDSfasta, pepfasta, annotation_path, 
-##'             dbsnp=NULL, transcript_ids=transcript_ids, 
-##'             splice_matrix=FALSE, COSMIC=FALSE, local_cache_path=cache_path)
-##' 
-
+#' prepare the annotation for Refseq through UCSC table browser.
+#'
+#' @title prepare annotation for Refseq
+#' @param genome specify the UCSC DB identifier (e.g. "hg19")
+#' @param CDSfasta path to the fasta file of coding sequence.
+#' @param pepfasta path to the fasta file of protein sequence, check 'introduction' for more detail.
+#' @param annotation_path specify a folder to store all the annotations.
+#' @param dbsnp specify a snp dataset to be used for the SNP annotation, default is NULL. (e.g. "snp135")
+#' @param transcript_ids optionally, only retrieve transcript annotation data for the specified set of transcript ids. Default is NULL.
+#' @param splice_matrix whether generate a known exon splice matrix from the annotation. this is not necessary if you don't want to analyse junction results, default is FALSE.
+#' @param COSMIC whether to download COSMIC data, default is FALSE.
+#' @param local_cache_path if non-NULL, refers to a directory where previously downloaded resources
+#' (like protein coding sequences and COSMIC data) are cached so that the function can be re-run without
+#' needing to download identical data again
+#' @param ... additional arguments
+#' @return several .RData file containing annotations needed for further analysis.
+#' @author Xiaojing Wang
+#' @importFrom rtracklayer browserSession ucscTableQuery tableNames getTable trackNames ucscSchema genome<-
+#' @export
+#' @examples
+#'
+#' transcript_ids <- c("NM_001126112", "NM_033360", "NR_073499", "NM_004448",
+#'                     "NM_000179", "NR_029605", "NM_004333", "NM_001127511")
+#' pepfasta <- system.file("extdata", "hg19/hg19_protein.fasta", package="customProDB")
+#' CDSfasta <- system.file("extdata", "hg19/hg19_coding.fasta", package="customProDB")
+#' cache_path <- system.file("extdata", "cache", package="customProDB")
+#' annotation_path <- tempdir()
+#' PrepareAnnotationRefseq(genome='hg19', CDSfasta, pepfasta, annotation_path,
+#'             dbsnp=NULL, transcript_ids=transcript_ids,
+#'             splice_matrix=FALSE, COSMIC=FALSE, local_cache_path=cache_path)
+#'
+#'\dontrun{
+#' dbkey = "hg38"
+#' tempLocalCache = tempdir()
+#' refseqTrack = ifelse(dbkey=="hg38", "refSeqComposite", "refGene")
+#' codingFastaFilepath = paste0(tempLocalCache, "/", dbkey, ".cds.fa")
+#' proteinFastaFilepath = paste0(tempLocalCache, "/", dbkey, ".protein.fa")
+#' 
+#' options(timeout=3600)
+#' if (!file.exists(codingFastaFilepath)) {
+#'   cat(paste("Downloading coding FASTA from:", ucscTableCodingFastaURL, "\n"))
+#'   download.file(getCodingFastaUrlFromUCSC(dbkey), codingFastaFilepath, quiet=T, mode='wb')
+#' }
+#' 
+#' if (!file.exists(proteinFastaFilepath)) {
+#'   cat(paste("Downloading protein FASTA from:", ucscTableProteinFastaURL, "\n"))
+#'   download.file(getProteinFastaUrlFromUCSC(dbkey), proteinFastaFilepath, quiet=T, mode='wb')
+#' }
+#'
+#' cat(paste("Preparing Refseq annotation files\n"))
+#' customProDB::PrepareAnnotationRefseq(dbkey, codingFastaFilepath, proteinFastaFilepath,
+#'                                      annotation_path=".",
+#'                                      dbsnp="snp146", COSMIC=FALSE,
+#'                                      local_cache_path=tempLocalCache)
+#'                                      
+#'}
 
 
 PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta, 
@@ -60,16 +84,21 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     
     message("Prepare gene/transcript/protein id mapping information (ids.RData) ... ", 
             appendLF=FALSE)
-    
-    refGene <- read_or_update_local_cache(getTable(ucscTableQuery(session, "refGene", table="refGene",
+
+    # UCSC has a different RefSeq structure for hg38
+    refgeneTrack = ifelse(genome=="hg38", "NCBI RefSeq", "refGene")
+    refGene <- read_or_update_local_cache(getTable(ucscTableQuery(session, refgeneTrack, table="refGene",
                                                                   names=transcript_ids)),
                                           local_cache_path, "refGene")
     stopifnot(nrow(refGene) > 0)
     
+    # refLink is not supported with hg38, but it's not genome specific, so always request it from hg19
+    if (genome == "hg38") genome(session) <- "hg19"
     reflink <- read_or_update_local_cache(getTable(ucscTableQuery(session, "refGene", table="hgFixed.refLink",
                                                                   names=refGene$name2)),
                                           local_cache_path, "reflink")
     stopifnot(nrow(reflink) > 0)
+    if (genome == "hg38") genome(session) <- genome
     
     ids <- subset(reflink, mrnaAcc %in% refGene$name, select = name:protAcc)
     stopifnot(nrow(ids) > 0)
@@ -247,11 +276,16 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
     
     packageStartupMessage(" done")
     
-    if (!is.null(dbsnp)) {
-        dbsnp_cache_path = paste0(local_cache_path, "/", dbsnp)
+    if (!is.null(dbsnp) && nzchar(dbsnp)) {
+      
+        if (!is.null(local_cache_path))
+            dbsnp_cache_path = paste0(local_cache_path, "/", dbsnp)
+        else
+            dbsnp_cache_path = NULL
         
         message("Preparing dbSNP information (dbsnpinCoding.RData) ... ", appendLF=FALSE)
         dbsnps <- trackNames(session)[grep('snp', trackNames(session), fixed=T)]
+        dbsnpName <- dbsnp
         dbsnp <- pmatch(dbsnp, dbsnps)
         if (is.na(dbsnp)) 
             stop("invalid dbsnp name for specified genome")
@@ -260,28 +294,38 @@ PrepareAnnotationRefseq <- function(genome='hg19', CDSfasta, pepfasta,
         
         # for a small set of transcripts, query UCSC's MySQL table directly
         if (!is.null(transcript_ids) && length(transcript_ids) < 1000) {
-          getSnpTable = function(genome, transcripts) {
-            snpTable = paste0(dbsnps[dbsnp], 'CodingDbSnp')
-            transcriptSet = paste0('("', paste(transcript_ids, collapse='", "'), '")', collapse="")
-            sql = qq('SELECT snp.chrom, chromStart, chromEnd, snp.name, snp.transcript, alleleCount, alleles
-FROM @{snpTable} snp
-JOIN (SELECT chrom, txStart, txEnd FROM refGene WHERE name IN @{transcriptSet}) txInfo ON snp.chrom=txInfo.chrom
-AND snp.chromStart BETWEEN txInfo.txStart AND txInfo.txEnd
-WHERE snp.transcript IN @{transcriptSet}')
-            ucscDb = RMySQL::dbConnect(RMySQL::MySQL(), host="genome-mysql.soe.ucsc.edu", user="genome", dbname=genome)
-            result = DBI::dbGetQuery(ucscDb, sql)
-            RMySQL::dbDisconnect(ucscDb)
-            return (result)
-          }
+            getSnpTable = function(genome, transcripts) {
+                snpTable = paste0(dbsnps[dbsnp], 'CodingDbSnp')
+                transcriptSet = paste0('("', paste(transcript_ids, collapse='", "'), '")', collapse="")
+                sql = qq('SELECT snp.chrom, chromStart, chromEnd, snp.name, snp.transcript, alleleCount, alleles
+    FROM @{snpTable} snp
+    JOIN (SELECT chrom, txStart, txEnd FROM refGene WHERE name IN @{transcriptSet}) txInfo ON snp.chrom=txInfo.chrom
+    AND snp.chromStart BETWEEN txInfo.txStart AND txInfo.txEnd
+    WHERE snp.transcript IN @{transcriptSet}')
+                ucscDb = RMySQL::dbConnect(RMySQL::MySQL(), host="genome-mysql.soe.ucsc.edu", user="genome", dbname=genome)
+                suppressWarnings(result = DBI::dbGetQuery(ucscDb, sql)) # Unsigned INTEGER in col 1 imported as numeric
+                RMySQL::dbDisconnect(ucscDb)
+                return (result)
+            }
           
-          snpCodingTab = read_or_update_local_cache(getSnpTable(genome, transcript_ids), dbsnp_cache_path, "snpCodingTab")
+            snpCodingTab = read_or_update_local_cache(getSnpTable(genome, transcript_ids), dbsnp_cache_path, "snpCodingTab")
         } else {
-          snpCodingTab = read_or_update_local_cache(getTable(ucscTableQuery(session, dbsnps[dbsnp],
-                                                                            table=paste0(dbsnps[dbsnp],
-                                                                                         'CodingDbSnp'))),
-                                                    dbsnp_cache_path, "snpCodingTab")
+            # for the full dataset, download from their FTP
+            
+            dbSnpFile = qq("@{dbsnpName}CodingDbSnp.txt.gz")
+            dbSnpURL = qq("http://hgdownload.soe.ucsc.edu/goldenPath/@{genome}/database/@{dbSnpFile}")
+            if (!is.null(local_cache_path)) {
+                dbSnpFile = file.path(local_cache_path, dbSnpFile)
+                if (!file.exists(dbSnpFile))
+                    download.file(dbSnpURL, dbSnpFile, quiet=T, mode='wb')
+            } else
+                download.file(dbSnpURL, dbSnpFile, quiet=T, mode='wb')
+            snpCodingTab = .temp_unzip(dbSnpFile, data.table::fread, showProgress=FALSE,
+                                       select=c(2:6, 8, 10),
+                                       col.names=c("chrom", "chromStart", "chromEnd", "name",
+                                                   "transcript", "alleleCount","alleles"))
         }
-        snpCoding <- subset(snpCodingTab,transcript %in% refGene$name, 
+        snpCoding <- subset(snpCodingTab, transcript %in% refGene$name, 
                         select=c(chrom:name, alleleCount, alleles))
         snpCoding <- unique(snpCoding)
         #save(snpCoding,file=paste(annotation_path, '/snpcoding.RData', sep=''))

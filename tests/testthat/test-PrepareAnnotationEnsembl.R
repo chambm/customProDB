@@ -20,12 +20,8 @@ if (!nzchar(testthat_path)) {
 }
 stopifnot(dir.exists(extdata_path))
 
-pepfasta = paste0(extdata_path, "/refseq_pro_seq.fasta")
-CDSfasta = paste0(extdata_path, "/refseq_coding_seq.fasta")
 local_cache_path = paste0(extdata_path, "/cache")
 annotation_path = tempdir()
-stopifnot(file.exists(pepfasta))
-stopifnot(file.exists(CDSfasta))
 stopifnot(dir.exists(local_cache_path))
 stopifnot(dir.exists(annotation_path))
 

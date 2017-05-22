@@ -38,10 +38,10 @@ test_that("easyRun works for SNVs and INDELs", {
 
   easyRun(bamFile, RPKM=NULL, vcffile, annotation_path, tempdir(), "test",
           rpkm_cutoff=1, INDEL=TRUE, nov_junction=FALSE,
-          lablersid=FALSE, COSMIC=FALSE)
+          lablersid=TRUE, COSMIC=FALSE)
   
   fasta = read.delim(file.path(outfile_path, "test_snv.fasta"), header=FALSE)
-  customProDB:::expect_equal_to_reference(fasta, "test-easyRun-test_snv.fasta.rds", on.update=on.update.edit, on.fail=on.fail.diff)
+  customProDB:::expect_equal_to_reference(fasta, "test-easyRun-test_snv_dbsnp.fasta.rds", on.update=on.update.edit, on.fail=on.fail.diff)
   
   fasta = read.delim(file.path(outfile_path, "test_indel.fasta"), header=FALSE)
   customProDB:::expect_equal_to_reference(fasta, "test-easyRun-test_indel.fasta.rds", on.update=on.update.edit, on.fail=on.fail.diff)

@@ -168,7 +168,7 @@ getVariantAnnotation <- function(vcfFilepaths,
 #' @importFrom stringi stri_length stri_sub stri_startswith_fixed stri_endswith_fixed
 #'
 #' @examples
-#' ref = c("A", "A",   "AA", "AT", "AT", "A",   "A", "AA",  "AA",  "AA",  "ATTA", "AAA",  "A",    "TAAA")
-#' alt = c("C", "C,G", "CT", "A",   "T", "AT", "TA", "C",  "CAT", "TAAC", "ATA",  "AATA", "T,AT", "TAA,TAAAA")
+#' ref = c("A", "A",   "AA", "AT", "A",  "AA",  "AA",  "AA",  "ATTA", "AAA",  "A",    "TAAA")
+#' alt = c("C", "C,G", "CT", "A",  "AT", "C",  "CAT", "TAAC", "ATA",  "AATA", "T,AT", "TAA,TAAAA")
 #' print(cbind(ref, alt, variantType(ref, alt)))
 variantType = Vectorize(.variantType, USE.NAMES=FALSE)

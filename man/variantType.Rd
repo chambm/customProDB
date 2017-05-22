@@ -25,7 +25,7 @@ variant type for each ref/alt pair, one of:
 Get the type of variant given one or more reference alleles and the corresponding variant alleles.
 }
 \examples{
-ref = c("A", "A",   "AA", "AT", "AT", "A",   "A", "AA",  "AA",  "AA",  "ATTA", "AAA",  "A",    "TAAA")
-alt = c("C", "C,G", "CT", "A",   "T", "AT", "TA", "C",  "CAT", "TAAC", "ATA",  "AATA", "T,AT", "TAA,TAAAA")
+ref = c("A", "A",   "AA", "AT", "A",  "AA",  "AA",  "AA",  "ATTA", "AAA",  "A",    "TAAA")
+alt = c("C", "C,G", "CT", "A",  "AT", "C",  "CAT", "TAAC", "ATA",  "AATA", "T,AT", "TAA,TAAAA")
 print(cbind(ref, alt, variantType(ref, alt)))
 }

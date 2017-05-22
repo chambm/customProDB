@@ -56,7 +56,7 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     }
   
     host <- strsplit(strsplit(mart@host, ':')[[1]][2], '//')[[1]][2]
-    if (!is.null(dbsnp)) {
+    if (!is.null(dbsnp) && nzchar(dbsnp)) {
       session  <- browserSession()
         if(dataset == 'hsapiens_gene_ensembl') {
             if(host == 'may2009.archive.ensembl.org'){
@@ -80,8 +80,11 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
                 dbsnps <- trackNames(session)[grep('snp', trackNames(session), fixed=T)]
             }
         }
-        
-        dbsnp_cache_path = paste0(local_cache_path, "/", dbsnp)
+      
+        if (!is.null(local_cache_path))
+            dbsnp_cache_path = paste0(local_cache_path, "/", dbsnp)
+        else
+            dbsnp_cache_path = NULL
         
         if (!is.null(dbsnp))
         {
@@ -258,7 +261,7 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     packageStartupMessage(" done")
     
     
-    if (!is.null(dbsnp)) {
+    if (!is.null(dbsnp) && nzchar(dbsnp)) {
         
         message("Prepare dbSNP information (dbsnpinCoding.RData) ... ", appendLF=FALSE)
         

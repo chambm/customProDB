@@ -4,6 +4,8 @@ library(customProDB)
 library(GetoptLong)
 
 context("PrepareAnnotationRefseq")
+options(testthat.on.update = on.update.view)
+options(testthat.on.fail = on.fail.diff)
 
 testthat_path = current_script_file()
 if (!nzchar(testthat_path)) {
@@ -19,12 +21,8 @@ if (!nzchar(testthat_path)) {
 }
 stopifnot(dir.exists(extdata_path))
 
-pepfasta = paste0(extdata_path, "/refseq_pro_seq.fasta")
-CDSfasta = paste0(extdata_path, "/refseq_coding_seq.fasta")
 local_cache_path = paste0(extdata_path, "/cache")
 annotation_path = tempdir()
-stopifnot(file.exists(pepfasta))
-stopifnot(file.exists(CDSfasta))
 stopifnot(dir.exists(local_cache_path))
 stopifnot(dir.exists(annotation_path))
 
@@ -61,6 +59,9 @@ load_annotations = function(annotation_path, envir, dbsnp=FALSE, cosmic=FALSE) {
 ## hg19/snp146
 genome = "hg19"
 dbsnp = "snp146"
+pepfasta = paste0(extdata_path, "/hg19/hg19_protein.fasta")
+CDSfasta = paste0(extdata_path, "/hg19/hg19_coding.fasta")
+stopifnot(file.exists(pepfasta), file.exists(CDSfasta))
 transcript_ids = c("NM_001126112", "NM_033360", "NR_073499", "NM_004448",
                    "NM_000179", "NR_029605", "NM_004333", "NM_001127511")
 
@@ -72,13 +73,13 @@ test_that(qq("Downloading basic @{genome} RefSeq annotations for a few transcrip
                           local_cache_path=local_cache_path)
   env = new.env()
   load_annotations(annotation_path, env, dbsnp=FALSE, cosmic=FALSE)
-  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"), on.update=on.update.view)
+  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"))
+  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"))
+  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"))
+  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"))
 })
 
-test_that(qq("Downloading @{genome} RefSeq annotations with dbSNP 146 for a few transcripts"), {
+test_that(qq("Downloading @{genome} RefSeq annotations with @{dbsnp} for a few transcripts"), {
   annotation_path = qq("@{annotation_path}/@{genome}_@{dbsnp}")
   PrepareAnnotationRefseq(genome=genome, CDSfasta, pepfasta, annotation_path,
                           dbsnp=dbsnp, transcript_ids=transcript_ids,
@@ -87,14 +88,14 @@ test_that(qq("Downloading @{genome} RefSeq annotations with dbSNP 146 for a few 
 
   env = new.env()
   load_annotations(annotation_path, env, dbsnp=TRUE, cosmic=FALSE)
-  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$dbsnpinCoding, qq("dbsnpinCoding_@{genome}_@{dbsnp}.rds"), on.update=on.update.view)
+  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"))
+  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"))
+  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"))
+  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"))
+  expect_equal_to_reference(env$dbsnpinCoding, qq("dbsnpinCoding_@{genome}_@{dbsnp}.rds"))
 })
 
-test_that(qq("Downloading @{genome} RefSeq annotations with dbSNP 146 and COSMIC for a few transcripts"), {
+test_that(qq("Downloading @{genome} RefSeq annotations with @{dbsnp} and COSMIC for a few transcripts"), {
   annotation_path = qq("@{annotation_path}/@{genome}_@{dbsnp}_cosmic")
   PrepareAnnotationRefseq(genome=genome, CDSfasta, pepfasta, annotation_path,
                           dbsnp=dbsnp, transcript_ids=transcript_ids,
@@ -103,12 +104,12 @@ test_that(qq("Downloading @{genome} RefSeq annotations with dbSNP 146 and COSMIC
   
   env = new.env()
   load_annotations(annotation_path, env, dbsnp=TRUE, cosmic=TRUE)
-  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$dbsnpinCoding, qq("dbsnpinCoding_@{genome}_@{dbsnp}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$cosmic, qq("cosmic_@{genome}.rds"), on.update=on.update.view)
+  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"))
+  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"))
+  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"))
+  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"))
+  expect_equal_to_reference(env$dbsnpinCoding, qq("dbsnpinCoding_@{genome}_@{dbsnp}.rds"))
+  expect_equal_to_reference(env$cosmic, qq("cosmic_@{genome}.rds"))
 })
 
 test_that(qq("Downloading @{genome} RefSeq annotations with COSMIC for a few transcripts"), {
@@ -120,11 +121,11 @@ test_that(qq("Downloading @{genome} RefSeq annotations with COSMIC for a few tra
   
   env = new.env()
   load_annotations(annotation_path, env, dbsnp=FALSE, cosmic=TRUE)
-  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$cosmic, qq("cosmic_@{genome}.rds"), on.update=on.update.view)
+  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"))
+  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"))
+  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"))
+  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"))
+  expect_equal_to_reference(env$cosmic, qq("cosmic_@{genome}.rds"))
 })
 
 ## hg19/snp141
@@ -138,13 +139,13 @@ test_that(qq("Downloading basic @{genome} RefSeq annotations for a few transcrip
   
   env = new.env()
   load_annotations(annotation_path, env, dbsnp=FALSE, cosmic=FALSE)
-  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"), on.update=on.update.view)
+  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"))
+  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"))
+  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"))
+  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"))
 })
 
-test_that(qq("Downloading @{genome} RefSeq annotations with dbSNP 141 for a few transcripts"), {
+test_that(qq("Downloading @{genome} RefSeq annotations with @{dbsnp} for a few transcripts"), {
   annotation_path = qq("@{annotation_path}/@{genome}_@{dbsnp}")
   PrepareAnnotationRefseq(genome=genome, CDSfasta, pepfasta, annotation_path,
                           dbsnp=dbsnp, transcript_ids=transcript_ids,
@@ -153,14 +154,14 @@ test_that(qq("Downloading @{genome} RefSeq annotations with dbSNP 141 for a few 
   
   env = new.env()
   load_annotations(annotation_path, env, dbsnp=TRUE, cosmic=FALSE)
-  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$dbsnpinCoding, qq("dbsnpinCoding_@{genome}_@{dbsnp}.rds"), on.update=on.update.view)
+  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"))
+  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"))
+  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"))
+  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"))
+  expect_equal_to_reference(env$dbsnpinCoding, qq("dbsnpinCoding_@{genome}_@{dbsnp}.rds"))
 })
 
-test_that(qq("Downloading @{genome} RefSeq annotations with dbSNP 141 and COSMIC for a few transcripts"), {
+test_that(qq("Downloading @{genome} RefSeq annotations with @{dbsnp} and COSMIC for a few transcripts"), {
   annotation_path = qq("@{annotation_path}/@{genome}_@{dbsnp}_cosmic")
   PrepareAnnotationRefseq(genome=genome, CDSfasta, pepfasta, annotation_path,
                           dbsnp=dbsnp, transcript_ids=transcript_ids,
@@ -169,12 +170,12 @@ test_that(qq("Downloading @{genome} RefSeq annotations with dbSNP 141 and COSMIC
   
   env = new.env()
   load_annotations(annotation_path, env, dbsnp=TRUE, cosmic=TRUE)
-  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$dbsnpinCoding, qq("dbsnpinCoding_@{genome}_@{dbsnp}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$cosmic, qq("cosmic_@{genome}.rds"), on.update=on.update.view)
+  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"))
+  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"))
+  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"))
+  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"))
+  expect_equal_to_reference(env$dbsnpinCoding, qq("dbsnpinCoding_@{genome}_@{dbsnp}.rds"))
+  expect_equal_to_reference(env$cosmic, qq("cosmic_@{genome}.rds"))
 })
 
 test_that(qq("Downloading @{genome} RefSeq annotations with COSMIC for a few transcripts"), {
@@ -186,19 +187,43 @@ test_that(qq("Downloading @{genome} RefSeq annotations with COSMIC for a few tra
   
   env = new.env()
   load_annotations(annotation_path, env, dbsnp=FALSE, cosmic=TRUE)
-  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$cosmic, qq("cosmic_@{genome}.rds"), on.update=on.update.view)
+  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"))
+  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"))
+  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"))
+  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"))
+  expect_equal_to_reference(env$cosmic, qq("cosmic_@{genome}.rds"))
+})
+
+
+## hg38/snp147
+genome="hg38"
+dbsnp="snp147"
+pepfasta = paste0(extdata_path, "/hg38/hg38_protein.fasta")
+CDSfasta = paste0(extdata_path, "/hg38/hg38_coding.fasta")
+stopifnot(file.exists(pepfasta), file.exists(CDSfasta))
+test_that(qq("Downloading @{genome} RefSeq annotations with @{dbsnp} for a few transcripts"), {
+  annotation_path = qq("@{annotation_path}/@{genome}_@{dbsnp}")
+  PrepareAnnotationRefseq(genome=genome, CDSfasta, pepfasta, annotation_path,
+                          dbsnp=dbsnp, transcript_ids=transcript_ids,
+                          splice_matrix=FALSE, COSMIC=FALSE,
+                          local_cache_path=local_cache_path)
+    
+  env = new.env()
+  load_annotations(annotation_path, env, dbsnp=TRUE, cosmic=FALSE)
+  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"))
+  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"))
+  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"))
+  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"))
+  expect_equal_to_reference(env$dbsnpinCoding, qq("dbsnpinCoding_@{genome}_@{dbsnp}.rds"))
 })
 
 
 ## mm10/snp
 genome = "mm10"
 dbsnp = "snp142"
-pepfasta = paste0(extdata_path, "/mm10/refseq_pro_seq.fasta")
-CDSfasta = paste0(extdata_path, "/mm10/refseq_coding_seq.fasta")
+pepfasta = paste0(extdata_path, "/mm10/mm10_protein.fasta")
+CDSfasta = paste0(extdata_path, "/mm10/mm10_coding.fasta")
+stopifnot(file.exists(pepfasta), file.exists(CDSfasta))
 transcript_ids = c("NM_007462", "NR_029825", "NM_021284", "NM_001003817",
                    "NM_139294", "NM_011317", "NM_010830", "NM_001127233")
 
@@ -211,10 +236,10 @@ test_that(qq("Downloading basic @{genome} RefSeq annotations for a few transcrip
   
   env = new.env()
   load_annotations(annotation_path, env, dbsnp=FALSE, cosmic=FALSE)
-  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"), on.update=on.update.view)
+  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"))
+  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"))
+  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"))
+  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"))
 })
 
 test_that(qq("Downloading @{genome} RefSeq annotations with dbSNP 142 for a few transcripts"), {
@@ -226,9 +251,9 @@ test_that(qq("Downloading @{genome} RefSeq annotations with dbSNP 142 for a few 
   
   env = new.env()
   load_annotations(annotation_path, env, dbsnp=TRUE, cosmic=FALSE)
-  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$dbsnpinCoding, qq("dbsnpinCoding_@{genome}_@{dbsnp}.rds"), on.update=on.update.view)
+  expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"))
+  expect_equal_to_reference(env$ids, qq("ids_@{genome}.rds"))
+  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}.rds"))
+  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}.rds"))
+  expect_equal_to_reference(env$dbsnpinCoding, qq("dbsnpinCoding_@{genome}_@{dbsnp}.rds"))
 })

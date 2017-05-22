@@ -5,7 +5,8 @@
 \title{Expectation: is the object equal to a reference value stored in a file?}
 \usage{
 expect_equal_to_reference(object, file, ..., info = NULL, label = NULL,
-  expected.label = NULL, on.update = NULL, on.fail = NULL)
+  expected.label = NULL, on.update = getOption("testthat.on.update"),
+  on.fail = getOption("testthat.on.fail"))
 }
 \arguments{
 \item{object}{object to test}

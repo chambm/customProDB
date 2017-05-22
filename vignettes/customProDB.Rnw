@@ -139,8 +139,8 @@ library(customProDB)
 <<PrepareAnnoRef>>=
 transcript_ids <- c("NM_001126112", "NM_033360", "NR_073499", "NM_004448", 
                     "NM_000179", "NR_029605", "NM_004333", "NM_001127511")
-pepfasta <- system.file("extdata", "refseq_pro_seq.fasta", package="customProDB")
-CDSfasta <- system.file("extdata", "refseq_coding_seq.fasta", package="customProDB")
+pepfasta <- system.file("extdata", "hg19/hg19_protein.fasta", package="customProDB")
+CDSfasta <- system.file("extdata", "hg19/hg19_coding.fasta", package="customProDB")
 local_cache_path <- system.file("extdata/cache", package="customProDB")
 annotation_path <- tempdir()
 PrepareAnnotationRefseq(genome='hg19', CDSfasta, pepfasta, annotation_path, 

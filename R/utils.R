@@ -84,6 +84,47 @@ fastComplement = function(naString)
 }
 
 
+#' Get URL to download protein sequence FASTA from UCSC genome browser for a given dbkey.
+#'
+#' @param dbkey The UCSC dbkey to get protein sequences for, e.g. hg19, hg38, mm10.
+#'
+#' @return A URL which can be downloaded with \code{\link{download.file}}
+#' @export
+#'
+#' @examples
+#' getProteinFastaUrlFromUCSC("hg38")
+getProteinFastaUrlFromUCSC = function(dbkey)
+{
+    refseqTrack = ifelse(dbkey=="hg38", "refSeqComposite", "refGene")
+    paste0("http://genome.ucsc.edu/cgi-bin/hgTables?db=", dbkey,
+           "&hgta_geneSeqType=protein",
+           "&hgta_doGenePredSequence=submit",
+           "&hgta_table=refGene",
+           "&hgta_track=", refseqTrack)
+}
+
+#' Get URL to download coding sequence FASTA from UCSC genome browser for a given dbkey.
+#'
+#' @param dbkey The UCSC dbkey to get coding sequences for, e.g. hg19, hg38, mm10.
+#'
+#' @return A URL which can be downloaded with \code{\link{download.file}}
+#' @export
+#'
+#' @examples
+#' getCodingFastaUrlFromUCSC("hg38")
+getCodingFastaUrlFromUCSC = function(dbkey)
+{
+    paste0("http://genome.ucsc.edu/cgi-bin/hgTables?db=", dbkey,
+           "&hgSeq.cdsExon=on&hgSeq.granularity=gene",
+           "&hgSeq.casing=exon&hgSeq.repMasking=lower",
+           "&hgta_doGenomicDna=get+sequence",
+           "&hgta_group=genes",
+           "&hgta_track=refGene",
+           "&hgta_table=refGene",
+           "&hgta_regionType=genome")
+}
+
+
 #' Read the cached result of an expression from a locally cached file if it exists,
 #' else evaluate the expression, cache it, and return result.
 #' 
@@ -197,7 +238,8 @@ read_or_update_local_cacheDb <- function(expression, local_cache_path, object_na
 #' expect_equal_to_reference(1, "one.rds")
 #' }
 expect_equal_to_reference = function(object, file, ..., info=NULL, label=NULL, expected.label=NULL,
-                                     on.update=NULL, on.fail=NULL) {
+                                     on.update=getOption("testthat.on.update"),
+                                     on.fail=getOption("testthat.on.fail")) {
   lab_act <- testthat:::make_label(object, label)
   lab_exp <- expected.label %||% paste0("reference from `", file, "`")
   
@@ -219,14 +261,15 @@ expect_equal_to_reference = function(object, file, ..., info=NULL, label=NULL, e
     reference <- readRDS(file)
     
     comp <- testthat::compare(object, reference, ...)
+    
+    if (!comp$equal && !is.null(on.fail))
+        on.fail(reference, object, paste0(file, ":", deparse(substitute(object))))
+    
     testthat::expect(
       comp$equal,
       sprintf("%s not equal to %s.\n%s", lab_act, lab_exp, comp$message),
       info = info
     )
-    
-    if (!comp$equal && !is.null(on.fail))
-        on.fail(reference, object, paste0(file, ":", deparse(substitute(object))))
   }
   
   invisible(object)
