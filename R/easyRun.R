@@ -74,9 +74,11 @@ easyRun <- function(bamFile, RPKM=NULL, vcfFile, annotation_path, outfile_path,
                                           param=VariantAnnotation::ScanVcfParam(geno=NA, info=NA))
     
     # read REF and ALT columns with the super-fast data.table::fread
-    headerLinesToSkip = grep("#CHROM", readLines(vcfFile, n=500))
+    headerLinesToSkip = grep("#CHROM", readLines(vcfFile, n=1000))
     vcftable = .temp_unzip(vcfFile, data.table::fread,
-                           skip=headerLinesToSkip-1, sep="\t", select=c("#CHROM", "POS", "REF", "ALT"))
+                           skip=headerLinesToSkip-1, sep="\t",
+                           select=c("#CHROM", "POS", "REF", "ALT"),
+                           showProgress=FALSE)
     ref = toupper(vcftable$REF)
     alt = toupper(vcftable$ALT)
     variantTypes = variantType(ref, alt)

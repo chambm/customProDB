@@ -38,12 +38,12 @@
 #' 
 #' options(timeout=3600)
 #' if (!file.exists(codingFastaFilepath)) {
-#'   cat(paste("Downloading coding FASTA from:", ucscTableCodingFastaURL, "\n"))
+#'   cat(paste("Downloading coding FASTA from:", getCodingFastaUrlFromUCSC(dbkey), "\n"))
 #'   download.file(getCodingFastaUrlFromUCSC(dbkey), codingFastaFilepath, quiet=T, mode='wb')
 #' }
 #' 
 #' if (!file.exists(proteinFastaFilepath)) {
-#'   cat(paste("Downloading protein FASTA from:", ucscTableProteinFastaURL, "\n"))
+#'   cat(paste("Downloading protein FASTA from:", getProteinFastaUrlFromUCSC(dbkey), "\n"))
 #'   download.file(getProteinFastaUrlFromUCSC(dbkey), proteinFastaFilepath, quiet=T, mode='wb')
 #' }
 #'
