@@ -61,7 +61,7 @@ getVariantAnnotation <- function(vcfFilepaths,
                                           param=VariantAnnotation::ScanVcfParam(geno=NA, info=NA))
     
     # read REF and ALT columns with the super-fast data.table::fread
-    headerLinesToSkip = grep("#CHROM", readLines(vcfFilepath, n=500))
+    headerLinesToSkip = grep("#CHROM", readLines(vcfFilepath, n=1000))
     vcftable = .temp_unzip(vcfFilepath, data.table::fread,
                            skip=headerLinesToSkip-1, sep="\t", select=c("#CHROM", "POS", "REF", "ALT"))
     ref = toupper(vcftable$REF)
