@@ -52,6 +52,8 @@ Outputaberrant <- function(positiontab, outfile, coding, proteinseq, ids,
         on.exit(options(old), add = TRUE)
   
         idx <- grep(',', positiontab$varbase, fixed=T)
+        rsidIndex = which("rsid" %in% colnames(positiontab))
+        cosmicIndex = which("cosid" %in% colnames(positiontab))
         if(length(idx) > 0) {
             muti <- positiontab[idx, ]
             muti_new <- c()
@@ -59,6 +61,8 @@ Outputaberrant <- function(positiontab, outfile, coding, proteinseq, ids,
                 tmp <- cbind(muti[i, 1:8], 
                         unlist(strsplit(as.character(muti[i, 'varbase']), ',', fixed=TRUE)), 
                         muti[i, 10])
+                if (length(rsidIndex) > 0) tmp <- cbind(tmp, muti[i, rsidIndex, with=FALSE])
+                if (length(cosmicIndex) > 0) tmp <- cbind(tmp, muti[i, cosmicIndex, with=FALSE])
                 muti_new <- rbind(muti_new, tmp)
             }
             colnames(muti_new) <- colnames(positiontab)

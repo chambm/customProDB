@@ -89,7 +89,7 @@ getVariantAnnotation <- function(vcfFilepaths,
       }
     }
     
-    indelVariants = vcfRanges[which(variantTypes == "ins" | variantTypes == "del")]
+    indelVariants = vcfRanges[which(variantTypes %in% c("ins", "del", "mix"))]
     if (length(indelVariants) > 0)
     {
       postable_indel = Positionincoding(indelVariants, exon_anno, dbsnp=dbsnpinCoding, COSMIC=cosmic)

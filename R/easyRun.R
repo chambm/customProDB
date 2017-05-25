@@ -120,7 +120,7 @@ easyRun <- function(bamFile, RPKM=NULL, vcfFile, annotation_path, outfile_path,
       }
     }
     
-    indelVariants = vcfRanges[which(variantTypes == "ins" | variantTypes == "del")]
+    indelVariants = vcfRanges[which(variantTypes %in% c("ins", "del", "mix"))]
     if (length(indelVariants) > 0)
     {
       postable_indel = Positionincoding(indelVariants, exon, dbsnp=dbsnpinCoding, COSMIC=cosmic)
