@@ -45,7 +45,7 @@ load_annotations = function(annotation_path, envir, dbsnp=FALSE, cosmic=FALSE) {
   
   if (dbsnp) {
     load(paste0(annotation_path, "/dbsnpinCoding.RData"), envir=envir)
-    expect_is(envir$dbsnpInCoding, "GRanges")
+    expect_is(envir$dbsnpinCoding, "GRanges")
   }
 
   if (cosmic) {
@@ -57,7 +57,6 @@ load_annotations = function(annotation_path, envir, dbsnp=FALSE, cosmic=FALSE) {
 
 ## Ensembl human 82
 genome = "hsapiens_gene_ensembl"
-dbsnp = "snp146"
 transcript_ids = c("ENST00000234420", "ENST00000269305", "ENST00000445888", 
                    "ENST00000257430", "ENST00000508376", "ENST00000288602",
                    "ENST00000269571", "ENST00000256078", "ENST00000384871")
@@ -79,6 +78,24 @@ test_that(qq("Downloading basic @{genome} Ensembl @{ensembl_version$number} anno
   expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
 })
 
+## Ensembl human 82 + dbSNP
+dbsnp = "snp146"
+test_that(qq("Downloading @{genome} Ensembl @{ensembl_version$number} annotations with dbSNP for a few transcripts"), {
+    annotation_path = qq("@{annotation_path}/@{genome}_@{ensembl_version$number}_@{dbsnp}")
+    
+    PrepareAnnotationEnsembl(mart=ensembl_mart, annotation_path=annotation_path, transcript_ids=transcript_ids,
+                             splice_matrix=FALSE, dbsnp=dbsnp, COSMIC=FALSE,
+                             local_cache_path=local_cache_path)
+    
+    env = new.env()
+    load_annotations(annotation_path, env, dbsnp=TRUE, cosmic=FALSE)
+    expect_equal_to_reference(env$exon, qq("exon_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
+    expect_equal_to_reference(env$ids, qq("ids_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
+    expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
+    expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
+    expect_equal_to_reference(env$dbsnpinCoding, qq("dbsnpinCoding_@{genome}_@{ensembl_version$number}_@{dbsnp}.rds"), on.update=on.update.view)
+})
+
 ## Ensembl human 87 + COSMIC
 ensembl_version = list(number=87, host="dec2016.archive.ensembl.org")
 ensembl_mart = useMart("ENSEMBL_MART_ENSEMBL", dataset=genome, host=ensembl_version$host)
@@ -96,6 +113,27 @@ test_that(qq("Downloading @{genome} Ensembl @{ensembl_version$number} annotation
   expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
   expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
   expect_equal_to_reference(env$cosmic, qq("cosmic_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
+})
+
+
+## Ensembl human 87 + dbSNP + COSMIC
+ensembl_version = list(number=87, host="dec2016.archive.ensembl.org")
+ensembl_mart = useMart("ENSEMBL_MART_ENSEMBL", dataset=genome, host=ensembl_version$host)
+test_that(qq("Downloading @{genome} Ensembl @{ensembl_version$number} annotations with dbSNP and COSMIC for a few transcripts"), {
+    annotation_path = qq("@{annotation_path}/@{genome}_@{ensembl_version$number}_@{dbsnp}_cosmic")
+    
+    PrepareAnnotationEnsembl(mart=ensembl_mart, annotation_path=annotation_path, transcript_ids=transcript_ids,
+                             splice_matrix=FALSE, dbsnp=dbsnp, COSMIC=TRUE,
+                             local_cache_path=local_cache_path)
+    
+    env = new.env()
+    load_annotations(annotation_path, env, dbsnp=TRUE, cosmic=TRUE)
+    expect_equal_to_reference(env$exon, qq("exon_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
+    expect_equal_to_reference(env$ids, qq("ids_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
+    expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
+    expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
+    expect_equal_to_reference(env$dbsnpinCoding, qq("dbsnpinCoding_@{genome}_@{ensembl_version$number}_@{dbsnp}.rds"), on.update=on.update.view)
+    expect_equal_to_reference(env$cosmic, qq("cosmic_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
 })
 
 
@@ -121,3 +159,27 @@ test_that(qq("Downloading basic @{genome} Ensembl @{ensembl_version$number} anno
   expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
   expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
 })
+
+
+## Ensembl 87 dog
+genome = "cfamiliaris_gene_ensembl"
+transcript_ids = c("ENSCAFT00000028439", "ENSCAFT00000011866", "ENSCAFT00000047757",
+                   "ENSCAFT00000036929", "ENSCAFT00000040033")
+ensembl_version = list(number=87, host="dec2016.archive.ensembl.org")
+ensembl_mart = useMart("ENSEMBL_MART_ENSEMBL", dataset=genome, host=ensembl_version$host)
+
+test_that(qq("Downloading basic @{genome} Ensembl @{ensembl_version$number} annotations for a few transcripts"), {
+    annotation_path = qq("@{annotation_path}/@{genome}_@{ensembl_version$number}")
+    
+    PrepareAnnotationEnsembl(mart=ensembl_mart, annotation_path=annotation_path, transcript_ids=transcript_ids,
+                             splice_matrix=FALSE, dbsnp=NULL, COSMIC=FALSE,
+                             local_cache_path=local_cache_path)
+    
+    env = new.env()
+    load_annotations(annotation_path, env, dbsnp=FALSE, cosmic=FALSE)
+    expect_equal_to_reference(env$exon, qq("exon_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
+    expect_equal_to_reference(env$ids, qq("ids_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
+    expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
+    expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
+})
+

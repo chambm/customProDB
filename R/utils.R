@@ -388,8 +388,8 @@ current_script_file <- function() {
     close(inn)
     close(out)
   }
+  on.exit(file.remove(dest_file))
   # call fun with temp file
   res <- fun(dest_file, ...)
-  file.remove(dest_file)
   return(res)
 }

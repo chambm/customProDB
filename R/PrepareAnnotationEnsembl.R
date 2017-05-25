@@ -11,7 +11,10 @@
 ##' @param local_cache_path if non-NULL, refers to a directory where previously downloaded resources
 ##' (like protein coding sequences and COSMIC data) are cached so that the function can be re-run without
 ##' needing to download identical data again
-##' @param ... additional arguments
+##' @param ensembl_to_UCSC_genome_map a named list of named lists used to look up the UCSC dbkey for a given biomart; only used for downloading dbSNPs;
+##' if DEFAULT_ENSEMBL_UCSC_GENOME_MAP does not contain an up-to-date mapping, pass a new mapping like
+##' \code{list("<species>_gene_ensembl" = list("<month>.archive.ensembl.org" = "<ucsc_dbkey>"))}
+##' @param ... additional arguments, currently unused
 ##' @return several .RData file containing annotations needed for following analysis.
 ##' @author Xiaojing Wang
 ##' @importFrom rtracklayer browserSession ucscTableQuery tableNames getTable trackNames ucscSchema genome<-
@@ -39,13 +42,15 @@
 
 
 PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE, 
-                dbsnp=NULL, transcript_ids=NULL, COSMIC=FALSE, local_cache_path=NULL, ...) {
+                                     dbsnp=NULL, transcript_ids=NULL, COSMIC=FALSE, local_cache_path=NULL,
+                                     ensembl_to_UCSC_genome_map = DEFAULT_ENSEMBL_UCSC_GENOME_MAP, ...) {
     old <- options(stringsAsFactors = FALSE)
     on.exit(options(old), add = TRUE)
   
     dataset <- mart@dataset
     biomart <- mart@biomart
     version <- sub("Ensembl Genes (\\d+)", "\\1", listEnsembl(mart)[listEnsembl(mart)["biomart"]=="ensembl", 2])
+    host <- strsplit(strsplit(mart@host, ':')[[1]][2], '//')[[1]][2]
   
     if (!dir.exists(annotation_path) && !dir.create(annotation_path, recursive=TRUE)) {
       stop("error creating annotation_path: ", annotation_path)
@@ -55,45 +60,15 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
       local_cache_path = qq("@{local_cache_path}/@{dataset}_@{version}")
     }
   
-    host <- strsplit(strsplit(mart@host, ':')[[1]][2], '//')[[1]][2]
     if (!is.null(dbsnp) && nzchar(dbsnp)) {
-      session  <- browserSession()
-        if(dataset == 'hsapiens_gene_ensembl') {
-            if(host == 'may2009.archive.ensembl.org'){
-                genome(session) <- 'hg18'
-                dbsnps <- 'snp130'
-            }else if(host == 'may2012.archive.ensembl.org'||host == 'dec2013.archive.ensembl.org'||host == 'feb2014.archive.ensembl.org'){
-                genome(session) <- 'hg19'
-                dbsnps <- trackNames(session)[grep('snp', trackNames(session), fixed=T)]
-            }else{
-                genome(session) <- 'hg38'
-                dbsnps <- trackNames(session)[grep('snp', trackNames(session), fixed=T)]
-            }
-        }
-        
-        if(dataset == 'mmusculus_gene_ensembl') {
-            if(host == 'may2009.archive.ensembl.org'||host == 'may2012.archive.ensembl.org'){
-                genome(session) <- 'mm9'
-                dbsnps <- 'snp128'
-            }else{
-                genome(session) <- 'mm10'
-                dbsnps <- trackNames(session)[grep('snp', trackNames(session), fixed=T)]
-            }
-        }
+        genome = ensembl_to_UCSC_genome_map[[dataset]][[host]]
+        if (is.null(genome))
+            stop(qq("no UCSC dbkey in ensembl_to_UCSC_genome_map for genome @{dataset} and host @{host}"))
       
         if (!is.null(local_cache_path))
             dbsnp_cache_path = paste0(local_cache_path, "/", dbsnp)
         else
             dbsnp_cache_path = NULL
-        
-        if (!is.null(dbsnp))
-        {
-            dbsnp <- pmatch(dbsnp, dbsnps)
-            if (is.na(dbsnp)) 
-                stop("invalid dbsnp name for specified genome")
-            if (dbsnp == -1) 
-                stop("ambiguous dbsnp name")
-        }
     }
     
     message("Prepare gene/transcript/protein id mapping information (ids.RData) ... ", appendLF=FALSE)
@@ -265,42 +240,60 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
         
         message("Prepare dbSNP information (dbsnpinCoding.RData) ... ", appendLF=FALSE)
         
-        if(length(dbsnps) == 1&&dbsnps == 'snp128'){
-            dbsnp_query <- ucscTableQuery(session, dbsnps[dbsnp], table='snp128')
-        }else{
-            dbsnp_query <- ucscTableQuery(session, dbsnps[dbsnp], 
-                    table=paste(dbsnps[dbsnp], 'CodingDbSnp', sep=''))
+        getSnpTable = function(genome, transGrange) {
+            # can't easily query UCSC MySQL with Ensembl transcripts, so always download full coding dbSNP file
+            dbSnpFile = qq("@{dbsnp}CodingDbSnp.txt.gz")
+            dbSnpURL = qq("http://hgdownload.soe.ucsc.edu/goldenPath/@{genome}/database/@{dbSnpFile}")
+            download_error = function(e) {stop(qq("error downloading @{dbSnpURL}; either @{dbsnp} is not available for @{dataset} or UCSC's website is down"))}
+            if (!is.null(local_cache_path) && length(transcript_ids) > 1000)
+                dbSnpFile = file.path(local_cache_path, dbSnpFile)
+            if (!file.exists(dbSnpFile))
+                tryCatch({download.file(dbSnpURL, dbSnpFile, quiet=T, mode='wb')}, error=download_error, warning=download_error)
+            snpCodingTab = .temp_unzip(dbSnpFile, data.table::fread, showProgress=FALSE,
+                                       select=c(2:5, 8, 10),
+                                       col.names=c("chrom", "chromStart", "chromEnd", "name",
+                                                   "alleleCount", "alleles"))
+            snpCodingTab$chrom <- gsub('chr', '', snpCodingTab$chrom)
+            snpCodingTab <- unique(snpCodingTab)
+            snpCoding <- GRanges(seqnames=snpCodingTab$chrom, 
+                                 ranges=IRanges(start=snpCodingTab$chromStart, 
+                                                end=snpCodingTab$chromEnd), strand='*', 
+                                 rsid=snpCodingTab$name, alleleCount=snpCodingTab$alleleCount, 
+                                 alleles=snpCodingTab$alleles)
+            return(subsetByOverlaps(snpCoding, transGrange))
         }
-        snpCodingTab <- read_or_update_local_cache(getTable(dbsnp_query), dbsnp_cache_path, "snpCodingTab")
-        snpCodingTab$chrom <- gsub('chr', '', snpCodingTab$chrom)
-        chrlist <- paste(c(seq(1:22),'X','Y'))
-        snpCoding <- subset(snpCodingTab, chrom %in% chrlist ,select=c(chrom:name, alleleCount, alleles))
-        snpCoding <- unique(snpCoding)
-        #snpCoding$chrom <- gsub('chrM', 'MT', snpCoding$chrom)
-        #
-        
-        #save(snpCoding,file=paste(annotation_path,'/snpcoding.RData',sep=''))
-        snpCoding <- GRanges(seqnames=snpCoding$chrom, 
-                    ranges=IRanges(start=snpCoding$chromStart, 
-                    end=snpCoding$chromEnd), strand='*', 
-                    rsid=snpCoding$name, alleleCount=snpCoding$alleleCount, 
-                    alleles=snpCoding$alleles)
-        
-        #seqlevels(snpCoding)
-        
-        #if(TRUE%in% grep('chr',seqlevels(snpCoding)) > 0 ) {
-        #    rchar <- sub('chr','',seqlevels(snpCoding))
-        #    names(rchar) <- seqlevels(snpCoding)
-        #    snpCoding <- renameSeqlevels(snpCoding, rchar) }
-        #if('M'%in%seqlevels(snpCoding)) snpCoding <- renameSeqlevels(snpCoding, c( M='MT'))
-        #chrlist <- paste(c(seq(1:22),'X','Y'))
-        transGrange_snp <- transGrange
-        #transGrange_snp <- keepSeqlevels(transGrange_snp, snpCoding)
-        #snpCoding <- keepSeqlevels(snpCoding, transGrange_snp)
-        
-        #snpCoding <- keepSeqlevels(snpCoding, transGrange)
-        
-        dbsnpinCoding <- subsetByOverlaps(snpCoding,transGrange_snp)
+        dbsnpinCoding = read_or_update_local_cache(getSnpTable(genome, transGrange),
+                                                  dbsnp_cache_path, "dbsnpinCoding")
+
+        # snpCodingTab$chrom <- gsub('chr', '', snpCodingTab$chrom)
+        # chrlist <- paste(c(seq(1:22),'X','Y'))
+        # snpCoding <- subset(snpCodingTab, chrom %in% chrlist ,select=c(chrom:name, alleleCount, alleles))
+        # snpCoding <- unique(snpCoding)
+        # #snpCoding$chrom <- gsub('chrM', 'MT', snpCoding$chrom)
+        # #
+        # 
+        # #save(snpCoding,file=paste(annotation_path,'/snpcoding.RData',sep=''))
+        # snpCoding <- GRanges(seqnames=snpCoding$chrom, 
+        #             ranges=IRanges(start=snpCoding$chromStart, 
+        #             end=snpCoding$chromEnd), strand='*', 
+        #             rsid=snpCoding$name, alleleCount=snpCoding$alleleCount, 
+        #             alleles=snpCoding$alleles)
+        # 
+        # #seqlevels(snpCoding)
+        # 
+        # #if(TRUE%in% grep('chr',seqlevels(snpCoding)) > 0 ) {
+        # #    rchar <- sub('chr','',seqlevels(snpCoding))
+        # #    names(rchar) <- seqlevels(snpCoding)
+        # #    snpCoding <- renameSeqlevels(snpCoding, rchar) }
+        # #if('M'%in%seqlevels(snpCoding)) snpCoding <- renameSeqlevels(snpCoding, c( M='MT'))
+        # #chrlist <- paste(c(seq(1:22),'X','Y'))
+        # transGrange_snp <- transGrange
+        # #transGrange_snp <- keepSeqlevels(transGrange_snp, snpCoding)
+        # #snpCoding <- keepSeqlevels(snpCoding, transGrange_snp)
+        # 
+        # #snpCoding <- keepSeqlevels(snpCoding, transGrange)
+        # 
+        # dbsnpinCoding <- subsetByOverlaps(snpCoding,transGrange_snp)
         
         save(dbsnpinCoding,file=paste(annotation_path, '/dbsnpinCoding.RData', sep=''))
         packageStartupMessage(" done")
@@ -378,3 +371,40 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
         mm
     }
 
+# convenient data structure for mapping Ensembl genome and archive hostname to a UCSC dbkey;
+# only needed for dbSNP genomes (human and mouse currently); users can override this mapping in case a new
+# Ensembl archive hostname or new genome assembly becomes available
+DEFAULT_ENSEMBL_UCSC_GENOME_MAP = list("hsapiens_gene_ensembl" = list("may2009.archive.ensembl.org" = "hg18",
+                                                                      "may2012.archive.ensembl.org" = "hg19",
+                                                                      "dec2013.archive.ensembl.org" = "hg19",
+                                                                      "feb2014.archive.ensembl.org" = "hg19",
+                                                                      "aug2014.archive.ensembl.org" = "hg38",
+                                                                      "oct2014.archive.ensembl.org" = "hg38",
+                                                                      "dec2014.archive.ensembl.org" = "hg38",
+                                                                      "mar2015.archive.ensembl.org" = "hg38",
+                                                                      "may2015.archive.ensembl.org" = "hg38",
+                                                                      "jul2015.archive.ensembl.org" = "hg38",
+                                                                      "sep2015.archive.ensembl.org" = "hg38",
+                                                                      "dec2015.archive.ensembl.org" = "hg38",
+                                                                      "mar2016.archive.ensembl.org" = "hg38",
+                                                                      "jul2016.archive.ensembl.org" = "hg38",
+                                                                      "oct2016.archive.ensembl.org" = "hg38",
+                                                                      "dec2016.archive.ensembl.org" = "hg38",
+                                                                      "mar2017.archive.ensembl.org" = "hg38"),
+                                       "mmusculus_gene_ensembl" = list("may2009.archive.ensembl.org" = "mm9",
+                                                                       "may2012.archive.ensembl.org" = "mm9",
+                                                                       "dec2013.archive.ensembl.org" = "mm10",
+                                                                       "feb2014.archive.ensembl.org" = "mm10",
+                                                                       "aug2014.archive.ensembl.org" = "mm10",
+                                                                       "oct2014.archive.ensembl.org" = "mm10",
+                                                                       "dec2014.archive.ensembl.org" = "mm10",
+                                                                       "mar2015.archive.ensembl.org" = "mm10",
+                                                                       "may2015.archive.ensembl.org" = "mm10",
+                                                                       "jul2015.archive.ensembl.org" = "mm10",
+                                                                       "sep2015.archive.ensembl.org" = "mm10",
+                                                                       "dec2015.archive.ensembl.org" = "mm10",
+                                                                       "mar2016.archive.ensembl.org" = "mm10",
+                                                                       "jul2016.archive.ensembl.org" = "mm10",
+                                                                       "oct2016.archive.ensembl.org" = "mm10",
+                                                                       "dec2016.archive.ensembl.org" = "mm10",
+                                                                       "mar2017.archive.ensembl.org" = "mm10"))

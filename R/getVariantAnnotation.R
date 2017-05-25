@@ -45,6 +45,8 @@ getVariantAnnotation <- function(vcfFilepaths,
                                  cosmic = NULL)
 {
   stopifnot(all(file.exists(vcfFilepaths)))
+  old <- options(stringsAsFactors = FALSE)
+  on.exit(options(old), add = TRUE)
   
   variantTable = vector('list', length(vcfFilepaths))
   snvprocoding = vector('list', length(vcfFilepaths))
