@@ -73,6 +73,7 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     
     message("Prepare gene/transcript/protein id mapping information (ids.RData) ... ", appendLF=FALSE)
     
+    original_transcript_ids = transcript_ids
     if(is.null(transcript_ids)){ 
         transcript_ids <- read_or_update_local_cache(getBM(attributes=c("ensembl_transcript_id"), mart=mart)[,1],
                                                      local_cache_path, "transcript_ids")
@@ -112,7 +113,7 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     tr_noncoding <- subset(ids, pro_name == "")
     
     txdb<- read_or_update_local_cacheDb(makeTxDbFromBiomart(biomart=biomart, dataset=dataset, host=host,  
-                                                            transcript_ids=transcript_ids),
+                                                            transcript_ids=original_transcript_ids),
             local_cache_path, "txdb")
     #saveFeatures(txdb, file=paste(annotation_path,'/txdb.sqlite',sep=''))
     saveDb(txdb, file=paste(annotation_path, '/txdb.sqlite', sep=''))
@@ -370,6 +371,29 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
         mm=cbind(b[tmp[1:(n-1)]], b[tmp[2:n]])
         mm
     }
+
+
+# GenomicFeature's .Ensembl_getMySQLCoreDir is currently broken for mouse because Ensembl has multiple
+# strains; this version handles it properly: mmusculus_gene_ensembl maps to mus_musculus_core_xx_x;
+# TODO: remove this hack when GenomicFeatures is fixed
+.Ensembl_getMySQLCoreDir <- function(dataset, release=NA, url=NA,
+                                     use.grch37=FALSE)
+{
+    if (is.na(url))
+        url <- GenomicFeatures:::ftp_url_to_Ensembl_mysql(release, use.grch37=use.grch37)
+    core_dirs <- GenomicFeatures:::.Ensembl_listMySQLCoreDirs(release=release, url=url,
+                                                              use.grch37=use.grch37)
+    shortnames <- shortnames <- sub("(\\w)\\w*?_(\\w+?)_core_\\S+", "\\1\\2", core_dirs, perl=TRUE)
+    shortname0 <- strsplit(dataset, "_", fixed=TRUE)[[1L]][1L]
+    core_dir <- core_dirs[shortnames == shortname0]
+    if (length(core_dir) != 1L)
+        stop("found 0 or more than 1 subdir for \"", dataset,
+             "\" dataset at ", url)
+    core_dir
+}
+
+assignInNamespace(".Ensembl_getMySQLCoreDir", .Ensembl_getMySQLCoreDir, "GenomicFeatures")
+
 
 # convenient data structure for mapping Ensembl genome and archive hostname to a UCSC dbkey;
 # only needed for dbSNP genomes (human and mouse currently); users can override this mapping in case a new

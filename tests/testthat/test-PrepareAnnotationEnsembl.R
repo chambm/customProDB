@@ -5,6 +5,8 @@ library(GetoptLong)
 library(biomaRt)
 
 context("PrepareAnnotationEnsembl")
+options(testthat.on.update = on.update.view)
+options(testthat.on.fail = on.fail.diff)
 
 testthat_path = current_script_file()
 if (!nzchar(testthat_path)) {
@@ -72,10 +74,10 @@ test_that(qq("Downloading basic @{genome} Ensembl @{ensembl_version$number} anno
   
   env = new.env()
   load_annotations(annotation_path, env, dbsnp=FALSE, cosmic=FALSE)
-  expect_equal_to_reference(env$exon, qq("exon_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$ids, qq("ids_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
+  expect_equal_to_reference(env$exon, qq("exon_@{genome}_@{ensembl_version$number}.rds"))
+  expect_equal_to_reference(env$ids, qq("ids_@{genome}_@{ensembl_version$number}.rds"))
+  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}_@{ensembl_version$number}.rds"))
+  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"))
 })
 
 ## Ensembl human 82 + dbSNP
@@ -89,11 +91,11 @@ test_that(qq("Downloading @{genome} Ensembl @{ensembl_version$number} annotation
     
     env = new.env()
     load_annotations(annotation_path, env, dbsnp=TRUE, cosmic=FALSE)
-    expect_equal_to_reference(env$exon, qq("exon_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-    expect_equal_to_reference(env$ids, qq("ids_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-    expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-    expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-    expect_equal_to_reference(env$dbsnpinCoding, qq("dbsnpinCoding_@{genome}_@{ensembl_version$number}_@{dbsnp}.rds"), on.update=on.update.view)
+    expect_equal_to_reference(env$exon, qq("exon_@{genome}_@{ensembl_version$number}.rds"))
+    expect_equal_to_reference(env$ids, qq("ids_@{genome}_@{ensembl_version$number}.rds"))
+    expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}_@{ensembl_version$number}.rds"))
+    expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"))
+    expect_equal_to_reference(env$dbsnpinCoding, qq("dbsnpinCoding_@{genome}_@{ensembl_version$number}_@{dbsnp}.rds"))
 })
 
 ## Ensembl human 87 + COSMIC
@@ -108,11 +110,11 @@ test_that(qq("Downloading @{genome} Ensembl @{ensembl_version$number} annotation
   
   env = new.env()
   load_annotations(annotation_path, env, dbsnp=FALSE, cosmic=TRUE)
-  expect_equal_to_reference(env$exon, qq("exon_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$ids, qq("ids_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$cosmic, qq("cosmic_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
+  expect_equal_to_reference(env$exon, qq("exon_@{genome}_@{ensembl_version$number}.rds"))
+  expect_equal_to_reference(env$ids, qq("ids_@{genome}_@{ensembl_version$number}.rds"))
+  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}_@{ensembl_version$number}.rds"))
+  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"))
+  expect_equal_to_reference(env$cosmic, qq("cosmic_@{genome}_@{ensembl_version$number}.rds"))
 })
 
 
@@ -128,12 +130,12 @@ test_that(qq("Downloading @{genome} Ensembl @{ensembl_version$number} annotation
     
     env = new.env()
     load_annotations(annotation_path, env, dbsnp=TRUE, cosmic=TRUE)
-    expect_equal_to_reference(env$exon, qq("exon_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-    expect_equal_to_reference(env$ids, qq("ids_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-    expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-    expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-    expect_equal_to_reference(env$dbsnpinCoding, qq("dbsnpinCoding_@{genome}_@{ensembl_version$number}_@{dbsnp}.rds"), on.update=on.update.view)
-    expect_equal_to_reference(env$cosmic, qq("cosmic_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
+    expect_equal_to_reference(env$exon, qq("exon_@{genome}_@{ensembl_version$number}.rds"))
+    expect_equal_to_reference(env$ids, qq("ids_@{genome}_@{ensembl_version$number}.rds"))
+    expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}_@{ensembl_version$number}.rds"))
+    expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"))
+    expect_equal_to_reference(env$dbsnpinCoding, qq("dbsnpinCoding_@{genome}_@{ensembl_version$number}_@{dbsnp}.rds"))
+    expect_equal_to_reference(env$cosmic, qq("cosmic_@{genome}_@{ensembl_version$number}.rds"))
 })
 
 
@@ -154,10 +156,10 @@ test_that(qq("Downloading basic @{genome} Ensembl @{ensembl_version$number} anno
   
   env = new.env()
   load_annotations(annotation_path, env, dbsnp=FALSE, cosmic=FALSE)
-  expect_equal_to_reference(env$exon, qq("exon_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$ids, qq("ids_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
+  expect_equal_to_reference(env$exon, qq("exon_@{genome}_@{ensembl_version$number}.rds"))
+  expect_equal_to_reference(env$ids, qq("ids_@{genome}_@{ensembl_version$number}.rds"))
+  expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}_@{ensembl_version$number}.rds"))
+  expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"))
 })
 
 
@@ -177,9 +179,9 @@ test_that(qq("Downloading basic @{genome} Ensembl @{ensembl_version$number} anno
     
     env = new.env()
     load_annotations(annotation_path, env, dbsnp=FALSE, cosmic=FALSE)
-    expect_equal_to_reference(env$exon, qq("exon_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-    expect_equal_to_reference(env$ids, qq("ids_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-    expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
-    expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"), on.update=on.update.view)
+    expect_equal_to_reference(env$exon, qq("exon_@{genome}_@{ensembl_version$number}.rds"))
+    expect_equal_to_reference(env$ids, qq("ids_@{genome}_@{ensembl_version$number}.rds"))
+    expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}_@{ensembl_version$number}.rds"))
+    expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"))
 })
 

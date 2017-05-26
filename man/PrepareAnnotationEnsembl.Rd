@@ -7,7 +7,7 @@
 PrepareAnnotationEnsembl(mart, annotation_path, splice_matrix = FALSE,
   dbsnp = NULL, transcript_ids = NULL, COSMIC = FALSE,
   local_cache_path = NULL,
-  ensemblToUcscGenomeMap = DEFAULT_ENSEMBL_UCSC_GENOME_MAP, ...)
+  ensembl_to_UCSC_genome_map = DEFAULT_ENSEMBL_UCSC_GENOME_MAP, ...)
 }
 \arguments{
 \item{mart}{which version of ENSEMBL dataset to use. see useMart from package biomaRt for more detail.}
@@ -26,11 +26,11 @@ PrepareAnnotationEnsembl(mart, annotation_path, splice_matrix = FALSE,
 (like protein coding sequences and COSMIC data) are cached so that the function can be re-run without
 needing to download identical data again}
 
-\item{ensemblToUcscGenomeMap}{a named list of named lists used to look up the UCSC dbkey for a given biomart; only used for downloading dbSNPs;
+\item{ensembl_to_UCSC_genome_map}{a named list of named lists used to look up the UCSC dbkey for a given biomart; only used for downloading dbSNPs;
 if DEFAULT_ENSEMBL_UCSC_GENOME_MAP does not contain an up-to-date mapping, pass a new mapping like
 \code{list("<species>_gene_ensembl" = list("<month>.archive.ensembl.org" = "<ucsc_dbkey>"))}}
 
-\item{...}{additional arguments}
+\item{...}{additional arguments, currently unused}
 }
 \value{
 several .RData file containing annotations needed for following analysis.

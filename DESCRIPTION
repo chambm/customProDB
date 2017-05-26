@@ -1,7 +1,7 @@
 Package: customProDB
 Type: Package
 Title: Generate customized protein databases from NGS data for proteomics search
-Version: 1.16.1
+Version: 1.16.2
 Date: 2017-02-08
 Authors@R: c(person("Xiaojing", "Wang", email="xiaojing.wang@bcm.edu", role=c("aut", "cre")),
     person("Matt", "Chambers", email="matt.chambers42@gmail.com", role=c("aut", "cph")),
