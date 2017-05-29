@@ -185,3 +185,26 @@ test_that(qq("Downloading basic @{genome} Ensembl @{ensembl_version$number} anno
     expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"))
 })
 
+
+## Ensembl 87 S. cerevisiae
+genome = "scerevisiae_gene_ensembl"
+transcript_ids = c("YML032C", "YPL024W", "YFL017C",
+                   "YLR256W", "YLR189C", "YMR257C")
+ensembl_version = list(number=87, host="dec2016.archive.ensembl.org")
+ensembl_mart = useMart("ENSEMBL_MART_ENSEMBL", dataset=genome, host=ensembl_version$host)
+
+test_that(qq("Downloading basic @{genome} Ensembl @{ensembl_version$number} annotations for a few transcripts"), {
+    annotation_path = qq("@{annotation_path}/@{genome}_@{ensembl_version$number}")
+    
+    PrepareAnnotationEnsembl(mart=ensembl_mart, annotation_path=annotation_path, transcript_ids=transcript_ids,
+                             splice_matrix=FALSE, dbsnp=NULL, COSMIC=FALSE,
+                             local_cache_path=local_cache_path)
+    
+    env = new.env()
+    load_annotations(annotation_path, env, dbsnp=FALSE, cosmic=FALSE)
+    expect_equal_to_reference(env$exon, qq("exon_@{genome}_@{ensembl_version$number}.rds"))
+    expect_equal_to_reference(env$ids, qq("ids_@{genome}_@{ensembl_version$number}.rds"))
+    expect_equal_to_reference(env$proteinseq, qq("proseq_@{genome}_@{ensembl_version$number}.rds"))
+    expect_equal_to_reference(env$procodingseq, qq("procodingseq_@{genome}_@{ensembl_version$number}.rds"))
+})
+

@@ -78,16 +78,16 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
         transcript_ids <- read_or_update_local_cache(getBM(attributes=c("ensembl_transcript_id"), mart=mart)[,1],
                                                      local_cache_path, "transcript_ids")
     }
-    attributes.id <- c("ensembl_gene_id", "hgnc_symbol", "description") 
+    attributes.id <- c("ensembl_gene_id", "external_gene_name", "description") 
     idstab <- read_or_update_local_cache(getBM(attributes=attributes.id, mart=mart, 
                                                filters='ensembl_transcript_id', values=transcript_ids),
                                          local_cache_path, "idstab")
     stopifnot(nrow(idstab) > 0)
-    colnames(idstab) <- c("ensembl_gene_id", "hgnc_symbol", "description") 
+    colnames(idstab) <- c("ensembl_gene_id", "external_gene_name", "description") 
     
             idssum <- ddply(idstab, .(ensembl_gene_id), function(x) {
              new.x <- x[1, ]
-             new.x$hgnc_symbol <- paste(x$hgnc_symbol, collapse=",")
+             new.x$external_gene_name <- paste(x$external_gene_name, collapse=",")
              new.x
             })
     
@@ -101,7 +101,7 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     colnames(tr) <- c("ensembl_gene_id", "ensembl_transcript_id", 
         "ensembl_peptide_id")
     ids <- merge(tr, idssum, by='ensembl_gene_id')
-    description <- paste(ids$hgnc_symbol, ids$description, sep='|')
+    description <- paste(ids$external_gene_name, ids$description, sep='|')
     ids <- cbind(ids[, 1:3], description)
     colnames(ids) <- c('gene_name', 'tx_name', 'pro_name', 'description')
     save(ids, file=paste(annotation_path, '/ids.RData', sep=''))
