@@ -392,7 +392,19 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     core_dir
 }
 
+ls_ftp_url <- function (url) 
+{
+    doc <- RCurl::getURL(url)
+    listing <- strsplit(doc, "\n", fixed = TRUE)[[1L]]
+    listing <- listing[stringi::stri_startswith_fixed(listing, "d")]
+    pattern <- paste(c("^", rep.int("[^[:space:]]+[[:space:]]+", 
+                                    8L)), collapse = "")
+    listing <- sub(pattern, "", listing)
+    sub("[[:space:]].*$", "", listing)
+}
+
 assignInNamespace(".Ensembl_getMySQLCoreDir", .Ensembl_getMySQLCoreDir, "GenomicFeatures")
+assignInNamespace("ls_ftp_url", ls_ftp_url, "GenomicFeatures")
 
 
 # convenient data structure for mapping Ensembl genome and archive hostname to a UCSC dbkey;
