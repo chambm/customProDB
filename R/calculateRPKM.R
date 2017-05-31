@@ -48,8 +48,8 @@ calculateRPKM <- function(bamFile,exon, proteincodingonly = TRUE,ids=NULL,...)
         #        galn <- renameSeqlevels(galn, rchar) }
         #    if('M'%in%seqlevels(galn)) galn <- renameSeqlevels(galn, c( M='MT'))
             
-            anno <- keepSeqlevels(anno,seqlevels(galn))
-            galn <- keepSeqlevels(galn,seqlevels(anno))
+            anno <- keepSeqlevels(anno,seqlevels(galn), pruning.mode="coarse")
+            galn <- keepSeqlevels(galn,seqlevels(anno), pruning.mode="coarse")
             if(length(galn)>0){
                 anno_1 <- anno[seqnames(anno)==seqnames(galn)[1]]
                 exon_len <- as.data.frame(cbind(values(anno_1)[,'tr_name'],width(anno_1)))
