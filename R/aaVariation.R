@@ -79,7 +79,7 @@ aaVariation <-  function(position_tab, coding, show_progress=FALSE, ...)
   
   # Group variants by codon so that multiple changes can be applied to the same codon if necessary
   txCodons = sqldf(paste0("SELECT genename, txname, txid, proname, chr, strand, pos, refbase, varbase,
-                           pincoding, coding, tx_name_full,",
+                           pincoding, coding,",
                            ifelse("rsid" %in% colnames(mtable), "rsid, ", ""),
                            ifelse("cosid" %in% colnames(mtable), "cosid, ", ""),
                            "(ROUND((pincoding + 0.5)/3)-1)*3+1 AS CodonStart,
