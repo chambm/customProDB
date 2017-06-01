@@ -55,23 +55,28 @@ easyRun <- function(bamFile, RPKM=NULL, vcfFile, annotation_path, outfile_path,
     proteinseq <- ''
     procodingseq <- ''
     
-    message("Calculate RPKMs and Output proteins pass the cutoff into FASTA file ... ", 
-            appendLF=FALSE)
     load(paste(annotation_path, '/exon_anno.RData', sep=''))
     load(paste(annotation_path, '/ids.RData', sep=''))
-    if(is.null(RPKM)){
-        RPKM <- calculateRPKM(bamFile, exon, proteincodingonly=TRUE, ids)
-    }else RPKM <- RPKM
     load(paste(annotation_path, '/proseq.RData', sep=''))
-    outf_rpkm <- paste(outfile_path, '/', outfile_name, '_rpkm.fasta', sep='')
-    Outputproseq(RPKM, cutoff=rpkm_cutoff, proteinseq, outf_rpkm, ids)
-    packageStartupMessage(" done")
+    
+    if (!is.null(bamFile))
+    {
+        message("Calculate RPKMs and Output proteins pass the cutoff into FASTA file ... ", 
+                appendLF=FALSE)
+        if(is.null(RPKM)){
+            RPKM <- calculateRPKM(bamFile, exon, proteincodingonly=TRUE, ids)
+        }else RPKM <- RPKM
+        outf_rpkm <- paste(outfile_path, '/', outfile_name, '_rpkm.fasta', sep='')
+        Outputproseq(RPKM, cutoff=rpkm_cutoff, proteinseq, outf_rpkm, ids)
+        packageStartupMessage(" done")
+    }
     
     
     load(paste(annotation_path, '/procodingseq.RData', sep=''))
 
     if (!is.null(vcfFile))
     {
+        message("Reading VCF file... ", appendLF=FALSE)
         stopifnot(file.exists(vcfFile))
         readvcf <- VariantAnnotation::readVcf(vcfFile, row.names=FALSE,
                                               param=VariantAnnotation::ScanVcfParam(geno=NA, info=NA))
@@ -104,6 +109,7 @@ easyRun <- function(bamFile, RPKM=NULL, vcfFile, annotation_path, outfile_path,
         else {
           cosmic <- NULL
         }
+        packageStartupMessage(" done")
     
         snpVariants = vcfRanges[which(variantTypes == "snp")]
         if (length(snpVariants) > 0)

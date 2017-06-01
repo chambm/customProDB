@@ -102,9 +102,9 @@ OutputVarprocodingseq <- function(vartable, procodingseq, ids, lablersid=FALSE, 
                 substr(varcomplement, p, p) <- fastComplement(var)
                 
                 if(lablersid && !is.na(rsid[[j]])){
-                  var_names_each[[j]] <- paste0(rsid[[j]], ":", aaref[[j]], aapos[[j]], aavar[[j]])
+                  var_names_each[[j]] <- paste0(rsid[[j]], ":", aaref[[j]], aapos[[j]], substr(aavar[[j]], 1, 1))
                 }else{
-                  var_names_each[[j]] <- paste0(aaref[[j]], aapos[[j]], aavar[[j]])
+                  var_names_each[[j]] <- paste0(aaref[[j]], aapos[[j]], substr(aavar[[j]], 1, 1))
                 }
             }
             # assign by reference

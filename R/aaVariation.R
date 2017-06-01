@@ -12,6 +12,7 @@
 #' @importFrom data.table data.table rbindlist setkey setDT
 #' @import sqldf
 #' @export
+#* @testfile test-getVariantAnnotation
 #' @examples
 #'
 #' vcffile <- system.file("extdata/vcfs", "test1.vcf", package="customProDB")
@@ -122,6 +123,9 @@ aaVariation <-  function(position_tab, coding, show_progress=FALSE, ...)
   for (i in 1:length(varcode))
   {
     if (show_progress) { setTxtProgressBar(pb, i) }
+      
+    aaref[[i]] = fastTranslate(txCodons$RefCodon[[i]])
+    aapos[[i]] = ceiling(txCodons$CodonStart[[i]]/3)
     
     # if there are no ambiguous bases, simply do a quick translation
     if (!stringi::stri_detect_regex(varcode[[i]], "[^ACGT]")) {
@@ -131,19 +135,15 @@ aaVariation <-  function(position_tab, coding, show_progress=FALSE, ...)
       tt = iub[unlist(strsplit(varcode[[i]], split = ""))]
       combine = expand.grid(tt, KEEP.OUT.ATTRS=F, stringsAsFactors=F)
       vcodes = apply(combine, 1, paste0, collapse='')
-      varaa[[i]] = unique(lapply(vcodes, fastTranslate))
+      varaa[[i]] = paste(setdiff(unique(lapply(vcodes, fastTranslate)), aaref[[i]]), collapse=',')
     }
-
-    aaref[[i]] = fastTranslate(txCodons$RefCodon[[i]])
-    aapos[[i]] = ceiling(txCodons$CodonStart[[i]]/3)
 
     cur_aaref = aaref[[i]]
     cur_varaa = varaa[[i]]
     
     if(is.na(match(cur_aaref, cur_varaa))) {
       vartype[[i]] = 'non-synonymous'
-      if (length(cur_varaa) > 1) aavar[[i]] = paste(cur_varaa, collapse='')
-      else aavar[[i]] = cur_varaa
+      aavar[[i]] = cur_varaa
     } else {
       varaaunique <- cur_varaa[-match(cur_aaref, cur_varaa)]
       if(length(varaaunique)==0) {

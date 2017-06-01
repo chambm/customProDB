@@ -63,21 +63,29 @@ OutputVarproseq <- function(vartable, proteinseq, outfile, ids, lablersid=FALSE,
             pvar <-subset(aavar2pro,aavar2pro$proname == pep_var[i, 'pro_name'])
             pvar <- pvar[order(as.numeric(pvar$aapos)), ]
             for(j in 1:dim(pvar)[1]){
-                substr(pep_var[i, 'peptide'], as.integer(pvar[j, 'aapos']), 
-                   as.integer(pvar[j, 'aapos'])) <- substr(pvar[j, 'aavar'], 1, 1)
+                if (nchar(pvar[j, 'aavar']) > 1) {
+                    var <- paste0(pvar[j, 'aaref'], pvar[j, 'aapos'], pvar[j, 'aavar'])
+                    warning(qq("choosing first alternative for ambiguous SNP '@{var}' in @{pep_var[i, 'pro_name']}"))
+                }
+                aavarFirst <- substr(pvar[j, 'aavar'], 1, 1)
+                aapos <- as.integer(pvar[j, 'aapos'])
+                substr(pep_var[i, 'peptide'], aapos, aapos) <- aavarFirst
             }
             if(pep_var[i, 'peptide']!=pep[i, 'peptide']){
                 if(lablersid){
                     var_name <- apply(pvar, 1, function(x) ifelse(is.na(x['rsid']),
-                            paste(x['aaref'], x['aapos'], x['aavar'], sep=""), 
-                            paste(x['rsid'], ":", x['aaref'], x['aapos'], x['aavar'], 
+                            paste(x['aaref'], x['aapos'], substr(x['aavar'], 1, 1), sep=""), 
+                            paste(x['rsid'], ":", x['aaref'], x['aapos'], substr(x['aavar'], 1, 1), 
                             sep="")))
                 }else{
                     var_name <- apply(pvar, 1, function(x) 
-                            paste(x['aaref'], x['aapos'], x['aavar'], sep=""))
+                            paste(x['aaref'], x['aapos'], substr(x['aavar'], 1, 1), sep=""))
                 }
                 pep_name <- cbind(pep_var[i,], 
                             var_name=gsub(" ", "", toString(var_name)))
+                split_on_stop <- strsplit(pep_name$var_name, '*', fixed=TRUE)
+                has_stop_gain <- length(split_on_stop[[1]]) > 1
+                pep_name$var_name <- paste0(split_on_stop[[1]][1], ifelse(has_stop_gain, '*', ''))
                 pep_all <- rbind(pep_all, pep_name)
 
             }else{
@@ -90,7 +98,7 @@ OutputVarproseq <- function(vartable, proteinseq, outfile, ids, lablersid=FALSE,
         outformat <- apply(ftab, 1, function(x) 
                     paste('>', x['pro_name'], "_", x['var_name'], " |", 
                     x['tx_name.x'], "|", x['gene_name'], "|", x['description'], 
-                    '\n', unlist(strsplit(x['peptide'], '\\*'))[1], sep=''))
+                    '\n', unlist(strsplit(x['peptide'], '*', fixed=TRUE))[1], sep=''))
         
 
         if(!is.null(RPKM)){
@@ -102,7 +110,7 @@ OutputVarproseq <- function(vartable, proteinseq, outfile, ids, lablersid=FALSE,
             outformat <- apply(ftab, 1, function(x) paste('>', x['pro_name'], 
                         "_", x['var_name'], " |", x['v'], "|", x['tx_name.x'], 
                         "|", x['gene_name'], "|", x['description'],'\n', 
-                        unlist(strsplit(x['peptide'], '\\*'))[1], sep=''))
+                        unlist(strsplit(x['peptide'], '*', fixed=TRUE))[1], sep=''))
         
         }    
 

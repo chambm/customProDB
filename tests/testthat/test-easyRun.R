@@ -3,7 +3,7 @@ library(AnnotationDbi)
 library(customProDB)
 
 context("easyRun")
-options(testthat.on.update = on.update.view)
+options(testthat.on.update = on.update.edit)
 options(testthat.on.fail = on.fail.diff)
 
 
@@ -85,4 +85,19 @@ test_that("easyRun works with Ensembl annotation and NULL vcfFile", {
     
     fasta = read.delim(file.path(outfile_path, "mmusculus_gene_ensembl_87_rpkm.fasta"), header=FALSE)
     customProDB:::expect_equal_to_reference(fasta, "test-easyRun-mmusculus_gene_ensembl_87_rpkm.fasta.rds")
+})
+
+vcffile <- system.file("extdata/mmusculus_gene_ensembl_87", "test.vcf", package="customProDB")
+test_that("easyRun works for SNVs with Ensembl annotation", {
+    outfile_path <- tempdir()
+    
+    easyRun(bamFile, RPKM=NULL, vcffile, annotation_path, tempdir(), "mmusculus_gene_ensembl_87",
+            rpkm_cutoff=0, INDEL=FALSE, nov_junction=FALSE,
+            lablersid=TRUE, COSMIC=FALSE)
+    
+    fasta = read.delim(file.path(outfile_path, "mmusculus_gene_ensembl_87_rpkm.fasta"), header=FALSE)
+    customProDB:::expect_equal_to_reference(fasta, "test-easyRun-mmusculus_gene_ensembl_87_rpkm.fasta.rds")
+    
+    fasta = read.delim(file.path(outfile_path, "mmusculus_gene_ensembl_87_snv.fasta"), header=FALSE)
+    customProDB:::expect_equal_to_reference(fasta, "test-easyRun-mmusculus_gene_ensembl_87_snv_dbsnp.fasta.rds")
 })

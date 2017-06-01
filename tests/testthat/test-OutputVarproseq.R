@@ -37,5 +37,5 @@ test_that("OutputVarproseq creates a FASTA file and returns a data.frame", {
   
   fasta = readLines(outfile)
   customProDB:::expect_equal_to_reference(fasta, 'test_snv.fasta.rds', on.update=on.update.view, on.fail=on.fail.diff)
-  customProDB:::expect_equal_to_reference(snvproseq, 'test_snv.fasta_snvproseq.rds', on.update=on.update.view, on.fail=con.fail.diff)
+  customProDB:::expect_equal_to_reference(snvproseq, 'test_snv.fasta_snvproseq.rds', on.update=on.update.view, on.fail=on.fail.diff)
 })
