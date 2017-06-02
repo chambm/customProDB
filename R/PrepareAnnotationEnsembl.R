@@ -426,7 +426,8 @@ DEFAULT_ENSEMBL_UCSC_GENOME_MAP = list("hsapiens_gene_ensembl" = list("may2009.a
                                                                       "jul2016.archive.ensembl.org" = "hg38",
                                                                       "oct2016.archive.ensembl.org" = "hg38",
                                                                       "dec2016.archive.ensembl.org" = "hg38",
-                                                                      "mar2017.archive.ensembl.org" = "hg38"),
+                                                                      "mar2017.archive.ensembl.org" = "hg38",
+                                                                      "may2017.archive.ensembl.org" = "hg38"),
                                        "mmusculus_gene_ensembl" = list("may2009.archive.ensembl.org" = "mm9",
                                                                        "may2012.archive.ensembl.org" = "mm9",
                                                                        "dec2013.archive.ensembl.org" = "mm10",
@@ -443,4 +444,5 @@ DEFAULT_ENSEMBL_UCSC_GENOME_MAP = list("hsapiens_gene_ensembl" = list("may2009.a
                                                                        "jul2016.archive.ensembl.org" = "mm10",
                                                                        "oct2016.archive.ensembl.org" = "mm10",
                                                                        "dec2016.archive.ensembl.org" = "mm10",
-                                                                       "mar2017.archive.ensembl.org" = "mm10"))
+                                                                       "mar2017.archive.ensembl.org" = "mm10",
+                                                                       "may2017.archive.ensembl.org" = "mm10"))
