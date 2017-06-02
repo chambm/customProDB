@@ -312,7 +312,17 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
             #FILTERS=hsapiens_snp_som.default.filters.variation_source."COSMIC"
             varmart = useMart("ENSEMBL_MART_SNP", host=host, dataset="hsapiens_snp_som")
             cosmicAttributes = c("refsnp_id", "chr_name", "chrom_start")
-            cosmicTab = getBM(attributes=cosmicAttributes, filters="variation_source", values="COSMIC", mart=varmart)
+            if (length(unique(exon$gene_name)) < 500) {
+                cosmicTab = getBM(attributes=cosmicAttributes,
+                                  filters=c("variation_source", "ensembl_gene"),
+                                  values=list("COSMIC", unique(exon$gene_name)),
+                                  mart=varmart)
+            } else {
+                cosmicTab = getBM(attributes=cosmicAttributes,
+                                  filters="variation_source",
+                                  values="COSMIC",
+                                  mart=varmart)
+            }
             
             chrlist <- paste(c(seq(1:22),'X','Y','MT')) 
             cosmicTab <- subset(cosmicTab, chr_name %in% chrlist)
