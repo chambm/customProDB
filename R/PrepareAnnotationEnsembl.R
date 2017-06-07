@@ -1,43 +1,58 @@
-##' prepare the annotation from ENSEMBL through biomaRt.
-##'
-##' this function automaticlly prepares all  annotation infromation needed in the following analysis.
-##' @title prepare annotation from ENSEMBL
-##' @param mart which version of ENSEMBL dataset to use. see useMart from package biomaRt for more detail.
-##' @param annotation_path specify a folder to store all the annotations
-##' @param dbsnp specify a snp dataset you want to use for the SNP annotation, default is NULL.
-##' @param transcript_ids optionally, only retrieve transcript annotation data for the specified set of transcript ids
-##' @param splice_matrix whether generate a known exon splice matrix from the annotation; not necessary if you don't want to analyse junction results, default is FALSE. 
-##' @param COSMIC whether to download COSMIC data, default is FALSE.
-##' @param local_cache_path if non-NULL, refers to a directory where previously downloaded resources
-##' (like protein coding sequences and COSMIC data) are cached so that the function can be re-run without
-##' needing to download identical data again
-##' @param ensembl_to_UCSC_genome_map a named list of named lists used to look up the UCSC dbkey for a given biomart; only used for downloading dbSNPs;
-##' if DEFAULT_ENSEMBL_UCSC_GENOME_MAP does not contain an up-to-date mapping, pass a new mapping like
-##' \code{list("<species>_gene_ensembl" = list("<month>.archive.ensembl.org" = "<ucsc_dbkey>"))}
-##' @param ... additional arguments, currently unused
-##' @return several .RData file containing annotations needed for following analysis.
-##' @author Xiaojing Wang
-##' @importFrom rtracklayer browserSession ucscTableQuery tableNames getTable trackNames ucscSchema genome<-
-##' @importFrom plyr ddply .
-##' @import biomaRt
-##' @export
-##' @examples
-##' 
-##' ensembl <- biomaRt::useMart("ENSEMBL_MART_ENSEMBL",
-##'                             dataset="hsapiens_gene_ensembl",
-##'                             host="sep2015.archive.ensembl.org")
-##' 
-##' cache_path <- system.file("extdata", "cache", package="customProDB")
-##' annotation_path <- tempdir()
-##' transcript_ids <- c("ENST00000234420", "ENST00000269305", "ENST00000445888", 
-##'                     "ENST00000257430", "ENST00000508376", "ENST00000288602", 
-##'                     "ENST00000269571", "ENST00000256078", "ENST00000384871")
-##' 
-##' PrepareAnnotationEnsembl(mart=ensembl, annotation_path=annotation_path, 
-##'     splice_matrix=FALSE, dbsnp=NULL, transcript_ids=transcript_ids, 
-##'     COSMIC=FALSE, local_cache_path=cache_path)
-##' 
-##' 
+#' prepare the annotation from ENSEMBL through biomaRt.
+#'
+#' this function automaticlly prepares all  annotation infromation needed in the following analysis.
+#' @title prepare annotation from ENSEMBL
+#' @param mart which version of ENSEMBL dataset to use. see useMart from package biomaRt for more detail.
+#' @param annotation_path specify a folder to store all the annotations
+#' @param dbsnp specify a snp dataset you want to use for the SNP annotation, default is NULL.
+#' @param transcript_ids optionally, only retrieve transcript annotation data for the specified set of transcript ids
+#' @param splice_matrix whether generate a known exon splice matrix from the annotation; not necessary if you don't want to analyse junction results, default is FALSE.
+#' @param COSMIC whether to download COSMIC data, default is FALSE.
+#' @param local_cache_path if non-NULL, refers to a directory where previously downloaded resources
+#' (like protein coding sequences and COSMIC data) are cached so that the function can be re-run without
+#' needing to download identical data again
+#' @param ensembl_to_UCSC_genome_map a named list of named lists used to look up the UCSC dbkey for a given biomart; only used for downloading dbSNPs;
+#' if DEFAULT_ENSEMBL_UCSC_GENOME_MAP does not contain an up-to-date mapping, pass a new mapping like
+#' \code{list("<species>_gene_ensembl" = list("<month>.archive.ensembl.org" = "<ucsc_dbkey>"))}
+#' @param ... additional arguments, currently unused
+#' @return several .RData file containing annotations needed for following analysis.
+#' @author Xiaojing Wang
+#' @importFrom rtracklayer browserSession ucscTableQuery tableNames getTable trackNames ucscSchema genome<-
+#' @importFrom plyr ddply .
+#' @import biomaRt
+#' @export
+#' @examples
+#'
+#' ensembl <- biomaRt::useMart("ENSEMBL_MART_ENSEMBL",
+#'                             dataset="hsapiens_gene_ensembl",
+#'                             host="sep2015.archive.ensembl.org")
+#'
+#' cache_path <- system.file("extdata", "cache", package="customProDB")
+#' annotation_path <- tempdir()
+#' transcript_ids <- c("ENST00000234420", "ENST00000269305", "ENST00000445888",
+#'                     "ENST00000257430", "ENST00000508376", "ENST00000288602",
+#'                     "ENST00000269571", "ENST00000256078", "ENST00000384871")
+#'
+#' PrepareAnnotationEnsembl(mart=ensembl, annotation_path=annotation_path,
+#'     splice_matrix=FALSE, dbsnp=NULL, transcript_ids=transcript_ids,
+#'     COSMIC=FALSE, local_cache_path=cache_path)
+#'
+#'\dontrun{
+#' # full annotation tests
+#' 
+#' test_datasets = c("hsapiens", "mmusculus", "cfamiliaris", "scerevisiae", "ggorilla")
+#' test_releases = c("mar2017", "may2009", "may2012", "may2017")
+#' for (d in 1:length(test_datasets))
+#'   for (r in 1:length(test_releases)) {
+#'     dataset = paste0(test_datasets[d], "_gene_ensembl")
+#'     host = paste0(test_releases[r], ".archive.ensembl.org")
+#'     mart = biomaRt::useMart("ENSEMBL_MART_ENSEMBL", dataset, host)
+#'     PrepareAnnotationEnsembl(mart, annotation_path, splice_matrix=FALSE, dbsnp=NULL, COSMIC=FALSE,
+#'                              local_cache_path=file.path(annotation_path, "cache"))
+#'   }
+#' 
+#'}
+#'
 
 
 
@@ -49,7 +64,7 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
   
     dataset <- mart@dataset
     biomart <- mart@biomart
-    version <- sub("Ensembl Genes (\\d+)", "\\1", listEnsembl(mart)[listEnsembl(mart)["biomart"]=="ensembl", 2])
+    version <- sub("Ensembl (?:Genes )?(\\d+)", "\\1", listEnsembl(mart)[listEnsembl(mart)["biomart"]=="ensembl", 2])
     host <- strsplit(strsplit(mart@host, ':')[[1]][2], '//')[[1]][2]
   
     if (!dir.exists(annotation_path) && !dir.create(annotation_path, recursive=TRUE)) {
@@ -78,12 +93,14 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
         transcript_ids <- read_or_update_local_cache(getBM(attributes=c("ensembl_transcript_id"), mart=mart)[,1],
                                                      local_cache_path, "transcript_ids")
     }
-    attributes.id <- c("ensembl_gene_id", "external_gene_name", "description") 
+    
+    external_gene_name = ifelse(version < 77, "external_gene_id", "external_gene_name")
+    attributes.id <- c("ensembl_gene_id", external_gene_name, "description") 
     idstab <- read_or_update_local_cache(getBM(attributes=attributes.id, mart=mart, 
                                                filters='ensembl_transcript_id', values=transcript_ids),
                                          local_cache_path, "idstab")
     stopifnot(nrow(idstab) > 0)
-    colnames(idstab) <- c("ensembl_gene_id", "external_gene_name", "description") 
+    colnames(idstab) <- c("ensembl_gene_id", external_gene_name, "description") 
     
             idssum <- ddply(idstab, .(ensembl_gene_id), function(x) {
              new.x <- x[1, ]
@@ -394,7 +411,11 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     core_dirs <- GenomicFeatures:::.Ensembl_listMySQLCoreDirs(release=release, url=url,
                                                               use.grch37=use.grch37)
     shortnames <- shortnames <- sub("(\\w)\\w*?_(\\w+?)_core_\\S+", "\\1\\2", core_dirs, perl=TRUE)
-    shortname0 <- strsplit(dataset, "_", fixed=TRUE)[[1L]][1L]
+    if (dataset == "mfuro_gene_ensembl") {
+        shortname0 <- "mputorius_furo"
+    } else {
+        shortname0 <- strsplit(dataset, "_", fixed=TRUE)[[1L]][1L]
+    }
     core_dir <- core_dirs[shortnames == shortname0]
     if (length(core_dir) != 1L)
         stop("found 0 or more than 1 subdir for \"", dataset,
@@ -413,8 +434,15 @@ ls_ftp_url <- function (url)
     sub("[[:space:]].*$", "", listing)
 }
 
+.extractEnsemblReleaseFromDbVersion <- function (db_version) 
+{
+    db_version <- tolower(db_version)
+    sub("^ensembl(?: genes)? ([0-9]+).*$", "\\1", db_version, perl=TRUE)
+}
+
 assignInNamespace(".Ensembl_getMySQLCoreDir", .Ensembl_getMySQLCoreDir, "GenomicFeatures")
 assignInNamespace("ls_ftp_url", ls_ftp_url, "GenomicFeatures")
+assignInNamespace(".extractEnsemblReleaseFromDbVersion", .extractEnsemblReleaseFromDbVersion, "GenomicFeatures")
 
 
 # convenient data structure for mapping Ensembl genome and archive hostname to a UCSC dbkey;
@@ -437,7 +465,8 @@ DEFAULT_ENSEMBL_UCSC_GENOME_MAP = list("hsapiens_gene_ensembl" = list("may2009.a
                                                                       "oct2016.archive.ensembl.org" = "hg38",
                                                                       "dec2016.archive.ensembl.org" = "hg38",
                                                                       "mar2017.archive.ensembl.org" = "hg38",
-                                                                      "may2017.archive.ensembl.org" = "hg38"),
+                                                                      "may2017.archive.ensembl.org" = "hg38",
+                                                                      "www.ensembl.org" = "hg38"),
                                        "mmusculus_gene_ensembl" = list("may2009.archive.ensembl.org" = "mm9",
                                                                        "may2012.archive.ensembl.org" = "mm9",
                                                                        "dec2013.archive.ensembl.org" = "mm10",
@@ -455,4 +484,5 @@ DEFAULT_ENSEMBL_UCSC_GENOME_MAP = list("hsapiens_gene_ensembl" = list("may2009.a
                                                                        "oct2016.archive.ensembl.org" = "mm10",
                                                                        "dec2016.archive.ensembl.org" = "mm10",
                                                                        "mar2017.archive.ensembl.org" = "mm10",
-                                                                       "may2017.archive.ensembl.org" = "mm10"))
+                                                                       "may2017.archive.ensembl.org" = "mm10",
+                                                                       "www.ensembl.org" = "mm10"))
