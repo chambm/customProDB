@@ -58,7 +58,8 @@
 
 PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE, 
                                      dbsnp=NULL, transcript_ids=NULL, COSMIC=FALSE, local_cache_path=NULL,
-                                     ensembl_to_UCSC_genome_map = DEFAULT_ENSEMBL_UCSC_GENOME_MAP, ...) {
+                                     ensembl_to_UCSC_genome_map = DEFAULT_ENSEMBL_UCSC_GENOME_MAP, 
+                                     dbsnp_and_cosmic_only=FALSE, ...) {
     old <- options(stringsAsFactors = FALSE)
     on.exit(options(old), add = TRUE)
   
@@ -121,8 +122,9 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     description <- paste(ids$external_gene_name, ids$description, sep='|')
     ids <- cbind(ids[, 1:3], description)
     colnames(ids) <- c('gene_name', 'tx_name', 'pro_name', 'description')
-    save(ids, file=paste(annotation_path, '/ids.RData', sep=''))
-    
+    if (!dbsnp_and_cosmic_only) {
+        save(ids, file=paste(annotation_path, '/ids.RData', sep=''))
+    }
     packageStartupMessage(" done")
     
     message("Build TranscriptDB object (txdb.sqlite) ... ", appendLF=TRUE)
@@ -185,8 +187,9 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     ###Ensembl use 1 & -1, change it to +/-
 	exon$strand <- unlist(lapply(exon$strand, function(x) 
 			ifelse(x=='1', '+', '-')))
-    
-    save(exon,file=paste(annotation_path, '/exon_anno.RData', sep=''))
+    if (!dbsnp_and_cosmic_only) {
+        save(exon,file=paste(annotation_path, '/exon_anno.RData', sep=''))
+    }
     packageStartupMessage(" done")
     
     message("Prepare protein coding sequence (procodingseq.RData)... ", appendLF=FALSE)
@@ -194,18 +197,21 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
             "ensembl_transcript_id") 
 
     getCoding = function() {
-      if(length(tr_coding$pro_name<10000)){
+      if(length(tr_coding$pro_name)<1000){
         getBM(attributes=attributes.codingseq, filters="ensembl_peptide_id", 
               values=tr_coding$pro_name, mart=mart)
       }else{ 
-        index <- floor(length(tr_coding$pro_name)/10000)
+        index <- floor(length(tr_coding$pro_name)/1000)
         coding <- c()
+        ptm <- proc.time()
         for(i in 1:index) {
-          st <- (i-1)*10000+1
-          ed <- i*10000
+          st <- (i-1)*1000+1
+          message(st)
+          ed <- i*1000
           tmp <- getBM(attributes=attributes.codingseq, filters="ensembl_peptide_id", 
                        values=tr_coding[st:ed, 'pro_name'], mart=mart)
           coding <- rbind(coding, tmp)
+          message(round(object.size(coding) / (proc.time()-ptm)[[3]], 3), " B/s")
           #print(i)
         }
         tmp <- getBM(attributes=attributes.codingseq, filters="ensembl_peptide_id", 
@@ -221,21 +227,24 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
                 transintxdb$tx_name), 'tx_id']
     procodingseq <- cbind(coding, tx_id)
     colnames(procodingseq) <- c("coding", "pro_name", "tx_name", "tx_id")
-    save(procodingseq,file=paste(annotation_path, '/procodingseq.RData', sep=''))
+    if (!dbsnp_and_cosmic_only) {
+        save(procodingseq,file=paste(annotation_path, '/procodingseq.RData', sep=''))
+    }
     packageStartupMessage(" done")
     
     message("Prepare protein sequence (proseq.RData) ... ", appendLF=FALSE)
     attributes.proseq <- c("peptide", "ensembl_peptide_id", "ensembl_transcript_id") 
     getProteinseq = function() {
-      if(length(tr_coding$pro_name<10000)){
+      if(length(tr_coding$pro_name)<1000){
         getBM(attributes=attributes.proseq, filters="ensembl_peptide_id",
               values=tr_coding$pro_name, mart=mart)
       }else{ 
-        index <- floor(length(tr_coding$pro_name)/10000)
+        index <- floor(length(tr_coding$pro_name)/1000)
         proteinseq <- c()
         for(i in 1:index) {
-          st <- (i-1)*10000+1
-          ed <- i*10000
+          st <- (i-1)*1000+1
+          message(st)
+          ed <- i*1000
           tmp <- getBM(attributes=attributes.proseq, filters="ensembl_peptide_id", 
                        values= tr_coding[st:ed, 'pro_name'], mart=mart)
           proteinseq <- rbind(proteinseq, tmp)
@@ -250,7 +259,9 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     proteinseq <- read_or_update_local_cache(getProteinseq(), local_cache_path, "proteinseq")
     stopifnot(nrow(proteinseq) > 0)
     colnames(proteinseq) <- c("peptide", "pro_name", "tx_name")
-    save(proteinseq, file=paste(annotation_path, '/proseq.RData', sep=''))
+    if (!dbsnp_and_cosmic_only) {
+        save(proteinseq, file=paste(annotation_path, '/proseq.RData', sep=''))
+    }
     packageStartupMessage(" done")
     
     
@@ -261,14 +272,14 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
         getSnpTable = function(genome, transGrange) {
             # can't easily query UCSC MySQL with Ensembl transcripts, so always download full coding dbSNP file
             dbSnpFile = qq("@{dbsnp}CodingDbSnp.txt.gz")
-            dbSnpURL = qq("http://hgdownload.soe.ucsc.edu/goldenPath/@{genome}/database/@{dbSnpFile}")
+            dbSnpURL = qq("ftp://hgdownload.soe.ucsc.edu/goldenPath/@{genome}/database/@{dbSnpFile}")
             download_error = function(e) {stop(qq("error downloading @{dbSnpURL}; either @{dbsnp} is not available for @{dataset} or UCSC's website is down"))}
             if (!is.null(local_cache_path) && length(transcript_ids) > 1000)
                 dbSnpFile = file.path(local_cache_path, dbSnpFile)
             if (!file.exists(dbSnpFile))
                 tryCatch({download.file(dbSnpURL, dbSnpFile, quiet=T, mode='wb')}, error=download_error, warning=download_error)
             snpCodingTab = .temp_unzip(dbSnpFile, data.table::fread, showProgress=FALSE,
-                                       select=c(2:5, 8, 10),
+                                       select=c(2:5, 8, 10), sep="\t",
                                        col.names=c("chrom", "chromStart", "chromEnd", "name",
                                                    "alleleCount", "alleles"))
             snpCodingTab$chrom <- gsub('chr', '', snpCodingTab$chrom)
@@ -361,7 +372,7 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     }
     
     
-    if(splice_matrix){
+    if(!dbsnp_and_cosmic_only && splice_matrix){
         message("Prepare exon splice information (splicemax.RData) ... ", 
                 appendLF=FALSE)
         exonByTx <- exonsBy(txdb, "tx", use.names=F)
@@ -400,50 +411,52 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     }
 
 
-# GenomicFeature's .Ensembl_getMySQLCoreDir is currently broken for mouse because Ensembl has multiple
-# strains; this version handles it properly: mmusculus_gene_ensembl maps to mus_musculus_core_xx_x;
-# TODO: remove this hack when GenomicFeatures is fixed
-.Ensembl_getMySQLCoreDir <- function(dataset, release=NA, url=NA,
-                                     use.grch37=FALSE)
+if (BiocInstaller::biocVersion() != "3.5")
 {
-    if (is.na(url))
-        url <- GenomicFeatures:::ftp_url_to_Ensembl_mysql(release, use.grch37=use.grch37)
-    core_dirs <- GenomicFeatures:::.Ensembl_listMySQLCoreDirs(release=release, url=url,
-                                                              use.grch37=use.grch37)
-    shortnames <- shortnames <- sub("(\\w)\\w*?_(\\w+?)_core_\\S+", "\\1\\2", core_dirs, perl=TRUE)
-    if (dataset == "mfuro_gene_ensembl") {
-        shortname0 <- "mputorius_furo"
-    } else {
-        shortname0 <- strsplit(dataset, "_", fixed=TRUE)[[1L]][1L]
+    # GenomicFeature's .Ensembl_getMySQLCoreDir is currently broken for mouse because Ensembl has multiple
+    # strains; this version handles it properly: mmusculus_gene_ensembl maps to mus_musculus_core_xx_x;
+    # TODO: remove this hack when GenomicFeatures is fixed
+    .Ensembl_getMySQLCoreDir <- function(dataset, release=NA, url=NA,
+                                         use.grch37=FALSE)
+    {
+        if (is.na(url))
+            url <- GenomicFeatures:::ftp_url_to_Ensembl_mysql(release, use.grch37=use.grch37)
+        core_dirs <- GenomicFeatures:::.Ensembl_listMySQLCoreDirs(release=release, url=url,
+                                                                  use.grch37=use.grch37)
+        shortnames <- shortnames <- sub("(\\w)\\w*?_(\\w+?)_core_\\S+", "\\1\\2", core_dirs, perl=TRUE)
+        if (dataset == "mfuro_gene_ensembl") {
+            shortname0 <- "mputorius_furo"
+        } else {
+            shortname0 <- strsplit(dataset, "_", fixed=TRUE)[[1L]][1L]
+        }
+        core_dir <- core_dirs[shortnames == shortname0]
+        if (length(core_dir) != 1L)
+            stop("found 0 or more than 1 subdir for \"", dataset,
+                 "\" dataset at ", url)
+        core_dir
     }
-    core_dir <- core_dirs[shortnames == shortname0]
-    if (length(core_dir) != 1L)
-        stop("found 0 or more than 1 subdir for \"", dataset,
-             "\" dataset at ", url)
-    core_dir
+    
+    ls_ftp_url <- function (url) 
+    {
+        doc <- RCurl::getURL(url)
+        listing <- strsplit(doc, "\n", fixed = TRUE)[[1L]]
+        listing <- listing[stringi::stri_startswith_fixed(listing, "d")]
+        pattern <- paste(c("^", rep.int("[^[:space:]]+[[:space:]]+", 
+                                        8L)), collapse = "")
+        listing <- sub(pattern, "", listing)
+        sub("[[:space:]].*$", "", listing)
+    }
+    
+    .extractEnsemblReleaseFromDbVersion <- function (db_version) 
+    {
+        db_version <- tolower(db_version)
+        sub("^ensembl(?: genes)? ([0-9]+).*$", "\\1", db_version, perl=TRUE)
+    }
+    
+    assignInNamespace(".Ensembl_getMySQLCoreDir", .Ensembl_getMySQLCoreDir, "GenomicFeatures")
+    assignInNamespace("ls_ftp_url", ls_ftp_url, "GenomicFeatures")
+    assignInNamespace(".extractEnsemblReleaseFromDbVersion", .extractEnsemblReleaseFromDbVersion, "GenomicFeatures")
 }
-
-ls_ftp_url <- function (url) 
-{
-    doc <- RCurl::getURL(url)
-    listing <- strsplit(doc, "\n", fixed = TRUE)[[1L]]
-    listing <- listing[stringi::stri_startswith_fixed(listing, "d")]
-    pattern <- paste(c("^", rep.int("[^[:space:]]+[[:space:]]+", 
-                                    8L)), collapse = "")
-    listing <- sub(pattern, "", listing)
-    sub("[[:space:]].*$", "", listing)
-}
-
-.extractEnsemblReleaseFromDbVersion <- function (db_version) 
-{
-    db_version <- tolower(db_version)
-    sub("^ensembl(?: genes)? ([0-9]+).*$", "\\1", db_version, perl=TRUE)
-}
-
-assignInNamespace(".Ensembl_getMySQLCoreDir", .Ensembl_getMySQLCoreDir, "GenomicFeatures")
-assignInNamespace("ls_ftp_url", ls_ftp_url, "GenomicFeatures")
-assignInNamespace(".extractEnsemblReleaseFromDbVersion", .extractEnsemblReleaseFromDbVersion, "GenomicFeatures")
-
 
 # convenient data structure for mapping Ensembl genome and archive hostname to a UCSC dbkey;
 # only needed for dbSNP genomes (human and mouse currently); users can override this mapping in case a new
