@@ -113,6 +113,9 @@ OutputVarprocodingseq <- function(vartable, procodingseq, ids, lablersid=FALSE, 
 
             var_names[[i]] = paste0(var_names_each, collapse=",")
 
+            split_on_stop <- strsplit(var_names[[i]], '*', fixed=TRUE)
+            has_stop_gain <- length(split_on_stop[[1]]) > 1
+            var_names[[i]] <- paste0(split_on_stop[[1]][1], ifelse(has_stop_gain, '*', ''))
         }
         if (show_progress) { close(pb) }
         
