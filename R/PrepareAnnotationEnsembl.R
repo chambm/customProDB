@@ -411,7 +411,7 @@ PrepareAnnotationEnsembl <- function(mart, annotation_path, splice_matrix=FALSE,
     }
 
 
-if (BiocInstaller::biocVersion() != "3.5")
+if (BiocInstaller::biocVersion() > "3.4")
 {
     # GenomicFeature's .Ensembl_getMySQLCoreDir is currently broken for mouse because Ensembl has multiple
     # strains; this version handles it properly: mmusculus_gene_ensembl maps to mus_musculus_core_xx_x;
