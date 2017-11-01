@@ -48,13 +48,15 @@ calculateRPKM <- function(bamFile,exon, proteincodingonly = TRUE,ids=NULL,...)
         #        galn <- renameSeqlevels(galn, rchar) }
         #    if('M'%in%seqlevels(galn)) galn <- renameSeqlevels(galn, c( M='MT'))
             
+            seqlevelsInCommon <- intersect(seqlevels(galn), seqlevels(anno))
+            
             # TODO: remove this when customProDB is officially updated to BioC 3.5
             if (packageVersion("GenomeInfoDb") >= "1.11.6") {
-                anno <- keepSeqlevels(anno,seqlevels(galn), pruning.mode="coarse")
-                galn <- keepSeqlevels(galn,seqlevels(anno), pruning.mode="coarse")
+                anno <- keepSeqlevels(anno, seqlevelsInCommon, pruning.mode="coarse")
+                galn <- keepSeqlevels(galn, seqlevelsInCommon, pruning.mode="coarse")
             } else {
-                anno <- keepSeqlevels(anno,seqlevels(galn))
-                galn <- keepSeqlevels(galn,seqlevels(anno))
+                anno <- keepSeqlevels(anno, seqlevelsInCommon)
+                galn <- keepSeqlevels(galn, seqlevelsInCommon)
             }
 
             if(length(galn)>0){

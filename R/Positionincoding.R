@@ -49,15 +49,23 @@ Positionincoding<- function(Vars, exon, dbsnp=NULL, COSMIC=NULL,...)
                      pro_name=cdscombine$pro_name, gene_name=cdscombine$gene_name, 
                      cds_s2coding=cdscombine$cds_start, cds_e2coding=cdscombine$cds_end)
   
+  seqlevelsInCommon <- intersect(seqlevels(Vars), seqlevels(cdsanno))
+  
+  # TODO: remove this when customProDB is officially updated to BioC 3.5
+  if (packageVersion("GenomeInfoDb") >= "1.11.6") {
+      cdsanno <- keepSeqlevels(cdsanno, seqlevelsInCommon, pruning.mode="coarse")
+      Vars <- keepSeqlevels(Vars, seqlevelsInCommon, pruning.mode="coarse")
+  } else {
+      cdsanno <- keepSeqlevels(cdsanno, seqlevelsInCommon)
+      Vars <- keepSeqlevels(Vars, seqlevelsInCommon)
+  }
+  
   #if(TRUE%in% grep('chr',seqlevels(Vars)) > 0 ) {
   #    rchar <- sub('chr','',seqlevels(Vars))
   #    names(rchar) <- seqlevels(Vars)
   #    Vars <- renameSeqlevels(Vars, rchar) }
   #if('M'%in%seqlevels(Vars)) Vars <- renameSeqlevels(Vars, c( M='MT'))
-  
-  
-  #cdsanno <- keepSeqlevels(cdsanno, Vars)
-  #Vars <- keepSeqlevels(Vars, cdsanno)
+
   candiincds <- subsetByOverlaps(Vars, cdsanno)
   candimtch <- findOverlaps(candiincds, cdsanno)
   queryindex <- queryHits(candimtch)
