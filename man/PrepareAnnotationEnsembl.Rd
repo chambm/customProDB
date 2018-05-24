@@ -7,7 +7,8 @@
 PrepareAnnotationEnsembl(mart, annotation_path, splice_matrix = FALSE,
   dbsnp = NULL, transcript_ids = NULL, COSMIC = FALSE,
   local_cache_path = NULL,
-  ensembl_to_UCSC_genome_map = DEFAULT_ENSEMBL_UCSC_GENOME_MAP, ...)
+  ensembl_to_UCSC_genome_map = DEFAULT_ENSEMBL_UCSC_GENOME_MAP,
+  dbsnp_and_cosmic_only = FALSE, ...)
 }
 \arguments{
 \item{mart}{which version of ENSEMBL dataset to use. see useMart from package biomaRt for more detail.}
@@ -49,14 +50,29 @@ ensembl <- biomaRt::useMart("ENSEMBL_MART_ENSEMBL",
 
 cache_path <- system.file("extdata", "cache", package="customProDB")
 annotation_path <- tempdir()
-transcript_ids <- c("ENST00000234420", "ENST00000269305", "ENST00000445888", 
-                    "ENST00000257430", "ENST00000508376", "ENST00000288602", 
+transcript_ids <- c("ENST00000234420", "ENST00000269305", "ENST00000445888",
+                    "ENST00000257430", "ENST00000508376", "ENST00000288602",
                     "ENST00000269571", "ENST00000256078", "ENST00000384871")
 
-PrepareAnnotationEnsembl(mart=ensembl, annotation_path=annotation_path, 
-    splice_matrix=FALSE, dbsnp=NULL, transcript_ids=transcript_ids, 
+PrepareAnnotationEnsembl(mart=ensembl, annotation_path=annotation_path,
+    splice_matrix=FALSE, dbsnp=NULL, transcript_ids=transcript_ids,
     COSMIC=FALSE, local_cache_path=cache_path)
 
+\dontrun{
+# full annotation tests
+
+test_datasets = c("hsapiens", "mmusculus", "cfamiliaris", "scerevisiae", "ggorilla")
+test_releases = c("mar2017", "may2009", "may2012", "may2017")
+for (d in 1:length(test_datasets))
+  for (r in 1:length(test_releases)) {
+    dataset = paste0(test_datasets[d], "_gene_ensembl")
+    host = paste0(test_releases[r], ".archive.ensembl.org")
+    mart = biomaRt::useMart("ENSEMBL_MART_ENSEMBL", dataset, host)
+    PrepareAnnotationEnsembl(mart, annotation_path, splice_matrix=FALSE, dbsnp=NULL, COSMIC=FALSE,
+                             local_cache_path=file.path(annotation_path, "cache"))
+  }
+
+}
 
 }
 \author{

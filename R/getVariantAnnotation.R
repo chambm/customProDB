@@ -124,7 +124,7 @@ getVariantAnnotation <- function(vcfFilepaths,
                  "G"="^[ATC](,[ATC])*$",
                  "C"="^[ATG](,[ATG])*$")
   
-  if(refLength==1 && grepl(alternates[ref], alt))
+  if(refLength==1 && stri_detect_fixed("ATGC", ref) && grepl(alternates[ref], alt))
     "snp"
   else if(refLength>1 && refLength==altLength)
     "mnp"
@@ -167,7 +167,7 @@ getVariantAnnotation <- function(vcfFilepaths,
 #' \item mix (some combination of the above)
 #' }
 #' @export
-#' @importFrom stringi stri_length stri_sub stri_startswith_fixed stri_endswith_fixed
+#' @importFrom stringi stri_length stri_sub stri_startswith_fixed stri_endswith_fixed stri_detect_fixed
 #'
 #' @examples
 #' ref = c("A", "A",   "AA", "AT", "A",  "AA",  "AA",  "AA",  "ATTA", "AAA",  "A",    "TAAA")

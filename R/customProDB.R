@@ -15,5 +15,7 @@
 #' @importFrom data.table data.table rbindlist setkey setDT 
 #' @importFrom GetoptLong qq
 #' @importFrom IRanges IRanges subsetByOverlaps
+#' @importFrom RCurl getURL
+#' @importFrom rtracklayer import.gff
 #' @import S4Vectors GenomicRanges GenomicFeatures Biostrings
 NULL

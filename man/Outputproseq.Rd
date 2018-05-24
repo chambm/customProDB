@@ -32,13 +32,14 @@ by taking the RPKM value as input, the function outputs sequences of the protein
 
 load(system.file("extdata/refseq", "exon_anno.RData", package="customProDB"))
 load(system.file("extdata/refseq", "proseq.RData", package="customProDB"))
-bamFile <- system.file("extdata/bams", "test1_sort.bam", 
+bamFile <- system.file("extdata/bams", "test1_sort.bam",
     package="customProDB")
 load(system.file("extdata/refseq", "ids.RData", package="customProDB"))
 RPKM <- calculateRPKM(bamFile, exon, proteincodingonly=TRUE, ids)
 outf1 <- paste(tempdir(), '/test_rpkm.fasta', sep='')
 Outputproseq(RPKM, 1, proteinseq, outf1, ids)
 
+Outputproseq(NULL, 1, proteinseq, outf1, ids)
 
 }
 \author{

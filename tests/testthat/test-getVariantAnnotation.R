@@ -126,4 +126,5 @@ test_that("variantType returns correct variant types", {
   expect_equal(variantType("AAA", "AATA"), "ins")
   expect_equal(variantType("A", "T,AT"), "mix")
   expect_equal(variantType("TAA", "TAA,TAAAA"), "ins")
+  expect_equal(variantType("c", "cT"), "ins")
 })

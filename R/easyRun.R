@@ -59,17 +59,13 @@ easyRun <- function(bamFile, RPKM=NULL, vcfFile, annotation_path, outfile_path,
     load(paste(annotation_path, '/ids.RData', sep=''))
     load(paste(annotation_path, '/proseq.RData', sep=''))
     
-    if (!is.null(bamFile))
-    {
-        message("Calculate RPKMs and Output proteins pass the cutoff into FASTA file ... ", 
-                appendLF=FALSE)
-        if(is.null(RPKM)){
-            RPKM <- calculateRPKM(bamFile, exon, proteincodingonly=TRUE, ids)
-        }else RPKM <- RPKM
-        outf_rpkm <- paste(outfile_path, '/', outfile_name, '_rpkm.fasta', sep='')
-        Outputproseq(RPKM, cutoff=rpkm_cutoff, proteinseq, outf_rpkm, ids)
-        packageStartupMessage(" done")
+    message("Calculate RPKMs and Output proteins pass the cutoff into FASTA file ... ", appendLF=FALSE)
+    if(is.null(RPKM) && !is.null(bamFile)) {
+        RPKM <- calculateRPKM(bamFile, exon, proteincodingonly=TRUE, ids)
     }
+    outf_rpkm <- paste(outfile_path, '/', outfile_name, '_rpkm.fasta', sep='')
+    Outputproseq(RPKM, cutoff=rpkm_cutoff, proteinseq, outf_rpkm, ids)
+    packageStartupMessage(" done")
     
     
     load(paste(annotation_path, '/procodingseq.RData', sep=''))
@@ -82,9 +78,8 @@ easyRun <- function(bamFile, RPKM=NULL, vcfFile, annotation_path, outfile_path,
                                               param=VariantAnnotation::ScanVcfParam(geno=NA, info=NA))
         
         # read REF and ALT columns with the super-fast data.table::fread
-        headerLinesToSkip = grep("#CHROM", readLines(vcfFile, n=1000))
         vcftable = .temp_unzip(vcfFile, data.table::fread,
-                               skip=headerLinesToSkip-1, sep="\t",
+                               skip="#CHROM", sep="\t",
                                select=c("#CHROM", "POS", "REF", "ALT"),
                                showProgress=FALSE)
         ref = toupper(vcftable$REF)
