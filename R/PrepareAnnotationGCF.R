@@ -11,7 +11,7 @@
 #' 
 #' @examples
 #' annotation_path <- tempdir()
-#' PrepareAnnotationGCF("ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/001/922/835/GCF_001922835.1_NIST_Tur_tru_v1/", annotation_path)
+#' PrepareAnnotationGCF("ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/180/735/GCA_000180735.1_ASM18073v1/", annotation_path)
 #'
 PrepareAnnotationGCF <- function(ncbiFtpUrl, annotation_path, ...) {
     old <- options(stringsAsFactors = FALSE)
@@ -23,26 +23,41 @@ PrepareAnnotationGCF <- function(ncbiFtpUrl, annotation_path, ...) {
     if (!stringi::stri_endswith_fixed(annotation_path, "/"))
         annotation_path = paste0(annotation_path, "/")
     
-    files = strsplit(getURL(ncbiFtpUrl, dirlistonly = TRUE), "\r*\n")[[1]]
-    assembly_report = files[grep(".*_assembly_report.txt", files)]
-    cds_fna = files[grep(".*_cds_from_genomic.fna.gz", files)]
-    translated_faa = files[grep(".*_translated_cds.faa.gz", files)]
-    genomic_gff = files[grep(".*_genomic.gff.gz", files)]
-    stopifnot(stringr::str_length(assembly_report) > 0,
-              stringr::str_length(cds_fna) > 0,
-              stringr::str_length(translated_faa) > 0,
-              stringr::str_length(genomic_gff) > 0)
+    dir.create(annotation_path, recursive=TRUE, showWarnings=FALSE)
     
-    download.filename(ncbiFtpUrl, assembly_report, annotation_path, quiet=TRUE)
-    organism_name = sub("# Organism name:\\s*(.*?)\\s*\\(.*\\)", "\\1", readLines(paste0(annotation_path, assembly_report), n=2)[2])
+    if (stringi::stri_startswith_fixed(ncbiFtpUrl, "ftp://")) {
+        files = strsplit(getURL(ncbiFtpUrl, dirlistonly = TRUE), "\r*\n")[[1]]
+        assembly_report = files[grep(".*_assembly_report.txt", files)]
+        cds_fna = files[grep(".*_cds_from_genomic.fna(.gz)?", files, perl=TRUE)]
+        translated_faa = files[grep(".*_translated_cds.faa(.gz)?", files, perl=TRUE)]
+        genomic_gff = files[grep(".*_genomic.gff(.gz)?", files, perl=TRUE)]
+        stopifnot(length(assembly_report) > 0,
+                  length(cds_fna) > 0,
+                  length(translated_faa) > 0,
+                  length(genomic_gff) > 0)
+
+        download.filename(ncbiFtpUrl, assembly_report, annotation_path, quiet=TRUE)
+        
+        cds_fna = download.filename(ncbiFtpUrl, cds_fna, annotation_path)
+        translated_faa = download.filename(ncbiFtpUrl, translated_faa, annotation_path)
+        genomic_gff = download.filename(ncbiFtpUrl, genomic_gff, annotation_path)
+    }
+    else {
+        files = list.files(ncbiFtpUrl, full.names=TRUE)
+        assembly_report = files[grep(".*_assembly_report.txt", files)]
+        cds_fna = files[grep(".*_cds_from_genomic.fna(.gz)?", files, perl=TRUE)]
+        translated_faa = files[grep(".*_translated_cds.faa(.gz)?", files, perl=TRUE)]
+        genomic_gff = files[grep(".*_genomic.gff(.gz)?", files, perl=TRUE)]
+        stopifnot(length(assembly_report) > 0,
+                  length(cds_fna) > 0,
+                  length(translated_faa) > 0,
+                  length(genomic_gff) > 0)
+    }
     
-    download.filename(ncbiFtpUrl, cds_fna, annotation_path)
-    download.filename(ncbiFtpUrl, translated_faa, annotation_path)
-    download.filename(ncbiFtpUrl, genomic_gff, annotation_path)
+    organism_name = sub("# Organism name:\\s*(.*?)\\s*\\(.*\\)", "\\1", readLines(assembly_report, n=2)[2])
     
-# # Organism name:  Tursiops truncatus (bottlenose dolphin)
     message(paste0("Build TranscriptDB object for '", organism_name, "' (txdb.sqlite) ..."), appendLF=TRUE)    
-    txdb <- makeTxDbFromGFF(file=paste0(annotation_path, genomic_gff),
+    txdb <- makeTxDbFromGFF(file=genomic_gff,
                             format="gff3",
                             dataSource=ncbiFtpUrl,
                             organism=organism_name)
@@ -67,11 +82,13 @@ PrepareAnnotationGCF <- function(ncbiFtpUrl, annotation_path, ...) {
     
     message(paste("Prepare gene/transcript/protein id mapping information (ids.RData) ... "), appendLF=FALSE)
     
-    gff <- import.gff(paste0(annotation_path, genomic_gff), colnames = c("transcript_id", "gene", "model_evidence", "product"), feature.type="mRNA")
-    ids <- data.frame(gff$gene, transcript_id=gff$transcript_id, gff$transcript_id,
-                      gff$gene, gff$product, gff$transcript_id,
-                      gff$model_evidence, gff$transcript_id,
-                      gff$transcript_id, protein_by_tx[gff$transcript_id]$pro_name)
+    gff <- import.gff(genomic_gff, colnames = c("protein_id", "gene", "product"), feature.type=c("CDS"))
+    transcript_id = tx_by_protein[gff$protein_id]$tx_name
+    ids <- data.frame(gff$gene, transcript_id=transcript_id, transcript_id,
+                      gff$gene, gff$product, transcript_id,
+                      gff$gene, transcript_id,
+                      transcript_id, gff$protein_id)
+    ids <- unique(ids)
 
     colnames(ids) <- c('gene_name', 'tx_name', 'gene_type', 
                        'gene_status', 'description', 'transcript_type', 
@@ -108,36 +125,15 @@ PrepareAnnotationGCF <- function(ncbiFtpUrl, annotation_path, ...) {
     #txid <- matrix(unlist(strsplit(rownames(cdss), '\\.')), ncol = 2, 
     #       byrow =TRUE)[, 1]
     #txid <- gsub('=','\\.',txid)
-    cds_p <- data.frame(txid=cdss[, "group_name"], cds_s=cdss[, "start"], 
+    cds_p <- data.table(txid=as.numeric(cdss[, "group_name"]), cds_s=cdss[, "start"], 
                         cds_e=cdss[, "end"], exon_rank=cdss[, "exon_rank"], 
-                        width=cdss[, "width"])
-    ttt <- split(cds_p, cds_p$txid)
-    
-    cds_p_new_list <-lapply(ttt, function(x){
-        #len <- x[,'cds_e']-x[,'cds_s']+1
-        #cum <- cumsum(len)
-        cum <- cumsum(x[, 'width'])
-        rdis <- cbind(c(1, cum[1:length(cum)-1]+1), cum)
-        colnames(rdis) <- c('cds_start', 'cds_end')
-        tmp <- cbind(x, rdis)
-        tmp
-    })
-    
-    
-    cds_p_new <- do.call(rbind, cds_p_new_list)
-    cds_p_new <- cds_p_new[, -which(names(cds_p_new) %in% c("width"))]
-    
-    #for(i in 1:length(ttt)) {
-    #    print(i)
-    #    ttt1 <- ttt[[i]]
-    #    len <- ttt1[,'cds_e']-ttt1[,'cds_s']+1
-    #    cum <- cumsum(len)
-    #    rdis <- cbind(c(1,cum[1:length(cum)-1]+1),cum)
-    #    colnames(rdis) <- c('cds_start','cds_end')
-    #    tmp <- cbind(ttt1,rdis)
-    #    cds_p_new <- rbind(cds_p_new,tmp)
-    #}
-    
+                        width=cdss[, "width"], key="txid")
+    cds_p_new <- cbind(cds_p[, !c("width")],
+                       cds_p[, {cum <- cumsum(width)
+                                rdis <- cbind(c(1, cum[1:length(cum)-1]+1), cum)
+                                list(cds_start=rdis[,1], cds_end=rdis[,2])},
+                             by=txid][, !"txid"])
+
     cds2exon <- merge(exon2tr, cds_p_new, by.x=c("txid", "exon_rank"), 
                       by.y=c("txid", "exon_rank"), all.x = TRUE)
     #txid <- matrix(unlist(strsplit(rownames(fiveutrs), '\\.')), ncol = 2, 
@@ -178,10 +174,10 @@ PrepareAnnotationGCF <- function(ncbiFtpUrl, annotation_path, ...) {
     packageStartupMessage(" done")
 
     message("Prepare protein and coding sequences (proseq.RData and procodingseq.RData) ... ", appendLF=FALSE)
-    pro_seqs <- readAAStringSet(paste0(annotation_path, translated_faa), format='fasta')
+    pro_seqs <- readAAStringSet(translated_faa, format='fasta')
     pro_name_v <- names(pro_seqs)
     
-    cds_seqs <- readDNAStringSet(paste0(annotation_path, cds_fna), format='fasta')
+    cds_seqs <- readDNAStringSet(cds_fna, format='fasta')
     tx_name_v <- names(cds_seqs)
     
     stopifnot(length(pro_seqs) == length(cds_seqs))
@@ -191,7 +187,7 @@ PrepareAnnotationGCF <- function(ncbiFtpUrl, annotation_path, ...) {
     
     stopifnot(sum(valid_pro_ids) == sum(valid_cds_ids))
 
-    pro_name <- sub("lcl\\|\\S+\\.\\d_prot_([NXY]P_\\d+\\.\\d+).*", "\\1", pro_name_v, perl=TRUE)
+    pro_name <- sub("lcl\\|\\S+\\.\\d_prot_([ANXYW]P_\\S+\\.\\d+).*", "\\1", pro_name_v, perl=TRUE)
     tx_name <- tx_by_protein[pro_name]$tx_name
     
     proteinseq <- as.data.frame(pro_seqs[valid_pro_ids, ])
@@ -200,7 +196,8 @@ PrepareAnnotationGCF <- function(ncbiFtpUrl, annotation_path, ...) {
     save(proteinseq, file=paste(annotation_path, '/proseq.RData', sep=''))
     
     procodingseq <- as.data.frame(cds_seqs[valid_pro_ids, ])
-    procodingseq <- cbind(procodingseq, tx_name_v[valid_pro_ids], pro_name[valid_pro_ids], tx_name[valid_pro_ids], tx_by_protein[pro_name[valid_pro_ids]]$tx_id)
+    valid_pro_names <- pro_name[valid_pro_ids]
+    procodingseq <- cbind(procodingseq, tx_name_v[valid_pro_ids], pro_name[valid_pro_ids], tx_name[valid_pro_ids], tx_by_protein[valid_pro_names]$tx_id)
     colnames(procodingseq) <- c("coding", "tx_name_full", "pro_name", "tx_name", "tx_id")
     save(procodingseq, file=paste0(annotation_path, '/procodingseq.RData'))
     
@@ -216,4 +213,5 @@ download.filename = function(url, filename, directory, overwrite=FALSE, ...)
         else return()
     }
     download.file(paste0(url, filename), paste0(directory, filename), ...)
+    return(base::file.path(directory, filename))
 }

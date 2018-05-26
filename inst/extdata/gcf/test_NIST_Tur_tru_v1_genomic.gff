@@ -1,0 +1,451 @@
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+#!genome-build NIST Tur_tru v1
+#!genome-build-accession NCBI_Assembly:GCF_001922835.1
+#!annotation-source NCBI Tursiops truncatus Annotation Release 101
+##sequence-region NW_017842062.1 1 1526
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842062.1	RefSeq	region	1	1526	.	+	.	ID=id0;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842063.1 1 1340
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842063.1	RefSeq	region	1	1340	.	+	.	ID=id1;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842064.1 1 1535
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842064.1	RefSeq	region	1	1535	.	+	.	ID=id2;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842065.1 1 1657
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842065.1	RefSeq	region	1	1657	.	+	.	ID=id3;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842066.1 1 1679
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842066.1	RefSeq	region	1	1679	.	+	.	ID=id4;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842067.1 1 1340
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842067.1	RefSeq	region	1	1340	.	+	.	ID=id5;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842068.1 1 1144
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842068.1	RefSeq	region	1	1144	.	+	.	ID=id6;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842069.1 1 1100
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842069.1	RefSeq	region	1	1100	.	+	.	ID=id7;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842070.1 1 1919
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842070.1	RefSeq	region	1	1919	.	+	.	ID=id8;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842071.1 1 1581
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842071.1	RefSeq	region	1	1581	.	+	.	ID=id9;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842072.1 1 1597
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842072.1	RefSeq	region	1	1597	.	+	.	ID=id10;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842073.1 1 1072
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842073.1	RefSeq	region	1	1072	.	+	.	ID=id11;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842074.1 1 1712
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842074.1	RefSeq	region	1	1712	.	+	.	ID=id12;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842075.1 1 2475
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842075.1	RefSeq	region	1	2475	.	+	.	ID=id13;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842076.1 1 1512
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842076.1	RefSeq	region	1	1512	.	+	.	ID=id14;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842077.1 1 1297
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842077.1	RefSeq	region	1	1297	.	+	.	ID=id15;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842078.1 1 23335
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842078.1	RefSeq	region	1	23335	.	+	.	ID=id16;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842079.1 1 1425
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842079.1	RefSeq	region	1	1425	.	+	.	ID=id17;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842080.1 1 1005
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842080.1	RefSeq	region	1	1005	.	+	.	ID=id18;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842081.1 1 2254
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842081.1	RefSeq	region	1	2254	.	+	.	ID=id19;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842082.1 1 1136
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842082.1	RefSeq	region	1	1136	.	+	.	ID=id20;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842083.1 1 1517
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842083.1	RefSeq	region	1	1517	.	+	.	ID=id21;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+NW_017842083.1	Gnomon	gene	4	1511	.	-	.	ID=gene0;Dbxref=GeneID:101335433;Name=LOC101335433;gbkey=Gene;gene=LOC101335433;gene_biotype=protein_coding;partial=true;start_range=.,4
+NW_017842083.1	Gnomon	mRNA	4	1511	.	-	.	ID=rna0;Parent=gene0;Dbxref=GeneID:101335433,Genbank:XM_019926482.1;Name=XM_019926482.1;gbkey=mRNA;gene=LOC101335433;model_evidence=Supporting evidence includes similarity to: 47 mRNAs%2C 113 Proteins%2C and 100%25 coverage of the annotated genomic feature by RNAseq alignments;partial=true;product=heat shock 70 kDa protein 1B;start_range=.,4;transcript_id=XM_019926482.1
+NW_017842083.1	Gnomon	exon	4	1511	.	-	.	ID=id22;Parent=rna0;Dbxref=GeneID:101335433,Genbank:XM_019926482.1;gbkey=mRNA;gene=LOC101335433;partial=true;product=heat shock 70 kDa protein 1B;start_range=.,4;transcript_id=XM_019926482.1
+NW_017842083.1	Gnomon	CDS	4	1290	.	-	0	ID=cds0;Parent=rna0;Dbxref=GeneID:101335433,Genbank:XP_019782041.1;Name=XP_019782041.1;gbkey=CDS;gene=LOC101335433;partial=true;product=heat shock 70 kDa protein 1B;protein_id=XP_019782041.1;start_range=.,4
+##sequence-region NW_017842084.1 1 2886
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842084.1	RefSeq	region	1	2886	.	+	.	ID=id23;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842085.1 1 1390
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842085.1	RefSeq	region	1	1390	.	+	.	ID=id24;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842086.1 1 1917
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842086.1	RefSeq	region	1	1917	.	+	.	ID=id25;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842087.1 1 2443
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842087.1	RefSeq	region	1	2443	.	+	.	ID=id26;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842088.1 1 1219
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842088.1	RefSeq	region	1	1219	.	+	.	ID=id27;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+NW_017842088.1	Gnomon	gene	197	1214	.	+	.	ID=gene1;Dbxref=GeneID:101323790;Name=LOC101323790;end_range=1214,.;gbkey=Gene;gene=LOC101323790;gene_biotype=protein_coding;partial=true;start_range=.,197
+NW_017842088.1	Gnomon	mRNA	197	1214	.	+	.	ID=rna1;Parent=gene1;Dbxref=GeneID:101323790,Genbank:XM_019936232.1;Name=XM_019936232.1;end_range=1214,.;gbkey=mRNA;gene=LOC101323790;model_evidence=Supporting evidence includes similarity to: 1 Protein%2C and 83%25 coverage of the annotated genomic feature by RNAseq alignments;partial=true;product=nuclear RNA export factor 2-like;start_range=.,197;transcript_id=XM_019936232.1
+NW_017842088.1	Gnomon	exon	197	376	.	+	.	ID=id28;Parent=rna1;Dbxref=GeneID:101323790,Genbank:XM_019936232.1;gbkey=mRNA;gene=LOC101323790;partial=true;product=nuclear RNA export factor 2-like;start_range=.,197;transcript_id=XM_019936232.1
+NW_017842088.1	Gnomon	exon	461	516	.	+	.	ID=id29;Parent=rna1;Dbxref=GeneID:101323790,Genbank:XM_019936232.1;gbkey=mRNA;gene=LOC101323790;partial=true;product=nuclear RNA export factor 2-like;transcript_id=XM_019936232.1
+NW_017842088.1	Gnomon	exon	660	767	.	+	.	ID=id30;Parent=rna1;Dbxref=GeneID:101323790,Genbank:XM_019936232.1;gbkey=mRNA;gene=LOC101323790;partial=true;product=nuclear RNA export factor 2-like;transcript_id=XM_019936232.1
+NW_017842088.1	Gnomon	exon	874	938	.	+	.	ID=id31;Parent=rna1;Dbxref=GeneID:101323790,Genbank:XM_019936232.1;gbkey=mRNA;gene=LOC101323790;partial=true;product=nuclear RNA export factor 2-like;transcript_id=XM_019936232.1
+NW_017842088.1	Gnomon	exon	1041	1214	.	+	.	ID=id32;Parent=rna1;Dbxref=GeneID:101323790,Genbank:XM_019936232.1;end_range=1214,.;gbkey=mRNA;gene=LOC101323790;partial=true;product=nuclear RNA export factor 2-like;transcript_id=XM_019936232.1
+NW_017842088.1	Gnomon	CDS	197	376	.	+	0	ID=cds1;Parent=rna1;Dbxref=GeneID:101323790,Genbank:XP_019791791.1;Name=XP_019791791.1;gbkey=CDS;gene=LOC101323790;partial=true;product=nuclear RNA export factor 2-like;protein_id=XP_019791791.1;start_range=.,197
+NW_017842088.1	Gnomon	CDS	461	516	.	+	0	ID=cds1;Parent=rna1;Dbxref=GeneID:101323790,Genbank:XP_019791791.1;Name=XP_019791791.1;gbkey=CDS;gene=LOC101323790;partial=true;product=nuclear RNA export factor 2-like;protein_id=XP_019791791.1
+NW_017842088.1	Gnomon	CDS	660	767	.	+	1	ID=cds1;Parent=rna1;Dbxref=GeneID:101323790,Genbank:XP_019791791.1;Name=XP_019791791.1;gbkey=CDS;gene=LOC101323790;partial=true;product=nuclear RNA export factor 2-like;protein_id=XP_019791791.1
+NW_017842088.1	Gnomon	CDS	874	938	.	+	1	ID=cds1;Parent=rna1;Dbxref=GeneID:101323790,Genbank:XP_019791791.1;Name=XP_019791791.1;gbkey=CDS;gene=LOC101323790;partial=true;product=nuclear RNA export factor 2-like;protein_id=XP_019791791.1
+NW_017842088.1	Gnomon	CDS	1041	1214	.	+	2	ID=cds1;Parent=rna1;Dbxref=GeneID:101323790,Genbank:XP_019791791.1;Name=XP_019791791.1;end_range=1214,.;gbkey=CDS;gene=LOC101323790;partial=true;product=nuclear RNA export factor 2-like;protein_id=XP_019791791.1
+##sequence-region NW_017842089.1 1 2267
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842089.1	RefSeq	region	1	2267	.	+	.	ID=id33;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842090.1 1 1043
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842090.1	RefSeq	region	1	1043	.	+	.	ID=id34;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842091.1 1 5268
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842091.1	RefSeq	region	1	5268	.	+	.	ID=id35;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842092.1 1 3460
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842092.1	RefSeq	region	1	3460	.	+	.	ID=id36;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842093.1 1 1800
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842093.1	RefSeq	region	1	1800	.	+	.	ID=id37;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842094.1 1 1035
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842094.1	RefSeq	region	1	1035	.	+	.	ID=id38;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842095.1 1 1280
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842095.1	RefSeq	region	1	1280	.	+	.	ID=id39;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842096.1 1 1125
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842096.1	RefSeq	region	1	1125	.	+	.	ID=id40;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842097.1 1 1672
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842097.1	RefSeq	region	1	1672	.	+	.	ID=id41;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842098.1 1 1455
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842098.1	RefSeq	region	1	1455	.	+	.	ID=id42;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842099.1 1 1749
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842099.1	RefSeq	region	1	1749	.	+	.	ID=id43;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842100.1 1 1920
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842100.1	RefSeq	region	1	1920	.	+	.	ID=id44;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842101.1 1 1264
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842101.1	RefSeq	region	1	1264	.	+	.	ID=id45;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842102.1 1 4002
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842102.1	RefSeq	region	1	4002	.	+	.	ID=id46;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842103.1 1 2217
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842103.1	RefSeq	region	1	2217	.	+	.	ID=id47;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842104.1 1 1000
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842104.1	RefSeq	region	1	1000	.	+	.	ID=id48;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842105.1 1 9350
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842105.1	RefSeq	region	1	9350	.	+	.	ID=id49;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842106.1 1 1404
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842106.1	RefSeq	region	1	1404	.	+	.	ID=id50;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842107.1 1 1753
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842107.1	RefSeq	region	1	1753	.	+	.	ID=id51;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842108.1 1 1673
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842108.1	RefSeq	region	1	1673	.	+	.	ID=id52;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842109.1 1 1105
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842109.1	RefSeq	region	1	1105	.	+	.	ID=id53;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842110.1 1 1083
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842110.1	RefSeq	region	1	1083	.	+	.	ID=id54;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842111.1 1 1043
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842111.1	RefSeq	region	1	1043	.	+	.	ID=id55;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842112.1 1 2087
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842112.1	RefSeq	region	1	2087	.	+	.	ID=id56;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842113.1 1 2235
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842113.1	RefSeq	region	1	2235	.	+	.	ID=id57;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+NW_017842113.1	Gnomon	gene	63	1311	.	-	.	ID=gene2;Dbxref=GeneID:109551172;Name=LOC109551172;gbkey=Gene;gene=LOC109551172;gene_biotype=protein_coding
+NW_017842113.1	Gnomon	mRNA	63	1311	.	-	.	ID=rna2;Parent=gene2;Dbxref=GeneID:109551172,Genbank:XM_019946200.1;Name=XM_019946200.1;gbkey=mRNA;gene=LOC109551172;model_evidence=Supporting evidence includes similarity to: 100%25 coverage of the annotated genomic feature by RNAseq alignments%2C including 59 samples with support for all annotated introns;product=oviduct-specific glycoprotein-like;transcript_id=XM_019946200.1
+NW_017842113.1	Gnomon	exon	873	1311	.	-	.	ID=id58;Parent=rna2;Dbxref=GeneID:109551172,Genbank:XM_019946200.1;gbkey=mRNA;gene=LOC109551172;product=oviduct-specific glycoprotein-like;transcript_id=XM_019946200.1
+NW_017842113.1	Gnomon	exon	63	465	.	-	.	ID=id59;Parent=rna2;Dbxref=GeneID:109551172,Genbank:XM_019946200.1;gbkey=mRNA;gene=LOC109551172;product=oviduct-specific glycoprotein-like;transcript_id=XM_019946200.1
+NW_017842113.1	Gnomon	CDS	873	990	.	-	0	ID=cds2;Parent=rna2;Dbxref=GeneID:109551172,Genbank:XP_019801759.1;Name=XP_019801759.1;gbkey=CDS;gene=LOC109551172;product=oviduct-specific glycoprotein-like;protein_id=XP_019801759.1
+NW_017842113.1	Gnomon	CDS	194	465	.	-	2	ID=cds2;Parent=rna2;Dbxref=GeneID:109551172,Genbank:XP_019801759.1;Name=XP_019801759.1;gbkey=CDS;gene=LOC109551172;product=oviduct-specific glycoprotein-like;protein_id=XP_019801759.1
+##sequence-region NW_017842114.1 1 2881
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842114.1	RefSeq	region	1	2881	.	+	.	ID=id60;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842115.1 1 1805
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842115.1	RefSeq	region	1	1805	.	+	.	ID=id61;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842116.1 1 1679
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842116.1	RefSeq	region	1	1679	.	+	.	ID=id62;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842117.1 1 2516
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842117.1	RefSeq	region	1	2516	.	+	.	ID=id63;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842118.1 1 1221
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842118.1	RefSeq	region	1	1221	.	+	.	ID=id64;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842119.1 1 1507
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842119.1	RefSeq	region	1	1507	.	+	.	ID=id65;Dbxref=taxon:9739;Name=Unknown;chromosome=Unknown;dev-stage=immature;gbkey=Src;genome=genomic;isolate=MMES2002162SC;mol_type=genomic DNA;sex=female;tissue-type=liver
+##sequence-region NW_017842120.1 1 1390670
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9739
+NW_017842131.1	Gnomon	gene	11588924	11741533	.	+	.	ID=gene165;Dbxref=GeneID:101327462;Name=BRAF;gbkey=Gene;gene=BRAF;gene_biotype=protein_coding
+NW_017842131.1	Gnomon	mRNA	11588924	11741533	.	+	.	ID=rna351;Parent=gene165;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;Name=XM_019945688.1;gbkey=mRNA;gene=BRAF;model_evidence=Supporting evidence includes similarity to: 7 mRNAs%2C 21 Proteins%2C and 100%25 coverage of the annotated genomic feature by RNAseq alignments%2C including 2 samples with support for all annotated introns;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11588924	11589189	.	+	.	ID=id3509;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11647916	11648017	.	+	.	ID=id3510;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11660148	11660411	.	+	.	ID=id3511;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11667383	11667486	.	+	.	ID=id3512;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11668328	11668430	.	+	.	ID=id3513;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11676285	11676433	.	+	.	ID=id3514;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11677362	11677481	.	+	.	ID=id3515;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11680193	11680349	.	+	.	ID=id3516;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11686963	11686999	.	+	.	ID=id3517;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11690732	11690868	.	+	.	ID=id3518;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11691839	11691956	.	+	.	ID=id3519;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11694084	11694168	.	+	.	ID=id3520;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11695189	11695365	.	+	.	ID=id3521;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11711924	11711970	.	+	.	ID=id3522;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11712771	11712889	.	+	.	ID=id3523;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11716679	11716810	.	+	.	ID=id3524;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11723053	11723187	.	+	.	ID=id3525;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11726650	11726803	.	+	.	ID=id3526;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	exon	11741442	11741533	.	+	.	ID=id3527;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XM_019945688.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X4;transcript_id=XM_019945688.1
+NW_017842131.1	Gnomon	CDS	11589070	11589189	.	+	0	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	CDS	11647916	11648017	.	+	0	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	CDS	11660148	11660411	.	+	0	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	CDS	11667383	11667486	.	+	0	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	CDS	11668328	11668430	.	+	1	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	CDS	11676285	11676433	.	+	0	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	CDS	11677362	11677481	.	+	1	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	CDS	11680193	11680349	.	+	1	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	CDS	11686963	11686999	.	+	0	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	CDS	11690732	11690868	.	+	2	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	CDS	11691839	11691956	.	+	0	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	CDS	11694084	11694168	.	+	2	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	CDS	11695189	11695365	.	+	1	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	CDS	11711924	11711970	.	+	1	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	CDS	11712771	11712889	.	+	2	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	CDS	11716679	11716810	.	+	0	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	CDS	11723053	11723187	.	+	0	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	CDS	11726650	11726803	.	+	0	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	CDS	11741442	11741470	.	+	2	ID=cds308;Parent=rna351;Dbxref=GeneID:101327462,Genbank:XP_019801247.1;Name=XP_019801247.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X3;protein_id=XP_019801247.1
+NW_017842131.1	Gnomon	mRNA	11588924	11741507	.	+	.	ID=rna352;Parent=gene165;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;Name=XM_019945577.1;gbkey=mRNA;gene=BRAF;model_evidence=Supporting evidence includes similarity to: 7 mRNAs%2C 21 Proteins%2C and 100%25 coverage of the annotated genomic feature by RNAseq alignments%2C including 2 samples with support for all annotated introns;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11588924	11589189	.	+	.	ID=id3528;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11647916	11648017	.	+	.	ID=id3529;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11660148	11660411	.	+	.	ID=id3530;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11667383	11667486	.	+	.	ID=id3531;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11668328	11668430	.	+	.	ID=id3532;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11676285	11676433	.	+	.	ID=id3533;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11677362	11677481	.	+	.	ID=id3534;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11680193	11680349	.	+	.	ID=id3535;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11686963	11686999	.	+	.	ID=id3536;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11690732	11690868	.	+	.	ID=id3537;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11691839	11691956	.	+	.	ID=id3538;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11694084	11694168	.	+	.	ID=id3539;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11695189	11695365	.	+	.	ID=id3540;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11711924	11711970	.	+	.	ID=id3541;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11712771	11712889	.	+	.	ID=id3542;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11716679	11716810	.	+	.	ID=id3543;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11723053	11723187	.	+	.	ID=id3544;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11726650	11726803	.	+	.	ID=id3545;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11734921	11735063	.	+	.	ID=id3546;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	exon	11741442	11741507	.	+	.	ID=id3547;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XM_019945577.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X2;transcript_id=XM_019945577.1
+NW_017842131.1	Gnomon	CDS	11589070	11589189	.	+	0	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	CDS	11647916	11648017	.	+	0	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	CDS	11660148	11660411	.	+	0	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	CDS	11667383	11667486	.	+	0	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	CDS	11668328	11668430	.	+	1	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	CDS	11676285	11676433	.	+	0	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	CDS	11677362	11677481	.	+	1	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	CDS	11680193	11680349	.	+	1	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	CDS	11686963	11686999	.	+	0	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	CDS	11690732	11690868	.	+	2	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	CDS	11691839	11691956	.	+	0	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	CDS	11694084	11694168	.	+	2	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	CDS	11695189	11695365	.	+	1	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	CDS	11711924	11711970	.	+	1	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	CDS	11712771	11712889	.	+	2	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	CDS	11716679	11716810	.	+	0	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	CDS	11723053	11723187	.	+	0	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	CDS	11726650	11726803	.	+	0	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	CDS	11734921	11735018	.	+	2	ID=cds309;Parent=rna352;Dbxref=GeneID:101327462,Genbank:XP_019801136.1;Name=XP_019801136.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801136.1
+NW_017842131.1	Gnomon	mRNA	11588924	11728980	.	+	.	ID=rna353;Parent=gene165;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;Name=XM_019945620.1;gbkey=mRNA;gene=BRAF;model_evidence=Supporting evidence includes similarity to: 7 mRNAs%2C 21 Proteins%2C and 100%25 coverage of the annotated genomic feature by RNAseq alignments%2C including 3 samples with support for all annotated introns;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11588924	11589189	.	+	.	ID=id3548;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11647916	11648017	.	+	.	ID=id3549;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11660148	11660411	.	+	.	ID=id3550;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11667383	11667486	.	+	.	ID=id3551;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11668328	11668430	.	+	.	ID=id3552;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11676285	11676433	.	+	.	ID=id3553;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11677362	11677481	.	+	.	ID=id3554;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11680193	11680349	.	+	.	ID=id3555;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11686963	11686999	.	+	.	ID=id3556;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11690732	11690868	.	+	.	ID=id3557;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11691839	11691956	.	+	.	ID=id3558;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11694084	11694168	.	+	.	ID=id3559;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11695189	11695365	.	+	.	ID=id3560;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11711924	11711970	.	+	.	ID=id3561;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11712771	11712889	.	+	.	ID=id3562;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11716679	11716810	.	+	.	ID=id3563;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11723053	11723187	.	+	.	ID=id3564;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11726650	11726803	.	+	.	ID=id3565;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	exon	11727862	11728980	.	+	.	ID=id3566;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XM_019945620.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X3;transcript_id=XM_019945620.1
+NW_017842131.1	Gnomon	CDS	11589070	11589189	.	+	0	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	CDS	11647916	11648017	.	+	0	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	CDS	11660148	11660411	.	+	0	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	CDS	11667383	11667486	.	+	0	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	CDS	11668328	11668430	.	+	1	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	CDS	11676285	11676433	.	+	0	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	CDS	11677362	11677481	.	+	1	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	CDS	11680193	11680349	.	+	1	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	CDS	11686963	11686999	.	+	0	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	CDS	11690732	11690868	.	+	2	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	CDS	11691839	11691956	.	+	0	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	CDS	11694084	11694168	.	+	2	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	CDS	11695189	11695365	.	+	1	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	CDS	11711924	11711970	.	+	1	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	CDS	11712771	11712889	.	+	2	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	CDS	11716679	11716810	.	+	0	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	CDS	11723053	11723187	.	+	0	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	CDS	11726650	11726803	.	+	0	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	CDS	11727862	11727902	.	+	2	ID=cds310;Parent=rna353;Dbxref=GeneID:101327462,Genbank:XP_019801179.1;Name=XP_019801179.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X2;protein_id=XP_019801179.1
+NW_017842131.1	Gnomon	mRNA	11588925	11739970	.	+	.	ID=rna354;Parent=gene165;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;Name=XM_019945775.1;gbkey=mRNA;gene=BRAF;model_evidence=Supporting evidence includes similarity to: 7 mRNAs%2C 22 Proteins%2C and 100%25 coverage of the annotated genomic feature by RNAseq alignments%2C including 22 samples with support for all annotated introns;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11588925	11589189	.	+	.	ID=id3567;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11647916	11648017	.	+	.	ID=id3568;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11660148	11660411	.	+	.	ID=id3569;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11667383	11667486	.	+	.	ID=id3570;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11668328	11668430	.	+	.	ID=id3571;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11676285	11676433	.	+	.	ID=id3572;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11677362	11677481	.	+	.	ID=id3573;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11680193	11680349	.	+	.	ID=id3574;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11686963	11686999	.	+	.	ID=id3575;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11690732	11690868	.	+	.	ID=id3576;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11691839	11691956	.	+	.	ID=id3577;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11694084	11694168	.	+	.	ID=id3578;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11695189	11695365	.	+	.	ID=id3579;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11711924	11711970	.	+	.	ID=id3580;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11712771	11712889	.	+	.	ID=id3581;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11716679	11716810	.	+	.	ID=id3582;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11723053	11723187	.	+	.	ID=id3583;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11726650	11726803	.	+	.	ID=id3584;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	exon	11732735	11739970	.	+	.	ID=id3585;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XM_019945775.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X5;transcript_id=XM_019945775.1
+NW_017842131.1	Gnomon	CDS	11589070	11589189	.	+	0	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	CDS	11647916	11648017	.	+	0	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	CDS	11660148	11660411	.	+	0	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	CDS	11667383	11667486	.	+	0	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	CDS	11668328	11668430	.	+	1	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	CDS	11676285	11676433	.	+	0	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	CDS	11677362	11677481	.	+	1	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	CDS	11680193	11680349	.	+	1	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	CDS	11686963	11686999	.	+	0	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	CDS	11690732	11690868	.	+	2	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	CDS	11691839	11691956	.	+	0	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	CDS	11694084	11694168	.	+	2	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	CDS	11695189	11695365	.	+	1	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	CDS	11711924	11711970	.	+	1	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	CDS	11712771	11712889	.	+	2	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	CDS	11716679	11716810	.	+	0	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	CDS	11723053	11723187	.	+	0	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	CDS	11726650	11726803	.	+	0	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	CDS	11732735	11732757	.	+	2	ID=cds311;Parent=rna354;Dbxref=GeneID:101327462,Genbank:XP_019801334.1;Name=XP_019801334.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X4;protein_id=XP_019801334.1
+NW_017842131.1	Gnomon	mRNA	11588925	11739970	.	+	.	ID=rna355;Parent=gene165;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;Name=XM_019945518.1;gbkey=mRNA;gene=BRAF;model_evidence=Supporting evidence includes similarity to: 7 mRNAs%2C 21 Proteins%2C and 100%25 coverage of the annotated genomic feature by RNAseq alignments%2C including 17 samples with support for all annotated introns;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11588925	11589189	.	+	.	ID=id3586;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11647916	11648017	.	+	.	ID=id3587;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11660148	11660411	.	+	.	ID=id3588;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11667383	11667486	.	+	.	ID=id3589;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11668328	11668430	.	+	.	ID=id3590;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11676285	11676433	.	+	.	ID=id3591;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11677362	11677481	.	+	.	ID=id3592;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11680193	11680349	.	+	.	ID=id3593;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11686963	11686999	.	+	.	ID=id3594;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11690732	11690868	.	+	.	ID=id3595;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11691839	11691956	.	+	.	ID=id3596;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11694084	11694168	.	+	.	ID=id3597;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11695189	11695365	.	+	.	ID=id3598;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11711924	11711970	.	+	.	ID=id3599;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11712771	11712889	.	+	.	ID=id3600;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11716679	11716810	.	+	.	ID=id3601;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11723053	11723187	.	+	.	ID=id3602;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11726650	11726803	.	+	.	ID=id3603;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	exon	11734921	11739970	.	+	.	ID=id3604;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XM_019945518.1;gbkey=mRNA;gene=BRAF;product=B-Raf proto-oncogene%2C serine/threonine kinase%2C transcript variant X1;transcript_id=XM_019945518.1
+NW_017842131.1	Gnomon	CDS	11589070	11589189	.	+	0	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017842131.1	Gnomon	CDS	11647916	11648017	.	+	0	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017842131.1	Gnomon	CDS	11660148	11660411	.	+	0	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017842131.1	Gnomon	CDS	11667383	11667486	.	+	0	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017842131.1	Gnomon	CDS	11668328	11668430	.	+	1	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017842131.1	Gnomon	CDS	11676285	11676433	.	+	0	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017842131.1	Gnomon	CDS	11677362	11677481	.	+	1	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017842131.1	Gnomon	CDS	11680193	11680349	.	+	1	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017842131.1	Gnomon	CDS	11686963	11686999	.	+	0	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017842131.1	Gnomon	CDS	11690732	11690868	.	+	2	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017842131.1	Gnomon	CDS	11691839	11691956	.	+	0	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017842131.1	Gnomon	CDS	11694084	11694168	.	+	2	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017842131.1	Gnomon	CDS	11695189	11695365	.	+	1	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017842131.1	Gnomon	CDS	11711924	11711970	.	+	1	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017842131.1	Gnomon	CDS	11712771	11712889	.	+	2	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017842131.1	Gnomon	CDS	11716679	11716810	.	+	0	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017842131.1	Gnomon	CDS	11723053	11723187	.	+	0	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017842131.1	Gnomon	CDS	11726650	11726803	.	+	0	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017842131.1	Gnomon	CDS	11734921	11735018	.	+	2	ID=cds312;Parent=rna355;Dbxref=GeneID:101327462,Genbank:XP_019801077.1;Name=XP_019801077.1;gbkey=CDS;gene=BRAF;product=serine/threonine-protein kinase B-raf isoform X1;protein_id=XP_019801077.1
+NW_017843467.1	Gnomon	gene	19307	28370	.	+	.	ID=gene11994;Dbxref=GeneID:101322516;Name=ERBB2;gbkey=Gene;gene=ERBB2;gene_biotype=protein_coding;partial=true;start_range=.,19307
+NW_017843467.1	Gnomon	mRNA	19307	28370	.	+	.	ID=rna23427;Parent=gene11994;Dbxref=GeneID:101322516,Genbank:XM_019939302.1;Name=XM_019939302.1;gbkey=mRNA;gene=ERBB2;model_evidence=Supporting evidence includes similarity to: 12 Proteins%2C and 98%25 coverage of the annotated genomic feature by RNAseq alignments;partial=true;product=erb-b2 receptor tyrosine kinase 2;start_range=.,19307;transcript_id=XM_019939302.1
+NW_017843467.1	Gnomon	exon	19307	19523	.	+	.	ID=id256543;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XM_019939302.1;gbkey=mRNA;gene=ERBB2;partial=true;product=erb-b2 receptor tyrosine kinase 2;start_range=.,19307;transcript_id=XM_019939302.1
+NW_017843467.1	Gnomon	exon	19708	19823	.	+	.	ID=id256544;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XM_019939302.1;gbkey=mRNA;gene=ERBB2;partial=true;product=erb-b2 receptor tyrosine kinase 2;transcript_id=XM_019939302.1
+NW_017843467.1	Gnomon	exon	19949	20090	.	+	.	ID=id256545;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XM_019939302.1;gbkey=mRNA;gene=ERBB2;partial=true;product=erb-b2 receptor tyrosine kinase 2;transcript_id=XM_019939302.1
+NW_017843467.1	Gnomon	exon	20957	21076	.	+	.	ID=id256546;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XM_019939302.1;gbkey=mRNA;gene=ERBB2;partial=true;product=erb-b2 receptor tyrosine kinase 2;transcript_id=XM_019939302.1
+NW_017843467.1	Gnomon	exon	21342	21468	.	+	.	ID=id256547;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XM_019939302.1;gbkey=mRNA;gene=ERBB2;partial=true;product=erb-b2 receptor tyrosine kinase 2;transcript_id=XM_019939302.1
+NW_017843467.1	Gnomon	exon	23507	23580	.	+	.	ID=id256548;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XM_019939302.1;gbkey=mRNA;gene=ERBB2;partial=true;product=erb-b2 receptor tyrosine kinase 2;transcript_id=XM_019939302.1
+NW_017843467.1	Gnomon	exon	23670	23760	.	+	.	ID=id256549;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XM_019939302.1;gbkey=mRNA;gene=ERBB2;partial=true;product=erb-b2 receptor tyrosine kinase 2;transcript_id=XM_019939302.1
+NW_017843467.1	Gnomon	exon	24000	24199	.	+	.	ID=id256550;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XM_019939302.1;gbkey=mRNA;gene=ERBB2;partial=true;product=erb-b2 receptor tyrosine kinase 2;transcript_id=XM_019939302.1
+NW_017843467.1	Gnomon	exon	24551	24683	.	+	.	ID=id256551;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XM_019939302.1;gbkey=mRNA;gene=ERBB2;partial=true;product=erb-b2 receptor tyrosine kinase 2;transcript_id=XM_019939302.1
+NW_017843467.1	Gnomon	exon	24770	24860	.	+	.	ID=id256552;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XM_019939302.1;gbkey=mRNA;gene=ERBB2;partial=true;product=erb-b2 receptor tyrosine kinase 2;transcript_id=XM_019939302.1
+NW_017843467.1	Gnomon	exon	25551	25712	.	+	.	ID=id256553;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XM_019939302.1;gbkey=mRNA;gene=ERBB2;partial=true;product=erb-b2 receptor tyrosine kinase 2;transcript_id=XM_019939302.1
+NW_017843467.1	Gnomon	exon	26844	27204	.	+	.	ID=id256554;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XM_019939302.1;gbkey=mRNA;gene=ERBB2;partial=true;product=erb-b2 receptor tyrosine kinase 2;transcript_id=XM_019939302.1
+NW_017843467.1	Gnomon	exon	27346	28370	.	+	.	ID=id256555;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XM_019939302.1;gbkey=mRNA;gene=ERBB2;partial=true;product=erb-b2 receptor tyrosine kinase 2;transcript_id=XM_019939302.1
+NW_017843467.1	Gnomon	CDS	19307	19523	.	+	0	ID=cds19585;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XP_019794861.1;Name=XP_019794861.1;gbkey=CDS;gene=ERBB2;partial=true;product=receptor tyrosine-protein kinase erbB-2;protein_id=XP_019794861.1;start_range=.,19307
+NW_017843467.1	Gnomon	CDS	19708	19823	.	+	2	ID=cds19585;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XP_019794861.1;Name=XP_019794861.1;gbkey=CDS;gene=ERBB2;partial=true;product=receptor tyrosine-protein kinase erbB-2;protein_id=XP_019794861.1
+NW_017843467.1	Gnomon	CDS	19949	20090	.	+	0	ID=cds19585;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XP_019794861.1;Name=XP_019794861.1;gbkey=CDS;gene=ERBB2;partial=true;product=receptor tyrosine-protein kinase erbB-2;protein_id=XP_019794861.1
+NW_017843467.1	Gnomon	CDS	20957	21076	.	+	2	ID=cds19585;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XP_019794861.1;Name=XP_019794861.1;gbkey=CDS;gene=ERBB2;partial=true;product=receptor tyrosine-protein kinase erbB-2;protein_id=XP_019794861.1
+NW_017843467.1	Gnomon	CDS	21342	21468	.	+	2	ID=cds19585;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XP_019794861.1;Name=XP_019794861.1;gbkey=CDS;gene=ERBB2;partial=true;product=receptor tyrosine-protein kinase erbB-2;protein_id=XP_019794861.1
+NW_017843467.1	Gnomon	CDS	23507	23580	.	+	1	ID=cds19585;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XP_019794861.1;Name=XP_019794861.1;gbkey=CDS;gene=ERBB2;partial=true;product=receptor tyrosine-protein kinase erbB-2;protein_id=XP_019794861.1
+NW_017843467.1	Gnomon	CDS	23670	23760	.	+	2	ID=cds19585;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XP_019794861.1;Name=XP_019794861.1;gbkey=CDS;gene=ERBB2;partial=true;product=receptor tyrosine-protein kinase erbB-2;protein_id=XP_019794861.1
+NW_017843467.1	Gnomon	CDS	24000	24199	.	+	1	ID=cds19585;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XP_019794861.1;Name=XP_019794861.1;gbkey=CDS;gene=ERBB2;partial=true;product=receptor tyrosine-protein kinase erbB-2;protein_id=XP_019794861.1
+NW_017843467.1	Gnomon	CDS	24551	24683	.	+	2	ID=cds19585;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XP_019794861.1;Name=XP_019794861.1;gbkey=CDS;gene=ERBB2;partial=true;product=receptor tyrosine-protein kinase erbB-2;protein_id=XP_019794861.1
+NW_017843467.1	Gnomon	CDS	24770	24860	.	+	1	ID=cds19585;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XP_019794861.1;Name=XP_019794861.1;gbkey=CDS;gene=ERBB2;partial=true;product=receptor tyrosine-protein kinase erbB-2;protein_id=XP_019794861.1
+NW_017843467.1	Gnomon	CDS	25551	25712	.	+	0	ID=cds19585;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XP_019794861.1;Name=XP_019794861.1;gbkey=CDS;gene=ERBB2;partial=true;product=receptor tyrosine-protein kinase erbB-2;protein_id=XP_019794861.1
+NW_017843467.1	Gnomon	CDS	26844	27204	.	+	0	ID=cds19585;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XP_019794861.1;Name=XP_019794861.1;gbkey=CDS;gene=ERBB2;partial=true;product=receptor tyrosine-protein kinase erbB-2;protein_id=XP_019794861.1
+NW_017843467.1	Gnomon	CDS	27346	27701	.	+	2	ID=cds19585;Parent=rna23427;Dbxref=GeneID:101322516,Genbank:XP_019794861.1;Name=XP_019794861.1;gbkey=CDS;gene=ERBB2;partial=true;product=receptor tyrosine-protein kinase erbB-2;protein_id=XP_019794861.1
+NW_017843806.1	Gnomon	gene	99969	105479	.	+	.	ID=gene14993;Dbxref=GeneID:101319146;Name=TP53;gbkey=Gene;gene=TP53;gene_biotype=protein_coding
+NW_017843806.1	Gnomon	mRNA	99969	105479	.	+	.	ID=rna29258;Parent=gene14993;Dbxref=GeneID:101319146,Genbank:XM_019944223.1;Name=XM_019944223.1;gbkey=mRNA;gene=TP53;model_evidence=Supporting evidence includes similarity to: 5 mRNAs%2C 64 Proteins%2C and 100%25 coverage of the annotated genomic feature by RNAseq alignments%2C including 122 samples with support for all annotated introns;product=tumor protein p53;transcript_id=XM_019944223.1
+NW_017843806.1	Gnomon	exon	99969	101140	.	+	.	ID=id318236;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XM_019944223.1;gbkey=mRNA;gene=TP53;product=tumor protein p53;transcript_id=XM_019944223.1
+NW_017843806.1	Gnomon	exon	101278	101299	.	+	.	ID=id318237;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XM_019944223.1;gbkey=mRNA;gene=TP53;product=tumor protein p53;transcript_id=XM_019944223.1
+NW_017843806.1	Gnomon	exon	101389	101646	.	+	.	ID=id318238;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XM_019944223.1;gbkey=mRNA;gene=TP53;product=tumor protein p53;transcript_id=XM_019944223.1
+NW_017843806.1	Gnomon	exon	102086	102272	.	+	.	ID=id318239;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XM_019944223.1;gbkey=mRNA;gene=TP53;product=tumor protein p53;transcript_id=XM_019944223.1
+NW_017843806.1	Gnomon	exon	102353	102465	.	+	.	ID=id318240;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XM_019944223.1;gbkey=mRNA;gene=TP53;product=tumor protein p53;transcript_id=XM_019944223.1
+NW_017843806.1	Gnomon	exon	102696	102805	.	+	.	ID=id318241;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XM_019944223.1;gbkey=mRNA;gene=TP53;product=tumor protein p53;transcript_id=XM_019944223.1
+NW_017843806.1	Gnomon	exon	103148	103284	.	+	.	ID=id318242;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XM_019944223.1;gbkey=mRNA;gene=TP53;product=tumor protein p53;transcript_id=XM_019944223.1
+NW_017843806.1	Gnomon	exon	103372	103445	.	+	.	ID=id318243;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XM_019944223.1;gbkey=mRNA;gene=TP53;product=tumor protein p53;transcript_id=XM_019944223.1
+NW_017843806.1	Gnomon	exon	103872	103978	.	+	.	ID=id318244;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XM_019944223.1;gbkey=mRNA;gene=TP53;product=tumor protein p53;transcript_id=XM_019944223.1
+NW_017843806.1	Gnomon	exon	104540	105479	.	+	.	ID=id318245;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XM_019944223.1;gbkey=mRNA;gene=TP53;product=tumor protein p53;transcript_id=XM_019944223.1
+NW_017843806.1	Gnomon	CDS	101067	101140	.	+	0	ID=cds24453;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XP_019799782.1;Name=XP_019799782.1;gbkey=CDS;gene=TP53;product=cellular tumor antigen p53;protein_id=XP_019799782.1
+NW_017843806.1	Gnomon	CDS	101278	101299	.	+	1	ID=cds24453;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XP_019799782.1;Name=XP_019799782.1;gbkey=CDS;gene=TP53;product=cellular tumor antigen p53;protein_id=XP_019799782.1
+NW_017843806.1	Gnomon	CDS	101389	101646	.	+	0	ID=cds24453;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XP_019799782.1;Name=XP_019799782.1;gbkey=CDS;gene=TP53;product=cellular tumor antigen p53;protein_id=XP_019799782.1
+NW_017843806.1	Gnomon	CDS	102086	102272	.	+	0	ID=cds24453;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XP_019799782.1;Name=XP_019799782.1;gbkey=CDS;gene=TP53;product=cellular tumor antigen p53;protein_id=XP_019799782.1
+NW_017843806.1	Gnomon	CDS	102353	102465	.	+	2	ID=cds24453;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XP_019799782.1;Name=XP_019799782.1;gbkey=CDS;gene=TP53;product=cellular tumor antigen p53;protein_id=XP_019799782.1
+NW_017843806.1	Gnomon	CDS	102696	102805	.	+	0	ID=cds24453;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XP_019799782.1;Name=XP_019799782.1;gbkey=CDS;gene=TP53;product=cellular tumor antigen p53;protein_id=XP_019799782.1
+NW_017843806.1	Gnomon	CDS	103148	103284	.	+	1	ID=cds24453;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XP_019799782.1;Name=XP_019799782.1;gbkey=CDS;gene=TP53;product=cellular tumor antigen p53;protein_id=XP_019799782.1
+NW_017843806.1	Gnomon	CDS	103372	103445	.	+	2	ID=cds24453;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XP_019799782.1;Name=XP_019799782.1;gbkey=CDS;gene=TP53;product=cellular tumor antigen p53;protein_id=XP_019799782.1
+NW_017843806.1	Gnomon	CDS	103872	103978	.	+	0	ID=cds24453;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XP_019799782.1;Name=XP_019799782.1;gbkey=CDS;gene=TP53;product=cellular tumor antigen p53;protein_id=XP_019799782.1
+NW_017843806.1	Gnomon	CDS	104540	104621	.	+	1	ID=cds24453;Parent=rna29258;Dbxref=GeneID:101319146,Genbank:XP_019799782.1;Name=XP_019799782.1;gbkey=CDS;gene=TP53;product=cellular tumor antigen p53;protein_id=XP_019799782.1
