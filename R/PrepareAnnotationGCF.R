@@ -36,7 +36,7 @@ PrepareAnnotationGCF <- function(ncbiFtpUrl, annotation_path, ...) {
                   length(translated_faa) > 0,
                   length(genomic_gff) > 0)
 
-        download.filename(ncbiFtpUrl, assembly_report, annotation_path, quiet=TRUE)
+        assembly_report = download.filename(ncbiFtpUrl, assembly_report, annotation_path, quiet=TRUE)
         
         cds_fna = download.filename(ncbiFtpUrl, cds_fna, annotation_path)
         translated_faa = download.filename(ncbiFtpUrl, translated_faa, annotation_path)
@@ -210,7 +210,7 @@ download.filename = function(url, filename, directory, overwrite=FALSE, ...)
     if (file.exists(paste0(directory, filename)))
     {
         if (overwrite) file.remove(paste0(directory, filename))
-        else return()
+        else return(base::file.path(directory, filename))
     }
     download.file(paste0(url, filename), paste0(directory, filename), ...)
     return(base::file.path(directory, filename))

@@ -240,7 +240,7 @@ read_or_update_local_cacheDb <- function(expression, local_cache_path, object_na
 expect_equal_to_reference = function(object, file, ..., info=NULL, label=NULL, expected.label=NULL,
                                      on.update=getOption("testthat.on.update"),
                                      on.fail=getOption("testthat.on.fail")) {
-  lab_act <- testthat:::make_label(object, label)
+  lab_act <- testthat:::quasi_label(rlang::enquo(object), label)
   lab_exp <- expected.label %||% paste0("reference from `", file, "`")
   
   # check for reference files either in current directory or in ./tests/testthat directory
@@ -259,6 +259,12 @@ expect_equal_to_reference = function(object, file, ..., info=NULL, label=NULL, e
     testthat::succeed()
   } else {
     reference <- readRDS(file)
+    
+    if (class(reference)[1] == "GRanges")
+    {
+        reference = GenomicRanges::updateObject(reference)
+        object = GenomicRanges::updateObject(object)
+    }
     
     comp <- testthat::compare(object, reference, ...)
     

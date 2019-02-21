@@ -56,7 +56,7 @@ load_annotations = function(annotation_path, envir, dbsnp=FALSE, cosmic=FALSE) {
 genome = "Tur_tru_v1"
 test_that(qq("Annotating subset of Tur_tru_v1 GCF"), {
     annotation_path = qq("@{annotation_path}/@{genome}")
-    PrepareAnnotationGCF(qq("@{extdata_path}/gff"), annotation_path)
+    PrepareAnnotationGCF(qq("@{extdata_path}/gcf"), annotation_path)
     env = new.env()
     load_annotations(annotation_path, env, dbsnp=FALSE, cosmic=FALSE)
     expect_equal_to_reference(env$exon, qq("exon_@{genome}.rds"))
